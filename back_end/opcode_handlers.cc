@@ -603,7 +603,6 @@ int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr;
 }
 
-
 int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
     switch (opcode.opcode_name) {
         case 0x20:
@@ -627,5 +626,39 @@ int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opco
             }
             return instruction_ptr + 1;
     }
+}
+
+int Call(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned short address = GetAddress16(rom, instruction_ptr);
+    cpu.rSP = instruction_ptr + 1;
+    instruction_ptr = address;
+    return instruction_ptr;
+}
+
+int CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    switch (opcode.opcode_name) {
+        case 0xC4:
+            if (!cpu.flag_struct.rF.Z) {
+                return Call(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xCC:
+            if (cpu.flag_struct.rF.Z) {
+                return Call(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xD4:
+            if (!cpu.flag_struct.rF.C) {
+                return Call(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xDC:
+            if (cpu.flag_struct.rF.C) {
+                return Call(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+    }
+}
+
 } // namespace handlers
 } // namespace back_end
