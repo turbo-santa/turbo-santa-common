@@ -12,14 +12,30 @@ unsigned char* GetRegister(unsigned char* rom, int instruction_ptr, unsigned cha
     return registers + register_index;
 }
 
+unsigned short* GetRegister16(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
+	unsigned char opcode = rom[instruction_ptr];
+	unsigned char register_index = (opcode >> 4);
+	return shortRegs + register_index;
+}
+
 unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
     unsigned char opcode = rom[instruction_ptr];
     unsigned char register_index = opcode - opcode_name;
     return registers[register_index];
 }
 
+unsigned short GetRegisterValue16(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
+	unsigned char opcode = rom[instruction_ptr];
+	unsigned char register_index = (opcode >> 4);
+	return shortRegs[register_index];
+}
+
 unsigned char GetParameterValue(unsigned char* rom, int instruction_ptr) {
     return rom[instruction_ptr + 1];
+}
+
+unsigned short GetParameterValue16(unsigned char* rom, int instruction_ptr) {
+	return (((short)rom[instruction_ptr + 1]) << 8) | (short)rom[instruction_ptr + 2];
 }
 
 void SetZFlag(unsigned char register_value) {
@@ -57,15 +73,19 @@ bool DoesBorrow8(unsigned char left, unsigned char right) {
 	return !DoesUnderflow(left, right, 7);
 }
 
-bool DoesBorrow16(unsigned char left, unsigned char right) {
+bool DoesBorrow16(unsigned short left, unsigned short right) {
 	return DoesUnderflow(left, right, 15);
 }
 
-bool DoesHalfBorrow(unsigned char left, unsigned char right) {
+bool DoesHalfBorrow8(unsigned char left, unsigned char right) {
 	return DoesUnderflow(left, right, 3);
 }
 
-bool DoesHalfCarry(unsigned char left, unsigned char right) {
+bool DoesHalfBorrow16(unsigned short left, unsigned short right) {
+	return DoesUnderflow(left, right, 11);
+}
+
+bool DoesHalfCarry8(unsigned char left, unsigned char right) {
 	return DoesOverflow(left, right, 3);
 }
 
@@ -73,12 +93,16 @@ bool DoesCarry8(unsigned char left, unsigned char right) {
 	return DoesOverflow(left, right, 7);
 }
 
+bool DoesHalfCarry16(unsigned char left, unsigned char right) {
+	return DoesOverflow(left, right, 11);
+}
+
 bool DoesCarry16(unsigned int left, unsigned int right) {
 	return DoesOverflow(left, right, 15);
 }
 
 int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	Add8Bit(GetRegisterValue(rom, instruction_ptr, opcode));
+	Add8Bit(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
 	return instruction_ptr + 1;
 }
 
@@ -89,14 +113,14 @@ int Add8BitLiteral(unsigned char* rom, instruction_ptr, Opcode opcode) {
 
 void Add8Bit(unsigned char value) {
 	cpu.rF.C = DoesCarry8(cpu.rA, value);
-	cpu.rF.H = DoesHalfCarry(cpu.rA, value);
+	cpu.rF.H = DoesHalfCarry8(cpu.rA, value);
 	cpu.rA += value;
 	SetZFlag(cpu.rA);
 	SetNFlag(false);
 }
 
 int ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	ADC8Bit(GetRegisterValue(rom, instruction_ptr, opcode));
+	ADC8Bit(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
 	return instruction_ptr + 1;
 }
 
@@ -108,16 +132,16 @@ int ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 void ADC8Bit(unsigned char value) {
 	char carry = cpu.rF.C;
 	cpu.rF.C = DoesCarry8(cpu.rA, value);
-	cpu.rF.H = DoesHalfCarry(cpu.rA, value);
+	cpu.rF.H = DoesHalfCarry8(cpu.rA, value);
 	cpu.rA += value;
 	cpu.rF.C |= DoesCarry8(cpu.rA, value);
-	cpu.rF.H |= DoesHalfCarry(cpu.rA, value);
+	cpu.rF.H |= DoesHalfCarry8(cpu.rA, value);
 	SetZFlag(cpu.rA);
 	SetNFlag(false);
 }
 
 int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	Sub8Bit(GetRegisterValue(rom, instruction_ptr, opcode));
+	Sub8Bit(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
 	return instruction_ptr + 1;
 }
 
@@ -128,7 +152,7 @@ int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 
 void Sub8Bit(unsigned char value) {
 	cpu.rF.C = !DoesBorrow8(cpu.rA, value);
-	cpu.rF.H = !DoesHalfBorrow(cpu.rA, value);
+	cpu.rF.H = !DoesHalfBorrow8(cpu.rA, value);
 	cpu.rA -= value;
 	SetZFlag(cpu.rA);
 	SetNFlag(true);
@@ -226,6 +250,42 @@ int Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     SetNFlag(true);
     cpu.rF.H = borrowed_h;
     return instruction_ptr + 1;
+}
+
+int Add16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+	short value = GetRegisterValue16(rom, instruction_ptr, opcode.opcode_name);
+	cpu.rF.H = DoesHalfCarry16(cpu.rA, value);
+	cpu.rF.C = DoesCarry16(cpu.rA, value);
+	cpu.rHL += value;
+	SetNFlag(false);
+	return instruction_ptr + 1;
+}
+
+int AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+	unsigned char value = GetParameterValue(rom, instruction_ptr);
+	if (NthBit(value, 7)) {
+		cpu.rF.H = DoesHalfBorrow16(cpu.rSP, value);
+		cpu.rF.C = DoesBorrow16(cpu.rSP, value);
+	} else {
+		cpu.rF.H = DoesHalfCarry16(cpu.rSP, value);
+		cpu.rF.C = DoesCarry16(cpu.rSP, value);
+	}
+	SetNFlag(false);
+	SetZFlag(false);
+	cpu.rSP += value;
+	return instruction_ptr + 2;
+}
+
+int Inc16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+	unsigned short* reg = GetRegister16(rom, instruction_ptr, opcode.opcode_name);
+	*reg += 1;
+	return instruction_ptr + 1;
+}
+
+int Dec16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+	unsigned short* reg = GetRegister16(rom, instruction_ptr, opcode.opcode_name);
+	*reg -= 1;
+	return instruction_ptr + 1;
 }
 
 } // namespace handlers
