@@ -7,7 +7,7 @@ namespace handlers {
 using back_end::opcodes::Opcode;
 
 unsigned char* registers = { cpu.rB, cpu.rC, cpu.rD, cpu.rE, cpu.rH, cpu.rL, cpu.rHL, cpu.rA };
-unsigned char* shortRegs = { cpu.rBC, cpu.rDE, cpu.rHL, cpu.rSP, cpu.rAF };
+unsigned short* shortRegs = { cpu.rBC, cpu.rDE, cpu.rHL, cpu.rSP, cpu.rAF };
 
 unsigned char* GetRegister(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
     unsigned char opcode = rom[instruction_ptr];
@@ -66,7 +66,7 @@ bool DoesOverflow(unsigned int left, unsigned int right, int bit) {
 }
 
 bool DoesUnderflow(unsigned int left, unsigned int right, int bit) {
-	if (!NthBit(left, bit) && (NthBit(right, bit) || NthBit(left - right, bit)) {
+	if (!NthBit(left, bit) && (NthBit(right, bit) || NthBit(left - right, bit))) {
 		return true;
 	}
 	return false;
@@ -109,7 +109,7 @@ int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 	return instruction_ptr + 1;
 }
 
-int Add8BitLiteral(unsigned char* rom, instruction_ptr, Opcode opcode) {
+int Add8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 	Add8Bit(GetParameterValue(rom, instruction_ptr));
 	return instruction_ptr + 2;
 }
