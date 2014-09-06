@@ -17,5 +17,5 @@ OpcodeParser::OpcodeParser(char* rom) {
 void OpcodeParser::ReadInstruction() {
     char opcode = rom_[instruction_ptr_];
     back_end::opcodes::Opcode opcode_struct = opcode_map[opcode];
-    instruction_ptr_ = opcode_struct.handler(rom_, cpu_, instruction_ptr_, opcode_struct.length);
+    instruction_ptr_ = opcode_struct.handler(rom_, instruction_ptr_, opcode_struct);
 }

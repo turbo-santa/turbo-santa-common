@@ -33,6 +33,18 @@ int AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int Inc16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int Dec16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
+// Miscelaneous
+int Swap(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int DAA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int CPL(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int CCF(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int SCF(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int NOP(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Halt(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Stop(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int DI(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int EI(unsigned char* rom, int instruction_ptr, Opcode opcode);
+
 } // namespace back_end
 } // namespace handlers
 
