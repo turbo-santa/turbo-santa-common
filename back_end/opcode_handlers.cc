@@ -19,7 +19,7 @@ unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned
 }
 
 unsigned char GetParameterValue(unsigned char* rom, int instruction_ptr) {
-    return rom[instruction_ptr];
+    return rom[instruction_ptr + 1];
 }
 
 void SetZFlag(unsigned char register_value) {
@@ -78,13 +78,12 @@ bool DoesCarry16(unsigned int left, unsigned int right) {
 }
 
 int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	int index = rom[instruction_ptr] - opcode.opcode_name;
-	Add8Bit(registers[index]);
+	Add8Bit(GetRegisterValue(rom, instruction_ptr, opcode));
 	return instruction_ptr + 1;
 }
 
 int Add8BitLiteral(unsigned char* rom, instruction_ptr, Opcode opcode) {
-	Add8Bit(rom[instruction_ptr + 1]);
+	Add8Bit(GetParameterValue(rom, instruction_ptr));
 	return instruction_ptr + 2;
 }
 
@@ -92,19 +91,17 @@ void Add8Bit(unsigned char value) {
 	cpu.rF.C = DoesCarry8(cpu.rA, value);
 	cpu.rF.H = DoesHalfCarry(cpu.rA, value);
 	cpu.rA += value;
-	cpu.rF.Z = (cpu.rA == 0);
-	cpu.rF.N = 0;
+	SetZFlag(cpu.rA);
+	SetNFlag(false);
 }
 
 int ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	int index = rom[instruction_ptr] - opcode.opcode_name;
-	ADC8Bit(registers[index]);
+	ADC8Bit(GetRegisterValue(rom, instruction_ptr, opcode));
 	return instruction_ptr + 1;
 }
 
 int ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	char literal = rom[instruction_ptr + 1];
-	ADC8Bit(literal);
+	ADC8Bit(GetParameterValue(rom, instruction_ptr));
 	return instruction_ptr + 2;
 }
 
@@ -115,32 +112,28 @@ void ADC8Bit(unsigned char value) {
 	cpu.rA += value;
 	cpu.rF.C |= DoesCarry8(cpu.rA, value);
 	cpu.rF.H |= DoesHalfCarry(cpu.rA, value);
-	cpu.rF.Z = (cpu.rA == 0);
-	cpu.rF.N = 0;
+	SetZFlag(cpu.rA);
+	SetNFlag(false);
 }
 
 int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	int index = rom[instruction_ptr] - opcode.opcode_name;
-	Sub8Bit(registers[index]);
+	Sub8Bit(GetRegisterValue(rom, instruction_ptr, opcode));
 	return instruction_ptr + 1;
 }
 
 int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	char literal = rom[instruction_ptr + 1];
-	Sub8Bit(literal);
+	Sub8Bit(GetParameterValue(rom, instruction_ptr));
 	return instruction_ptr + 2;
 }
 
 void Sub8Bit(unsigned char value) {
 	cpu.rF.C = !DoesBorrow8(cpu.rA, value);
 	cpu.rF.H = !DoesHalfBorrow(cpu.rA, value);
-	cpu.rF.N = 1;
 	cpu.rA -= value;
-	cpu.rF.Z = (cpu.rA == 0);
+	SetZFlag(cpu.rA);
+	SetNFlag(true);
 }
 
-int Dec8Bit(unsigned char* rom, int instruction_ptr, int opcode_length) {
-    ALU8BitRegisterRegister* opcode = static_cast<ALU8BitRegisterRegister*>(rom + instruction_ptr);
 int And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.rA &= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
     SetZFlag(cpu.rA);
@@ -218,8 +211,8 @@ int Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char forth_bit = NthBit(*reg, 3);
     ++(*reg);
     bool borrowed_h = forth_bit != NthBit(*reg, 3);
-    cpu.rF.Z = (*reg) == 0;
-    cpu.rF.N = 0;
+    SetZFlag(*reg)
+    SetNFlag(false);
     cpu.rF.H = borrowed_h;
     return instruction_ptr + 1;
 }
@@ -229,8 +222,8 @@ int Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char fourth_bit = NthBit(*reg, 4);
     --(*reg);
     bool borrowed_h = forth_bit != NthBit(*reg, 4);
-    cpu.rF.Z = (*reg) == 0;
-    cpu.rF.N = 1;
+    SetZFlag(*reg);
+    SetNFlag(true);
     cpu.rF.H = borrowed_h;
     return instruction_ptr + 1;
 }
