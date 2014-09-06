@@ -8,6 +8,9 @@ namespace back_end {
 namespace handlers {
 
 using opcodes::Opcode;
+using back_end::memory::MemoryMapper;
+
+MemoryMapper mem_map;
 
 // 8 Bit ALU
 int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
@@ -81,6 +84,20 @@ int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int Return(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode);
+
+// 8-Bit Loads
+int LoadN(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadRR(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadNA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadAC(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadDecAHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadDecHLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadIncAHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadIncHLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
 } // namespace back_end
 } // namespace handlers

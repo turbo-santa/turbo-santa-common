@@ -42,6 +42,10 @@ unsigned short GetParameterValue16(unsigned char* rom, int instruction_ptr) {
    return (((short)rom[instruction_ptr + 1]) << 8) | (short)rom[instruction_ptr + 2];
 }
 
+unsigned short GetParameterValue16LS(unsigned char* rom, int instruction_ptr, unsigned char) {
+    return (((short)rom[instruction_ptr + 2]) << 8) | (short)rom[instruction_ptr + 1];
+}
+
 unsigned short GetAddress16(unsigned char* rom, int instruction_ptr) {
     unsigned char upper = GetParameterValue(rom, instruction_ptr + 1);
     unsigned char lower = GetParameterValue(rom, instruction_ptr);
@@ -721,6 +725,91 @@ int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     instruction_ptr = address;
     EI(rom, instruction_ptr, opcode);
     return instruction_ptr;
+}
+
+int LoadN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char value = GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
+    *opcode.register = value;
+    return instruction_ptr + 2;
+}
+
+int LoadRR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    if (opcode.opcode_name == 0x36) {
+        unsigned char value = GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
+        *opcode.register = value;
+        return instruction_ptr + 2;
+    } else {
+        *opcode.register = *opcode.register2;
+        return instruction_ptr + 1;
+    }
+}
+
+int LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    if (opcode.opcode_name == 0xFA) {
+        unsigned short address = GetParameterValue16LS(rom, instruction_ptr, opcode.opcode_name);
+        // TODO: figure out what nn refers to.
+    } else if (opcode.opcode_name == 0x3E) {
+        unsigned char value = GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
+        cpu.flag_struct.rA = value;
+        return instruction_ptr + 2;
+    }
+
+    cpu.flag_struct.rA = *opcode.register;
+    return instruction_ptr + 1;
+}
+
+
+int LoadNA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    if (opcode.opcode_name == 0xEA) {
+        // TODO: figure out what nn refers to.
+    } else {
+        *opcode.register = cpu.flag_struct.rA;
+    }
+    return instruction_ptr + 1;
+}
+
+int LoadAC(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rA = mem_map.get(0xFF00 + cpu.bc_struct.rC);
+    return instruction_ptr + 1;
+}
+
+int LoadCA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    mem_map.set(0xFF00 + cpu.bc_struct.rC, cpu.flag_struct.rA);
+    return instruction_ptr + 1;
+}
+
+int LoadDecAHL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rA = mem_map.get(cpu.rHL);
+    cpu.rHL--;
+    return instruction_ptr + 1;
+}
+
+int LoadDecHLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    mem_map.set(cpu.rHL, cpu.flag_struct.rA);
+    cpu.rHL--;
+    return instruction_ptr + 1;
+}
+
+int LoadIncAHL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rA = mem_map.get(cpu.rHL);
+    cpu.rHL++;
+    return instruction_ptr + 1;
+}
+
+int LoadIncHLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    mem_map.set(cpu.rHL, cpu.flag_struct.rA);
+    cpu.rHL++;
+    return instruction_ptr + 1;
+}
+
+int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    mem_map.set(0xFF00 + GetParameterValue(rom, instruction_ptr, opcode.opcode_name), cpu.flag_struct.rA);
+    return instruction_ptr + 2;
+}
+
+int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rA = mem_map.get(0xFF00 + GetParameterValue(rom, instruction_ptr, opcode.opcode_name));
+    return instruction_ptr + 2;
 }
 
 } // namespace handlers
