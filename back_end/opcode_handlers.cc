@@ -1,7 +1,10 @@
 #include "back_end/opcode_handlers.h"
+#include "back_end/opcodes.h"
 
 namespace back_end {
 namespace handlers {
+
+using back_end::opcodes::Opcode;
 
 unsigned char* registers = { cpu.rB, cpu.rC, cpu.rD, cpu.rE, cpu.rH, cpu.rL, cpu.rHL, cpu.rA };
 unsigned char* shortRegs = { cpu.rBC, cpu.rDE, cpu.rHL, cpu.rSP, cpu.rAF };
