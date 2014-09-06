@@ -67,8 +67,8 @@ int Res(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int Jump(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int JumpHL(unsigned char* rom, int instruction_ptr, Opcode, opcode);
-int JumpReturn(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
 } // namespace back_end
 } // namespace handlers
