@@ -1,3 +1,6 @@
+#ifndef TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
+#define TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
+
 struct GB_CPU {
 	union {
 		struct {
@@ -40,3 +43,4 @@ struct GB_CPU {
 	unsigned short rPC;
 	unsigned short rSP;	
 };
+#endif
