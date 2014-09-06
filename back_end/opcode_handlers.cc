@@ -376,5 +376,105 @@ int EI(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 1;
 }
 
+int RLCA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7);
+    cpu.flag_struct.rA = cpu.flag_struct.rA << 1;
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(cpu.flag_struct.rA);
+    return instruction_ptr + 1;
+}
+
+int RLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7);
+    cpu.flag_struct.rA = cpu.flag_struct.rA << 1;
+    cpu.flag_struct.rA |= cpu.flag_struct.rF.C;
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(cpu.flag_struct.rA);
+    return instruction_ptr + 1;
+}
+
+int RRCA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 0);
+    cpu.flag_struct.rA = cpu.flag_struct.rA >> 1;
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(cpu.flag_struct.rA);
+    return instruction_ptr + 1;
+}
+
+int RRA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 0);
+    cpu.flag_struct.rA = cpu.flag_struct.rA >> 1;
+    cpu.flag_struct.rA |= (((char) cpu.flag_struct.rF.C) << 7);
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(cpu.flag_struct.rA);
+    return instruction_ptr + 1;
+}
+
+int RLC(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    cpu.flag_struct.rF.C = NthBit(*reg, 7);
+    *reg = *reg << 1;
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(*reg);
+    return instruction_ptr + 2;
+}
+
+int RL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    cpu.flag_struct.rF.C = NthBit(*reg, 7);
+    *reg = *reg << 1;
+    *reg |= cpu.flag_struct.rF.C;
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(*reg);
+    return instruction_ptr + 2;
+}
+
+int RRC(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    cpu.flag_struct.rF.C = NthBit(*reg, 0);
+    *reg = *reg >> 1;
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(*reg);
+    return instruction_ptr + 2;
+}
+
+int RR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    cpu.flag_struct.rF.C = NthBit(*reg, 0);
+    *reg = *reg >> 1;
+    *reg |= (((char) cpu.flag_struct.rF.C) << 7);
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(*reg);
+    return instruction_ptr + 2;
+}
+
+int SLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    return RLC(rom, instruction_ptr, opcode);
+}
+
+int SRA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    cpu.flag_struct.rF.C = NthBit(*reg, 0);
+    char msb = NthBit(*reg, 7) << 7;
+    *reg = *reg >> 1;
+    *reg |= msb;
+    cpu.flag_struct.rF.H = 0;
+    SetNFlag(false);
+    SetZFlag(*reg);
+    return instruction_ptr + 2;
+}
+
+int SRL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    return RRC(rom, instruction_ptr, opcode);
+}
+
 } // namespace handlers
 } // namespace back_end

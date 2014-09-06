@@ -45,6 +45,20 @@ int Stop(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int DI(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int EI(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
+// Rotates & Shifts
+int RLCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int RLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int RRCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int RRA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int RLC(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int RL(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int RRC(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int RR(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int SLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int SRA(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int SRL(unsigned char* rom, int instruction_ptr, Opcode opcode);
+
+
 } // namespace back_end
 } // namespace handlers
 
