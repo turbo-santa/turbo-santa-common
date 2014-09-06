@@ -683,5 +683,45 @@ int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr;
 }
 
+int Return(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned short address = cpu.rSP[0];
+    cpu.rSP -= 2;
+    instruction_ptr = address;
+    return instruction_ptr;
+}
+
+int ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    switch (opcode.opcode_name) {
+        case 0xC0:
+            if (!cpu.flag_struct.rF.Z) {
+                return Return(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xC8:
+            if (cpu.flag_struct.rF.Z) {
+                return Return(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xD0:
+            if (!cpu.flag_struct.rF.C) {
+                return Return(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xD8:
+            if (cpu.flag_struct.rF.C) {
+                return Return(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+    }
+}
+
+int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned short address = cpu.rSP[0];
+    cpu.rSP -= 2;
+    instruction_ptr = address;
+    EI(rom, instruction_ptr, opcode);
+    return instruction_ptr;
+}
+
 } // namespace handlers
 } // namespace back_end

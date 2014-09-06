@@ -77,6 +77,10 @@ int CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
 // Restart
 int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
+// Returns
+int Return(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
 } // namespace back_end
 } // namespace handlers
