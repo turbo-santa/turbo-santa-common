@@ -61,8 +61,14 @@ int SRL(unsigned char* rom, int instruction_ptr, Opcode opcode);
 // Bit operators
 int Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int Set(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Res(unsigned char* rom, int instruction_ptr, Opcode opcodes);
+int Res(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
+// Jumps
+int Jump(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int JumpHL(unsigned char* rom, int instruction_ptr, Opcode, opcode);
+int JumpReturn(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int JumpReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
 } // namespace back_end
 } // namespace handlers

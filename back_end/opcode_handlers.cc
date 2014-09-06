@@ -42,6 +42,15 @@ unsigned short GetParameterValue16(unsigned char* rom, int instruction_ptr) {
    return (((short)rom[instruction_ptr + 1]) << 8) | (short)rom[instruction_ptr + 2];
 }
 
+unsigned short GetAddress16(unsigned char* rom, int instruction_ptr) {
+    unsigned char upper = GetParameterValue(rom, instruction_ptr + 1);
+    unsigned char lower = GetParameterValue(rom, instruction_ptr);
+    unsigned short address = upper;
+    address = address << 8;
+    address |= lower;
+    return address;
+}
+
 void SetZFlag(unsigned char register_value) {
     cpu.flag_struct.rF.Z = register_value == 0;
 }
@@ -554,5 +563,69 @@ int Res(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 }
 
 
+int Jump(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    instruction_ptr = GetAddress16(rom, instruction_ptr);
+    return instruction_ptr;
+}
+
+int JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    switch (opcode.opcode_name) {
+        case 0xC2:
+            if (!cpu.flag_struct.rF.Z) {
+                return Jump(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xCA:
+            if (cpu.flag_struct.rF.Z) {
+                return Jump(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xD2:
+            if (!cpu.flag_struct.rF.C) {
+                return Jump(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0xDA:
+            if (cpu.flag_struct.rF.C) {
+                return Jump(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+    }
+}
+
+int JumpHL(unsigned char* rom, int instruction_ptr, Opcode, opcode) {
+    instruction_ptr = cpu.rHL;
+    return instruction_ptr;
+}
+
+int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    instruction_ptr += GetParameterValue(rom, instruction_ptr);
+    return instruction_ptr;
+}
+
+
+int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+    switch (opcode.opcode_name) {
+        case 0x20:
+            if (!cpu.flag_struct.rF.Z) {
+                return JumpRelative(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0x28:
+            if (cpu.flag_struct.rF.Z) {
+                return JumpRelative(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0x30:
+            if (!cpu.flag_struct.rF.C) {
+                return JumpRelative(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+        case 0x38:
+            if (cpu.flag_struct.rF.C) {
+                return JumpRelative(rom, instruction_ptr, opcode);
+            }
+            return instruction_ptr + 1;
+    }
 } // namespace handlers
 } // namespace back_end
