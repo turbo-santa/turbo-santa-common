@@ -99,6 +99,14 @@ int LoadIncHLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
+// 16-Bit Loads
+int LoadNN(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadSPHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Push(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Pop(unsigned char* rom, int instruction_ptr, Opcode opcode);
+
 } // namespace back_end
 } // namespace handlers
 

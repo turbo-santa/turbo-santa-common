@@ -812,5 +812,40 @@ int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 2;
 }
 
+int LoadNN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    *opcode.register = GetParameterValue16(rom, instruction_ptr, opcode.opcode_name);
+    return instruction_ptr + 3;
+}
+
+int LoadSPHL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.rSP = cpu.rHL;
+    return instruction_ptr + 1;
+}
+
+int LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.rHL = cpu.rSP + (signed) GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
+    cpu.flag_struct.rF.Z = 0;
+    SetNFlag(false);
+
+    return instruction_ptr + 2;
+}
+
+int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    mem_map.set(GetParameterValue(rom, instruction_ptr, opcode.opcode_name), cpu.rSP);
+    return instruction_ptr + 2;
+}
+
+int Push(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    mem_map.set(cpu.rSP, *opcode.register);
+    cpu.rSP -= 2;
+    return instruction_ptr + 1;
+}
+
+int Pop(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    *opcode.register = (((short)mem_map.get(cpu.rSP)) << 8) | mem_map.get(cpu.rSP + 1); 
+    cpu.rSP += 2;
+    return instruction_ptr + 1;
+}
+
 } // namespace handlers
 } // namespace back_end
