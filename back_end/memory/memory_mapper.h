@@ -2,6 +2,7 @@
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_MAPPER_H_
 
 #include "back_end/memory/rom_bank.h"
+#include "back_end/memory/memory_segment.h"
 
 namespace back_end {
 namespace memory {
