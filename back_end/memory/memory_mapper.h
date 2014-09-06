@@ -7,6 +7,11 @@ namespace back_end {
 namespace memory {
 class MemoryMapper {
     public:
+
+        unsigned char* get_rom_pointer() {
+            return rom_bank_0_.get_rom_pointer();
+        }
+
         void set(unsigned short location, unsigned char value) {
             if (0 <= location && location <= 0x3fff) {
                 rom_bank_0_.set(location, value);

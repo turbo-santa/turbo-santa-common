@@ -13,7 +13,7 @@ class MemoryBank {
 
         virtual void set(unsigned short address, unsigned char value) = 0;
 
-        static const unsigned int kBankSize = 4000;
+        static const int kBankSize = 4000;
 };
 
 class ROMBankN : public MemoryBank {
@@ -22,6 +22,12 @@ class ROMBankN : public MemoryBank {
 
         virtual unsigned char get(unsigned short address) {
             return raw_memory_.get()[address];
+        }
+
+        virtual void CopyTo(unsigned char* raw_memory) {
+            for (int i = 0; i < kBankSize; i++) {
+                raw_memory[i] = raw_memory_.get()[i];
+            }
         }
 
         virtual void set(unsigned short, unsigned char) {
@@ -93,12 +99,32 @@ class RAMBankManager : public BankManager {
         static const int kNumberOfRAMBanks = 4;
 };
 
-class ROMBank0 : public ROMBankN {
+class ROMBank0 : public MemoryBank {
     public:
-        ROMBank0(unsigned char* raw_memory) : ROMBankN(raw_memory) {}
-};
+        ROMBank0(unsigned char* raw_memory) {
+            for (int i = 0; i < kBankSize; i++) {
+                rom_[i] = raw_memory[i];
+            }
+        }
 
-class RAMBank0 : public RAMBankN {
+        virtual void RemapROMBankN(ROMBankN* rom_bank_n) {
+            rom_bank_n->CopyTo(rom_ + kBankSize);
+        }
+
+        virtual unsigned char get(unsigned short address) {
+            return rom_[address];
+        }
+
+        virtual void set(unsigned short address, unsigned char value) {
+            rom_[address] = value;
+        }
+
+        virtual unsigned char* get_rom_pointer() {
+            return rom_;
+        }
+
+    private:
+        unsigned char rom_[kBankSize * 2];
 };
 
 } // namespace memory
