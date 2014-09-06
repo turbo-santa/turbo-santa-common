@@ -58,6 +58,11 @@ int SLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int SRA(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int SRL(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
+// Bit operators
+int Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Set(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Res(unsigned char* rom, int instruction_ptr, Opcode opcodes);
+
 
 } // namespace back_end
 } // namespace handlers
