@@ -5,6 +5,7 @@ struct GB_CPU {
 	union {
 		struct {
 			unsigned char rA;
+			// flags register
 			struct rF {
 				unsigned int Z : 1;
 				unsigned int N : 1;
@@ -43,4 +44,5 @@ struct GB_CPU {
 	unsigned short rPC;
 	unsigned short rSP;	
 };
+GB_CPU cpu;
 #endif

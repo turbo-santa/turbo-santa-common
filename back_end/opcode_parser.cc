@@ -4,7 +4,7 @@
 class OpcodeParser {
     int instruction_ptr_;
     char* rom_;
-    GB_CPU cpu_;
+    
   public: 
     OpcodeParser(char* rom);
     void ReadInstruction();

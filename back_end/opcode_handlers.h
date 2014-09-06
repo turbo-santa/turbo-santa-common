@@ -5,15 +5,11 @@
 namespace back_end {
 namespace handlers {
 
-struct ALU8BitRegisterRegister {
-    unsigned char opcode;
-    unsigned char target_register;
-    unsigned char source_register;
-};
+int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
-int Add8Bit(unsigned char* rom, GB_CPU cpu, int instruction_ptr, int opcode_length);
+int Add8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
-int Dec8Bit(unsigned char* rom, int instruction_ptr, int opcode_length);
+int Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
 } // namespace back_end
 } // namespace handlers
