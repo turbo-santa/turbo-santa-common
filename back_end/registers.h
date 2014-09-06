@@ -2,8 +2,8 @@
 #define TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
 
 struct GB_CPU {
-	union {
-		struct {
+	union flag_union {
+		struct flag_struct {
 			unsigned char rA;
 			// flags register
 			struct rF {
@@ -17,24 +17,24 @@ struct GB_CPU {
 		unsigned short rAF;
 	};
 
-	union {
-		struct {
+	union bc_union {
+		struct bc_struct {
 			unsigned char rB;
 			unsigned char rC;
 		};
 		unsigned short rBC;
 	};
 
-	union {
-		struct {
+	union de_union {
+		struct de_struct {
 			unsigned char rD;
 			unsigned char rE;
 		};
 		unsigned short rDE;
 	};
 
-	union {
-		struct {
+	union hl_union {
+		struct hl_struct {
 			unsigned char rH;
 			unsigned char rL;
 		};
