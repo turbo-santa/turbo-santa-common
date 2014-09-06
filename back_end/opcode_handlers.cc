@@ -54,6 +54,60 @@ unsigned char NthBit(unsigned int byte, int n) {
     return (byte >> n) & 1;
 }
 
+// TODO(Brendan): These opcodes are not in the same order as with ALU operations.
+// 8-bit loads. Consider using opcodes::Opcode to address this.
+int Ld8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    *reg = GetRegisterValue(rom, instruction_ptr + 1, opcode.opcode_name);
+    return instruction_ptr + 2;
+}
+
+int Ld8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    *reg = GetParameterValue(rom, instruction_ptr);
+    return instruction_ptr + 2;
+}
+
+int LoadToA8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rA = GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
+    return instruction_ptr + 1;
+}
+
+int LoadToA8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+    cpu.flag_struct.rA = GetParameterValue(rom, instruction_ptr);
+    return instruction_ptr + 2;
+}
+
+// See comment below about loading to an immediate.
+int LoadToA16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    cpu.flag_struct.rA = GetRegisterValue16(rom, instruction_ptr, opcode.opcode_name);
+    return instruction_ptr + 1;
+}
+
+int LoadToA16BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+    cpu.flag_struct.rA = GetParameterValue16(rom, instruction_ptr);
+    return instruction_ptr + 3;
+}
+
+int LoadFromA8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    *reg = GetRegisterValue(rom, instruction_ptr + 1, opcode.opcode_name);
+    return instruction_ptr + 2;
+}
+
+int LoadFromA16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    *reg = GetRegisterValue(rom, instruction_ptr + 1, opcode.opcode_name);
+    return instruction_ptr + 2;
+}
+
+// TODO(Brendan): I am pretty sure I am missing something here. It does not
+// make any sense to load a value from A to an immediate.
+int LoadImediateFromA16Bit(unsigned char*, int, Opcode) {
+    return -1;
+}
+
+// ALU.
 bool DoesOverflow(unsigned int left, unsigned int right, int bit) {
     if (NthBit(left, bit) && NthBit(right, bit)) {
         return true;
