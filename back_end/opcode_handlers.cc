@@ -6,8 +6,9 @@ namespace handlers {
 
 using back_end::opcodes::Opcode;
 
-unsigned char* registers = { cpu.rB, cpu.rC, cpu.rD, cpu.rE, cpu.rH, cpu.rL, cpu.rHL, cpu.rA };
-unsigned short* shortRegs = { cpu.rBC, cpu.rDE, cpu.rHL, cpu.rSP, cpu.rAF };
+unsigned char registers[] = { cpu.bc_struct.rB, cpu.bc_struct.rC, cpu.de_struct.rD,
+    cpu.de_struct.rE, cpu.hl_struct.rH, cpu.hl_struct.rL, (unsigned char)cpu.rHL, cpu.flag_struct.rA };
+unsigned short shortRegs[] = { cpu.rBC, cpu.rDE, cpu.rHL, cpu.rSP, cpu.rAF };
 
 unsigned char* GetRegister(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
     unsigned char opcode = rom[instruction_ptr];
@@ -15,7 +16,7 @@ unsigned char* GetRegister(unsigned char* rom, int instruction_ptr, unsigned cha
     return registers + register_index;
 }
 
-unsigned short* GetRegister16(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
+unsigned short* GetRegister16(unsigned char* rom, int instruction_ptr, unsigned char) {
 	unsigned char opcode = rom[instruction_ptr];
 	unsigned char register_index = (opcode >> 4);
 	return shortRegs + register_index;
@@ -27,7 +28,7 @@ unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned
     return registers[register_index];
 }
 
-unsigned short GetRegisterValue16(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
+unsigned short GetRegisterValue16(unsigned char* rom, int instruction_ptr, unsigned char) {
 	unsigned char opcode = rom[instruction_ptr];
 	unsigned char register_index = (opcode >> 4);
 	return shortRegs[register_index];
@@ -42,11 +43,11 @@ unsigned short GetParameterValue16(unsigned char* rom, int instruction_ptr) {
 }
 
 void SetZFlag(unsigned char register_value) {
-    cpu.rF.Z = register_value == 0;
+    cpu.flag_struct.rF.Z = register_value == 0;
 }
 
 void SetNFlag(bool performed_subtraction) {
-    cpu.rF.N = performed_subtraction;
+    cpu.flag_struct.rF.N = performed_subtraction;
 }
 
 unsigned char NthBit(unsigned int byte, int n) {
@@ -104,132 +105,133 @@ bool DoesCarry16(unsigned int left, unsigned int right) {
 	return DoesOverflow(left, right, 15);
 }
 
+void Add8BitImpl(unsigned char value) {
+	cpu.flag_struct.rF.C = DoesCarry8(cpu.flag_struct.rA, value);
+	cpu.flag_struct.rF.H = DoesHalfCarry8(cpu.flag_struct.rA, value);
+	cpu.flag_struct.rA += value;
+	SetZFlag(cpu.flag_struct.rA);
+	SetNFlag(false);
+}
+
 int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	Add8Bit(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+	Add8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
 	return instruction_ptr + 1;
 }
 
-int Add8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	Add8Bit(GetParameterValue(rom, instruction_ptr));
+int Add8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+	Add8BitImpl(GetParameterValue(rom, instruction_ptr));
 	return instruction_ptr + 2;
 }
 
-void Add8Bit(unsigned char value) {
-	cpu.rF.C = DoesCarry8(cpu.rA, value);
-	cpu.rF.H = DoesHalfCarry8(cpu.rA, value);
-	cpu.rA += value;
-	SetZFlag(cpu.rA);
+void ADC8BitImpl(unsigned char value) {
+  // TODO(Diego): Remove unused variable.
+	char carry = cpu.flag_struct.rF.C;
+	cpu.flag_struct.rF.C = DoesCarry8(cpu.flag_struct.rA, value);
+	cpu.flag_struct.rF.H = DoesHalfCarry8(cpu.flag_struct.rA, value);
+	cpu.flag_struct.rA += value;
+	cpu.flag_struct.rF.C |= DoesCarry8(cpu.flag_struct.rA, value);
+	cpu.flag_struct.rF.H |= DoesHalfCarry8(cpu.flag_struct.rA, value);
+	SetZFlag(cpu.flag_struct.rA);
 	SetNFlag(false);
 }
 
 int ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	ADC8Bit(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+	ADC8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
 	return instruction_ptr + 1;
 }
 
-int ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	ADC8Bit(GetParameterValue(rom, instruction_ptr));
+int ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+	ADC8BitImpl(GetParameterValue(rom, instruction_ptr));
 	return instruction_ptr + 2;
 }
 
-void ADC8Bit(unsigned char value) {
-	char carry = cpu.rF.C;
-	cpu.rF.C = DoesCarry8(cpu.rA, value);
-	cpu.rF.H = DoesHalfCarry8(cpu.rA, value);
-	cpu.rA += value;
-	cpu.rF.C |= DoesCarry8(cpu.rA, value);
-	cpu.rF.H |= DoesHalfCarry8(cpu.rA, value);
-	SetZFlag(cpu.rA);
-	SetNFlag(false);
-}
-
-int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	Sub8Bit(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
-	return instruction_ptr + 1;
-}
-
-int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-	Sub8Bit(GetParameterValue(rom, instruction_ptr));
-	return instruction_ptr + 2;
-}
-
-void Sub8Bit(unsigned char value) {
-	cpu.rF.C = !DoesBorrow8(cpu.rA, value);
-	cpu.rF.H = !DoesHalfBorrow8(cpu.rA, value);
-	cpu.rA -= value;
-	SetZFlag(cpu.rA);
+void Sub8BitImpl(unsigned char value) {
+	cpu.flag_struct.rF.C = !DoesBorrow8(cpu.flag_struct.rA, value);
+	cpu.flag_struct.rF.H = !DoesHalfBorrow8(cpu.flag_struct.rA, value);
+	cpu.flag_struct.rA -= value;
+	SetZFlag(cpu.flag_struct.rA);
 	SetNFlag(true);
 }
 
+int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+	Sub8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+	return instruction_ptr + 1;
+}
+
+int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+	Sub8BitImpl(GetParameterValue(rom, instruction_ptr));
+	return instruction_ptr + 2;
+}
+
 int And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.rA &= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
-    SetZFlag(cpu.rA);
+    cpu.flag_struct.rA &= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
+    SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
-    cpu.rF.H = 0;
-    cpu.rF.C = 0;
+    cpu.flag_struct.rF.H = 0;
+    cpu.flag_struct.rF.C = 0;
     return instruction_ptr + 1;
 }
 
-int And8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.rA &= GetParameterValue(rom, instruction_ptr);
-    SetZFlag(cpu.rA);
+int And8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+    cpu.flag_struct.rA &= GetParameterValue(rom, instruction_ptr);
+    SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
-    cpu.rF.H = 0;
-    cpu.rF.C = 0;
+    cpu.flag_struct.rF.H = 0;
+    cpu.flag_struct.rF.C = 0;
     return instruction_ptr + 1;
 }
 
 int Or8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.rA |= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
-    SetZFlag(cpu.rA);
+    cpu.flag_struct.rA |= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
+    SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
-    cpu.rF.H = 0;
-    cpu.rF.C = 0;
+    cpu.flag_struct.rF.H = 0;
+    cpu.flag_struct.rF.C = 0;
     return instruction_ptr + 1;
 }
 
-int Or8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.rA |= GetParameterValue(rom, instruction_ptr);
-    SetZFlag(cpu.rA);
+int Or8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+    cpu.flag_struct.rA |= GetParameterValue(rom, instruction_ptr);
+    SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
-    cpu.rF.H = 0;
-    cpu.rF.C = 0;
+    cpu.flag_struct.rF.H = 0;
+    cpu.flag_struct.rF.C = 0;
     return instruction_ptr + 1;
 }
 
 int Xor8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.rA ^= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
-    SetZFlag(cpu.rA);
+    cpu.flag_struct.rA ^= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
+    SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
-    cpu.rF.H = 0;
-    cpu.rF.C = 0;
+    cpu.flag_struct.rF.H = 0;
+    cpu.flag_struct.rF.C = 0;
     return instruction_ptr + 1;
 }
 
-int Xor8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.rA ^= GetParameterValue(rom, instruction_ptr);
-    SetZFlag(cpu.rA);
+int Xor8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+    cpu.flag_struct.rA ^= GetParameterValue(rom, instruction_ptr);
+    SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
-    cpu.rF.H = 0;
-    cpu.rF.C = 0;
+    cpu.flag_struct.rF.H = 0;
+    cpu.flag_struct.rF.C = 0;
     return instruction_ptr + 1;
 }
 
 int Cp8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned char result = cpu.rA - GetRegisterValue(rom, instruction_ptr, opcode);
+    unsigned char result = cpu.flag_struct.rA - GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
     SetZFlag(result);
     SetNFlag(true); // Performed subtraction.
-    cpu.rF.H = NthBit(cpu.rA, 4) != NthBit(result, 4);
-    cpu.rF.C = NthBit(cpu.rA, 7) != NthBit(result, 7);
+    cpu.flag_struct.rF.H = NthBit(cpu.flag_struct.rA, 4) != NthBit(result, 4);
+    cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7) != NthBit(result, 7);
     return instruction_ptr + 1;
 }
 
-int Cp8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned char result = cpu.rA - GetParameterValue(rom, instruction_ptr);
+int Cp8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+    unsigned char result = cpu.flag_struct.rA - GetParameterValue(rom, instruction_ptr);
     SetZFlag(result);
     SetNFlag(true); // Performed subtraction.
-    cpu.rF.H = NthBit(cpu.rA, 4) != NthBit(result, 4);
-    cpu.rF.C = NthBit(cpu.rA, 7) != NthBit(result, 7);
+    cpu.flag_struct.rF.H = NthBit(cpu.flag_struct.rA, 4) != NthBit(result, 4);
+    cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7) != NthBit(result, 7);
     return instruction_ptr + 1;
 }
 
@@ -238,9 +240,9 @@ int Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char forth_bit = NthBit(*reg, 3);
     ++(*reg);
     bool borrowed_h = forth_bit != NthBit(*reg, 3);
-    SetZFlag(*reg)
+    SetZFlag(*reg);
     SetNFlag(false);
-    cpu.rF.H = borrowed_h;
+    cpu.flag_struct.rF.H = borrowed_h;
     return instruction_ptr + 1;
 }
 
@@ -248,30 +250,30 @@ int Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     unsigned char fourth_bit = NthBit(*reg, 4);
     --(*reg);
-    bool borrowed_h = forth_bit != NthBit(*reg, 4);
+    bool borrowed_h = fourth_bit != NthBit(*reg, 4);
     SetZFlag(*reg);
     SetNFlag(true);
-    cpu.rF.H = borrowed_h;
+    cpu.flag_struct.rF.H = borrowed_h;
     return instruction_ptr + 1;
 }
 
 int Add16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 	short value = GetRegisterValue16(rom, instruction_ptr, opcode.opcode_name);
-	cpu.rF.H = DoesHalfCarry16(cpu.rA, value);
-	cpu.rF.C = DoesCarry16(cpu.rA, value);
+	cpu.flag_struct.rF.H = DoesHalfCarry16(cpu.flag_struct.rA, value);
+	cpu.flag_struct.rF.C = DoesCarry16(cpu.flag_struct.rA, value);
 	cpu.rHL += value;
 	SetNFlag(false);
 	return instruction_ptr + 1;
 }
 
-int AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
 	unsigned char value = GetParameterValue(rom, instruction_ptr);
 	if (NthBit(value, 7)) {
-		cpu.rF.H = DoesHalfBorrow16(cpu.rSP, value);
-		cpu.rF.C = DoesBorrow16(cpu.rSP, value);
+		cpu.flag_struct.rF.H = DoesHalfBorrow16(cpu.rSP, value);
+		cpu.flag_struct.rF.C = DoesBorrow16(cpu.rSP, value);
 	} else {
-		cpu.rF.H = DoesHalfCarry16(cpu.rSP, value);
-		cpu.rF.C = DoesCarry16(cpu.rSP, value);
+		cpu.flag_struct.rF.H = DoesHalfCarry16(cpu.rSP, value);
+		cpu.flag_struct.rF.C = DoesCarry16(cpu.rSP, value);
 	}
 	SetNFlag(false);
 	SetZFlag(false);
