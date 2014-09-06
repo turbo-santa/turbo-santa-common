@@ -1,6 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
-#include "registers.h"
+#include "back_end/registers.h"
 
 namespace back_end {
 namespace handlers {
