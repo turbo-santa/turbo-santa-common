@@ -660,5 +660,28 @@ int CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     }
 }
 
+int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char accum = 0;
+    switch (opcode.opcode_name) {
+        case 0xFF:
+            accum += 0x08;
+        case 0xF7:
+            accum += 0x08;
+        case 0xEF:
+            accum += 0x08;
+        case 0xE7:
+            accum += 0x08;
+        case 0xDF:
+            accum += 0x08;
+        case 0xD7:
+            accum += 0x08;
+        case 0xCF:
+            accum += 0x08;
+        case 0xC7:
+            instruction_ptr = accum;
+    }
+    return instruction_ptr;
+}
+
 } // namespace handlers
 } // namespace back_end

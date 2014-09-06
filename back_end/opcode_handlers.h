@@ -74,6 +74,9 @@ int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opco
 int Call(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
+// Restart
+int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode);
+
 
 } // namespace back_end
 } // namespace handlers
