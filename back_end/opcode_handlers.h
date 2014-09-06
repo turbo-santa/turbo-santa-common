@@ -4,7 +4,7 @@
 namespace back_end {
 namespace handlers {
 
-int Add8Bit(int instruction_ptr, int opcode_length);
+int Add8Bit(unsigned char* rom, int instruction_ptr, int opcode_length);
 
 } // namespace back_end
 } // namespace handlers
