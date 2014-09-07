@@ -69,7 +69,7 @@ int Res(unsigned char* rom, int instruction_ptr, Opcode opcode);
 // Jumps
 int Jump(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpHL(unsigned char* rom, int instruction_ptr, Opcode, opcode);
+int JumpHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
 
