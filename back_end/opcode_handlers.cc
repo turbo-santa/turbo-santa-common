@@ -690,7 +690,7 @@ int Restart(unsigned char*, int instruction_ptr, Opcode opcode) {
 }
 
 int Return(unsigned char*, int instruction_ptr, Opcode) {
-    unsigned short address; // = cpu.rSP[0];
+    unsigned short address = 0; // = cpu.rSP[0];
     cpu.rSP -= 2;
     instruction_ptr = address;
     return instruction_ptr;
@@ -717,13 +717,13 @@ int ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
             if (cpu.flag_struct.rF.C) {
                 return Return(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
     }
+    return instruction_ptr + 1;
 }
 
 int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     // TODO(Brendan, Diego): Implement call stack.
-    unsigned short address; // = cpu.rSP[0];
+    unsigned short address = 0; // = cpu.rSP[0];
     cpu.rSP -= 2;
     instruction_ptr = address;
     EI(rom, instruction_ptr, opcode);
@@ -772,46 +772,46 @@ int LoadNA(unsigned char*, int instruction_ptr, Opcode opcode) {
 }
 
 int LoadAC(unsigned char*, int instruction_ptr, Opcode) {
-    cpu.flag_struct.rA = mem_map.get(0xFF00 + cpu.bc_struct.rC);
+    cpu.flag_struct.rA = mem_map->get(0xFF00 + cpu.bc_struct.rC);
     return instruction_ptr + 1;
 }
 
 int LoadCA(unsigned char*, int instruction_ptr, Opcode) {
-    mem_map.set(0xFF00 + cpu.bc_struct.rC, cpu.flag_struct.rA);
+    mem_map->set(0xFF00 + cpu.bc_struct.rC, cpu.flag_struct.rA);
     return instruction_ptr + 1;
 }
 
 int LoadDecAHL(unsigned char*, int instruction_ptr, Opcode) {
-    cpu.flag_struct.rA = mem_map.get(cpu.rHL);
+    cpu.flag_struct.rA = mem_map->get(cpu.rHL);
     cpu.rHL--;
     return instruction_ptr + 1;
 }
 
 int LoadDecHLA(unsigned char*, int instruction_ptr, Opcode) {
-    mem_map.set(cpu.rHL, cpu.flag_struct.rA);
+    mem_map->set(cpu.rHL, cpu.flag_struct.rA);
     cpu.rHL--;
     return instruction_ptr + 1;
 }
 
 int LoadIncAHL(unsigned char*, int instruction_ptr, Opcode) {
-    cpu.flag_struct.rA = mem_map.get(cpu.rHL);
+    cpu.flag_struct.rA = mem_map->get(cpu.rHL);
     cpu.rHL++;
     return instruction_ptr + 1;
 }
 
 int LoadIncHLA(unsigned char*, int instruction_ptr, Opcode) {
-    mem_map.set(cpu.rHL, cpu.flag_struct.rA);
+    mem_map->set(cpu.rHL, cpu.flag_struct.rA);
     cpu.rHL++;
     return instruction_ptr + 1;
 }
 
 int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode) {
-    mem_map.set(0xFF00 + GetParameterValue(rom, instruction_ptr), cpu.flag_struct.rA);
+    mem_map->set(0xFF00 + GetParameterValue(rom, instruction_ptr), cpu.flag_struct.rA);
     return instruction_ptr + 2;
 }
 
 int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode) {
-    cpu.flag_struct.rA = mem_map.get(0xFF00 + GetParameterValue(rom, instruction_ptr));
+    cpu.flag_struct.rA = mem_map->get(0xFF00 + GetParameterValue(rom, instruction_ptr));
     return instruction_ptr + 2;
 }
 
@@ -834,18 +834,18 @@ int LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode) {
 }
 
 int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode) {
-    mem_map.set(GetParameterValue(rom, instruction_ptr), cpu.rSP);
+    mem_map->set(GetParameterValue(rom, instruction_ptr), cpu.rSP);
     return instruction_ptr + 2;
 }
 
 int Push(unsigned char*, int instruction_ptr, Opcode opcode) {
-    mem_map.set(cpu.rSP, *opcode.reg1);
+    mem_map->set(cpu.rSP, *opcode.reg1);
     cpu.rSP -= 2;
     return instruction_ptr + 1;
 }
 
 int Pop(unsigned char*, int instruction_ptr, Opcode opcode) {
-    *opcode.reg1 = (((short)mem_map.get(cpu.rSP)) << 8) | mem_map.get(cpu.rSP + 1); 
+    *opcode.reg1 = (((short)mem_map->get(cpu.rSP)) << 8) | mem_map->get(cpu.rSP + 1); 
     cpu.rSP += 2;
     return instruction_ptr + 1;
 }

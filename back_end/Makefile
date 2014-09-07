@@ -1,19 +1,25 @@
 include ../Makefile.inc
 CPPFLAGS= $(PROJFLAGS) -I ..
 
-DIRS= memory
 SOURCES= opcode_handlers.cc
 OBJS= $(SOURCES:.cc=.o)
+OBJLIBS= ../libbackend.a ../libmemory.a
 
-all: $(SOURCES) $(OBJS) $(DIRS)
+all: $(OBJLIBS)
 
-.PHONY:
-clean:
-	rm -rf $(OBJS)
+../libbackend.a: $(OBJS)
+	$(AR) rv ../libbackend.a $(OBJS)
+
+../libmemory.a: force_look
+	$(MAKE) -C memory
 
 opcode_handlers.o: opcode_handlers.cc opcode_handlers.h registers.h
 
-opcode_parser.o: opcode_parser.h registers.h opcodes.h
+clean:
+	rm -rf $(OBJS) $(OBJLIBS)
+	$(MAKE) -C memory clean
 
-memory:
-	$(MAKE) -C memory
+force_look:
+	true
+
+.PHONY: clean force_look

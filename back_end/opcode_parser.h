@@ -1,6 +1,10 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
 
+#include <memory>
+
+#include "back_end/memory/memory_mapper.h"
+#include "back_end/opcode_handlers.h"
 #include "back_end/opcodes.h"
 #include "back_end/opcode_map.h"
 #include "back_end/registers.h"
@@ -8,6 +12,8 @@
 namespace back_end {
 namespace opcode_parser {
 
+using std::unique_ptr;
+using memory::MemoryMapper;
 using opcodes::opcode_map;
 using opcodes::Opcode;
 
@@ -21,7 +27,8 @@ class OpcodeParser {
 };
 
 OpcodeParser::OpcodeParser(unsigned char* rom) {
-    rom_ = rom;
+    handlers::mem_map = unique_ptr<MemoryMapper>(new MemoryMapper(rom));
+    rom_ = handlers::mem_map->get_pointer();
 }
 
 void OpcodeParser::ReadInstruction() {

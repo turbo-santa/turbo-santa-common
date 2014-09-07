@@ -24,12 +24,13 @@ void MemoryMapper::set(unsigned short location, unsigned char value) {
     }
 }
 
-void MemoryMapper::get(unsigned short location, unsigned char value) {
+unsigned char MemoryMapper::get(unsigned short location) {
     for (ReadDispatcher dispatcher : read_dispatchers) {
         if (dispatcher.predicate(location)) {
             return dispatcher.action(location);
         }
     }
+    return 0;
 }
 
 } // namespace memory
