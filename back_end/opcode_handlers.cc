@@ -729,17 +729,17 @@ int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 
 int LoadN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char value = GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
-    *opcode.register = value;
+    *opcode.reg1 = value;
     return instruction_ptr + 2;
 }
 
 int LoadRR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     if (opcode.opcode_name == 0x36) {
         unsigned char value = GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
-        *opcode.register = value;
+        *opcode.reg1 = value;
         return instruction_ptr + 2;
     } else {
-        *opcode.register = *opcode.register2;
+        *opcode.reg1 = *opcode.reg2;
         return instruction_ptr + 1;
     }
 }
@@ -754,7 +754,7 @@ int LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
         return instruction_ptr + 2;
     }
 
-    cpu.flag_struct.rA = *opcode.register;
+    cpu.flag_struct.rA = *opcode.reg1;
     return instruction_ptr + 1;
 }
 
@@ -763,7 +763,7 @@ int LoadNA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     if (opcode.opcode_name == 0xEA) {
         // TODO: figure out what nn refers to.
     } else {
-        *opcode.register = cpu.flag_struct.rA;
+        *opcode.reg1 = cpu.flag_struct.rA;
     }
     return instruction_ptr + 1;
 }
@@ -813,7 +813,7 @@ int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 }
 
 int LoadNN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    *opcode.register = GetParameterValue16(rom, instruction_ptr, opcode.opcode_name);
+    *opcode.reg1 = GetParameterValue16(rom, instruction_ptr, opcode.opcode_name);
     return instruction_ptr + 3;
 }
 
@@ -836,13 +836,13 @@ int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 }
 
 int Push(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    mem_map.set(cpu.rSP, *opcode.register);
+    mem_map.set(cpu.rSP, *opcode.reg1);
     cpu.rSP -= 2;
     return instruction_ptr + 1;
 }
 
 int Pop(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    *opcode.register = (((short)mem_map.get(cpu.rSP)) << 8) | mem_map.get(cpu.rSP + 1); 
+    *opcode.reg1 = (((short)mem_map.get(cpu.rSP)) << 8) | mem_map.get(cpu.rSP + 1); 
     cpu.rSP += 2;
     return instruction_ptr + 1;
 }
