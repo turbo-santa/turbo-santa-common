@@ -1,3 +1,6 @@
+#ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
+#define TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
+
 #include "back_end/opcodes.h"
 #include "back_end/opcode_map.h"
 #include "registers.h"
@@ -29,3 +32,4 @@ void OpcodeParser::ReadInstruction() {
 
 } // namespace opcode_parser
 } // namespace back_end
+#endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
