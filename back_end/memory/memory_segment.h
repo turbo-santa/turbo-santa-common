@@ -16,6 +16,8 @@ class MemorySegment {
 
 class TransparentMemorySegment : public MemorySegment {
     public:
+        TransparentMemorySegment(unsigned char* raw_memory) : raw_memory_(raw_memory) {}
+
         virtual unsigned char get(unsigned short address) {
             return raw_memory_[address];
         }
@@ -64,6 +66,8 @@ WriteDispatcher CreateWriteDispatcher(unsigned short min, unsigned short max, Me
 
 class ReadOnlyMemorySegment : public TransparentMemorySegment {
     public:
+        ReadOnlyMemorySegment(unsigned char* raw_memory) : TransparentMemorySegment(raw_memory) {}
+
         virtual void set(unsigned short address, unsigned char value) {
             for (WriteDispatcher dispatcher : dispatchers_) {
                 if (dispatcher.predicate(address)) {
