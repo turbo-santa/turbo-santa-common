@@ -2,6 +2,7 @@
 #define TURBO_SANTA_COMMON_BACK_END_OPCODES_H_
 
 #include <functional>
+#include <map>
 #include <vector>
 
 namespace back_end {
@@ -49,16 +50,23 @@ std::vector<Opcode> ToList(Opcode opcode) {
     return {opcode};
 }
 
-// // TODO(Brendan, Diego): Use this function for creating handlers that share opcodes.
-// // The handler can differentiate on input from inpsecting the name of the opcode
-// // parameter.
-// std::vector<Opcode> CreateOpcodeList(std::vector<unsigned char> opcode_names, OpcodeHandler handler, int length) {
-//     std::vector<Opcode> return_list;
-//     for (unsigned char opcode_name : opcode_names) {
-//         return_list.push_back({opcode_name, length, handler});
-//     }
-//     return return_list;
-// }
+std::vector<Opcode> Flatten(std::vector<std::vector<Opcode>> to_flatten) {
+    std::vector<Opcode> flattened;
+    for (std::vector<Opcode> opcodes : to_flatten) {
+        for (Opcode opcode : opcodes) {
+            flattened.push_back(opcode);
+        }
+    }
+    return flattened;
+}
+
+std::map<unsigned char, Opcode> ToMap(std::vector<Opcode> opcode_list) {
+    std::map<unsigned char, Opcode> opcode_map;
+    for (Opcode opcode : opcode_list) {
+        opcode_map[opcode.opcode_name] = opcode;
+    }
+    return opcode_map;
+}
 
 } // namespace back_end
 } // namespace opcodes
