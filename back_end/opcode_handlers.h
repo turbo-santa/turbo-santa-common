@@ -1,6 +1,7 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
 
+#include "back_end/memory/memory_mapper.h"
 #include "back_end/opcodes.h"
 #include "back_end/registers.h"
 
@@ -8,9 +9,9 @@ namespace back_end {
 namespace handlers {
 
 using opcodes::Opcode;
-using back_end::memory::MemoryMapper;
+using memory::MemoryMapper;
 
-MemoryMapper mem_map;
+MemoryMapper mem_map(new unsigned char[5]);
 
 // 8 Bit ALU
 int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);

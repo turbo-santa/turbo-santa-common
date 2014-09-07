@@ -1,21 +1,31 @@
 #include "back_end/opcodes.h"
+#include "back_end/opcode_map.h"
 #include "registers.h"
+
+namespace back_end {
+namespace opcode_parser {
+
+using opcodes::opcode_map;
+using opcodes::Opcode;
 
 class OpcodeParser {
     int instruction_ptr_;
-    char* rom_;
+    unsigned char* rom_;
     
   public: 
-    OpcodeParser(char* rom);
+    OpcodeParser(unsigned char* rom);
     void ReadInstruction();
 };
 
-OpcodeParser::OpcodeParser(char* rom) {
+OpcodeParser::OpcodeParser(unsigned char* rom) {
     rom_ = rom;
 }
 
 void OpcodeParser::ReadInstruction() {
-    char opcode = rom_[instruction_ptr_];
-    back_end::opcodes::Opcode opcode_struct = opcode_map[opcode];
+    unsigned short opcode = rom_[instruction_ptr_];
+    Opcode opcode_struct = opcode_map[opcode];
     instruction_ptr_ = opcode_struct.handler(rom_, instruction_ptr_, opcode_struct);
 }
+
+} // namespace opcode_parser
+} // namespace back_end

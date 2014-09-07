@@ -371,7 +371,7 @@ int Swap(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 1;
 }
 
-int DAA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int DAA(unsigned char*, int instruction_ptr, Opcode) {
     unsigned char upper = cpu.flag_struct.rA >> 4;
     unsigned char lower = cpu.flag_struct.rA & 0x0F;
     unsigned char c = cpu.flag_struct.rF.C;
@@ -397,53 +397,53 @@ int DAA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 1;
 }
 
-int CPL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.flag_struct.rA ~= cpu.flag_struct.rA;
+int CPL(unsigned char*, int instruction_ptr, Opcode) {
+    cpu.flag_struct.rA = ~cpu.flag_struct.rA;
     cpu.flag_struct.rF.H = 1;
     SetNFlag(true);
     return instruction_ptr + 1;
 }
 
-int CCF(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.flag_struct.rA ~= cpu.flag_struct.rA;
-    cpu.flag_struct.rF.C != cpu.flag_struct.rF.C;
+int CCF(unsigned char*, int instruction_ptr, Opcode) {
+    cpu.flag_struct.rA = ~cpu.flag_struct.rA;
+    cpu.flag_struct.rF.C = !cpu.flag_struct.rF.C;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     return instruction_ptr + 1;
 }
 
-int SCF(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int SCF(unsigned char*, int instruction_ptr, Opcode) {
     cpu.flag_struct.rF.C = 1;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     return instruction_ptr + 1;
 }
 
-int NOP(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int NOP(unsigned char*, int instruction_ptr, Opcode) {
     return instruction_ptr + 1;
 }
 
-int Halt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int Halt(unsigned char*, int instruction_ptr, Opcode) {
     // TODO: We should actually halt instead of just nop
     return instruction_ptr + 1;
 }
 
-int Stop(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int Stop(unsigned char*, int instruction_ptr, Opcode) {
     // TODO: We should actually stop instead of just nop
     return instruction_ptr + 1;
 }
 
-int DI(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int DI(unsigned char*, int instruction_ptr, Opcode) {
     // TODO: Actually disable the interrupts
     return instruction_ptr + 1;
 }
 
-int EI(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int EI(unsigned char*, int instruction_ptr, Opcode) {
     // TODO: Actually enable the interrupts
     return instruction_ptr + 1;
 }
 
-int RLCA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int RLCA(unsigned char*, int instruction_ptr, Opcode) {
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7);
     cpu.flag_struct.rA = cpu.flag_struct.rA << 1;
     cpu.flag_struct.rF.H = 0;
@@ -452,7 +452,7 @@ int RLCA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 1;
 }
 
-int RLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int RLA(unsigned char*, int instruction_ptr, Opcode) {
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7);
     cpu.flag_struct.rA = cpu.flag_struct.rA << 1;
     cpu.flag_struct.rA |= cpu.flag_struct.rF.C;
@@ -462,7 +462,7 @@ int RLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 1;
 }
 
-int RRCA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int RRCA(unsigned char*, int instruction_ptr, Opcode) {
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 0);
     cpu.flag_struct.rA = cpu.flag_struct.rA >> 1;
     cpu.flag_struct.rF.H = 0;
@@ -471,7 +471,7 @@ int RRCA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 1;
 }
 
-int RRA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int RRA(unsigned char*, int instruction_ptr, Opcode) {
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 0);
     cpu.flag_struct.rA = cpu.flag_struct.rA >> 1;
     cpu.flag_struct.rA |= (((unsigned char) cpu.flag_struct.rF.C) << 7);
@@ -567,7 +567,7 @@ int Res(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 }
 
 
-int Jump(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int Jump(unsigned char* rom, int instruction_ptr, Opcode) {
     instruction_ptr = GetAddress16(rom, instruction_ptr);
     return instruction_ptr;
 }
@@ -595,19 +595,20 @@ int JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
             }
             return instruction_ptr + 1;
     }
+    return instruction_ptr + 1;
 }
 
-int JumpHL(unsigned char* rom, int instruction_ptr, Opcode, opcode) {
+int JumpHL(unsigned char*, int instruction_ptr, Opcode) {
     instruction_ptr = cpu.rHL;
     return instruction_ptr;
 }
 
-int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode) {
     instruction_ptr += GetParameterValue(rom, instruction_ptr);
     return instruction_ptr;
 }
 
-int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     switch (opcode.opcode_name) {
         case 0x20:
             if (!cpu.flag_struct.rF.Z) {
@@ -628,11 +629,11 @@ int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opco
             if (cpu.flag_struct.rF.C) {
                 return JumpRelative(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
     }
+    return instruction_ptr + 1;
 }
 
-int Call(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int Call(unsigned char* rom, int instruction_ptr, Opcode) {
     unsigned short address = GetAddress16(rom, instruction_ptr);
     cpu.rSP = instruction_ptr + 1;
     instruction_ptr = address;
@@ -662,9 +663,10 @@ int CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
             }
             return instruction_ptr + 1;
     }
+    return instruction_ptr + 1;
 }
 
-int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int Restart(unsigned char*, int instruction_ptr, Opcode opcode) {
     unsigned char accum = 0;
     switch (opcode.opcode_name) {
         case 0xFF:
@@ -687,8 +689,8 @@ int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr;
 }
 
-int Return(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned short address = cpu.rSP[0];
+int Return(unsigned char*, int instruction_ptr, Opcode) {
+    unsigned short address; // = cpu.rSP[0];
     cpu.rSP -= 2;
     instruction_ptr = address;
     return instruction_ptr;
@@ -720,7 +722,8 @@ int ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 }
 
 int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned short address = cpu.rSP[0];
+    // TODO(Brendan, Diego): Implement call stack.
+    unsigned short address; // = cpu.rSP[0];
     cpu.rSP -= 2;
     instruction_ptr = address;
     EI(rom, instruction_ptr, opcode);
@@ -728,14 +731,14 @@ int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 }
 
 int LoadN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned char value = GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
+    unsigned char value = GetParameterValue(rom, instruction_ptr);
     *opcode.reg1 = value;
     return instruction_ptr + 2;
 }
 
 int LoadRR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     if (opcode.opcode_name == 0x36) {
-        unsigned char value = GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
+        unsigned char value = GetParameterValue(rom, instruction_ptr);
         *opcode.reg1 = value;
         return instruction_ptr + 2;
     } else {
@@ -749,7 +752,7 @@ int LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
         unsigned short address = GetParameterValue16LS(rom, instruction_ptr, opcode.opcode_name);
         // TODO: figure out what nn refers to.
     } else if (opcode.opcode_name == 0x3E) {
-        unsigned char value = GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
+        unsigned char value = GetParameterValue(rom, instruction_ptr);
         cpu.flag_struct.rA = value;
         return instruction_ptr + 2;
     }
@@ -759,7 +762,7 @@ int LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 }
 
 
-int LoadNA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int LoadNA(unsigned char*, int instruction_ptr, Opcode opcode) {
     if (opcode.opcode_name == 0xEA) {
         // TODO: figure out what nn refers to.
     } else {
@@ -768,80 +771,80 @@ int LoadNA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 1;
 }
 
-int LoadAC(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int LoadAC(unsigned char*, int instruction_ptr, Opcode) {
     cpu.flag_struct.rA = mem_map.get(0xFF00 + cpu.bc_struct.rC);
     return instruction_ptr + 1;
 }
 
-int LoadCA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int LoadCA(unsigned char*, int instruction_ptr, Opcode) {
     mem_map.set(0xFF00 + cpu.bc_struct.rC, cpu.flag_struct.rA);
     return instruction_ptr + 1;
 }
 
-int LoadDecAHL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int LoadDecAHL(unsigned char*, int instruction_ptr, Opcode) {
     cpu.flag_struct.rA = mem_map.get(cpu.rHL);
     cpu.rHL--;
     return instruction_ptr + 1;
 }
 
-int LoadDecHLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int LoadDecHLA(unsigned char*, int instruction_ptr, Opcode) {
     mem_map.set(cpu.rHL, cpu.flag_struct.rA);
     cpu.rHL--;
     return instruction_ptr + 1;
 }
 
-int LoadIncAHL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int LoadIncAHL(unsigned char*, int instruction_ptr, Opcode) {
     cpu.flag_struct.rA = mem_map.get(cpu.rHL);
     cpu.rHL++;
     return instruction_ptr + 1;
 }
 
-int LoadIncHLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int LoadIncHLA(unsigned char*, int instruction_ptr, Opcode) {
     mem_map.set(cpu.rHL, cpu.flag_struct.rA);
     cpu.rHL++;
     return instruction_ptr + 1;
 }
 
-int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    mem_map.set(0xFF00 + GetParameterValue(rom, instruction_ptr, opcode.opcode_name), cpu.flag_struct.rA);
+int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode) {
+    mem_map.set(0xFF00 + GetParameterValue(rom, instruction_ptr), cpu.flag_struct.rA);
     return instruction_ptr + 2;
 }
 
-int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.flag_struct.rA = mem_map.get(0xFF00 + GetParameterValue(rom, instruction_ptr, opcode.opcode_name));
+int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode) {
+    cpu.flag_struct.rA = mem_map.get(0xFF00 + GetParameterValue(rom, instruction_ptr));
     return instruction_ptr + 2;
 }
 
 int LoadNN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    *opcode.reg1 = GetParameterValue16(rom, instruction_ptr, opcode.opcode_name);
+    *opcode.reg1 = GetParameterValue16(rom, instruction_ptr);
     return instruction_ptr + 3;
 }
 
-int LoadSPHL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int LoadSPHL(unsigned char*, int instruction_ptr, Opcode) {
     cpu.rSP = cpu.rHL;
     return instruction_ptr + 1;
 }
 
-int LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.rHL = cpu.rSP + (signed) GetParameterValue(rom, instruction_ptr, opcode.opcode_name);
+int LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode) {
+    cpu.rHL = cpu.rSP + (signed) GetParameterValue(rom, instruction_ptr);
     cpu.flag_struct.rF.Z = 0;
     SetNFlag(false);
 
     return instruction_ptr + 2;
 }
 
-int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    mem_map.set(GetParameterValue(rom, instruction_ptr, opcode.opcode_name), cpu.rSP);
+int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode) {
+    mem_map.set(GetParameterValue(rom, instruction_ptr), cpu.rSP);
     return instruction_ptr + 2;
 }
 
-int Push(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int Push(unsigned char*, int instruction_ptr, Opcode opcode) {
     mem_map.set(cpu.rSP, *opcode.reg1);
     cpu.rSP -= 2;
     return instruction_ptr + 1;
 }
 
-int Pop(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+int Pop(unsigned char*, int instruction_ptr, Opcode opcode) {
     *opcode.reg1 = (((short)mem_map.get(cpu.rSP)) << 8) | mem_map.get(cpu.rSP + 1); 
     cpu.rSP += 2;
     return instruction_ptr + 1;
