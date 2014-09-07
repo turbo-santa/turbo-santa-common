@@ -13,19 +13,19 @@ struct Opcode;
 typedef std::function<int(unsigned char* rom, int instruction_ptr, Opcode opcode)> OpcodeHandler;
 
 struct Opcode {
-    unsigned char opcode_name;
+    unsigned short opcode_name;
     unsigned char* reg1;
     unsigned char* reg2;
     OpcodeHandler handler;
 };
 
 struct PartialOpcode {
-    unsigned char opcode_name;
+    unsigned short opcode_name;
     unsigned char* reg1;
 };
 
 struct PartialOpcodeExtraReg {
-    unsigned char opcode_name;
+    unsigned short opcode_name;
     unsigned char* reg1;
     unsigned char* reg2;
 };
@@ -60,8 +60,8 @@ std::vector<Opcode> Flatten(std::vector<std::vector<Opcode>> to_flatten) {
     return flattened;
 }
 
-std::map<unsigned char, Opcode> ToMap(std::vector<Opcode> opcode_list) {
-    std::map<unsigned char, Opcode> opcode_map;
+std::map<unsigned short, Opcode> ToMap(std::vector<Opcode> opcode_list) {
+    std::map<unsigned short, Opcode> opcode_map;
     for (Opcode opcode : opcode_list) {
         opcode_map[opcode.opcode_name] = opcode;
     }

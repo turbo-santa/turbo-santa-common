@@ -3,7 +3,7 @@
 
 #include "back_end/opcodes.h"
 #include "back_end/opcode_map.h"
-#include "registers.h"
+#include "back_end/registers.h"
 
 namespace back_end {
 namespace opcode_parser {
@@ -26,6 +26,11 @@ OpcodeParser::OpcodeParser(unsigned char* rom) {
 
 void OpcodeParser::ReadInstruction() {
     unsigned short opcode = rom_[instruction_ptr_];
+    if (opcode == 0xCB || opcode == 0x10) {
+        instruction_ptr_++;
+        unsigned char opcode_lb = rom_[instruction_ptr_];
+        opcode = opcode << 8 | opcode_lb;
+    }
     Opcode opcode_struct = opcode_map[opcode];
     instruction_ptr_ = opcode_struct.handler(rom_, instruction_ptr_, opcode_struct);
 }

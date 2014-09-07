@@ -28,7 +28,7 @@ unsigned char* rHL = (unsigned char*) &cpu.rHL;
 unsigned char* rPC = (unsigned char*) &cpu.rPC;
 unsigned char* rSP = (unsigned char*) &cpu.rSP;
 
-extern std::map<unsigned char, Opcode> opcode_map;
+extern std::map<unsigned short, Opcode> opcode_map;
 
 } // namespace opcodes
 } // namespace back_end

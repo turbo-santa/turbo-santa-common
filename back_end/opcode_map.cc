@@ -138,14 +138,15 @@ const vector<vector<Opcode>> opcodes = {
             {0x95, rL},
             {0x96, rHL}}, Sub8Bit),
     ToList1({{0xD6, nullptr}}, Sub8BitLiteral),
-    ToList1({{0x9F, rA},
-            {0x98, rB},
-            {0x99, rC},
-            {0x9A, rD},
-            {0x9B, rE},
-            {0x9C, rH},
-            {0x9D, rL},
-            {0x9E, rHL}}, SBC8Bit),
+// TODO(Diego): Implement SCB8Bit.
+//     ToList1({{0x9F, rA},
+//             {0x98, rB},
+//             {0x99, rC},
+//             {0x9A, rD},
+//             {0x9B, rE},
+//             {0x9C, rH},
+//             {0x9D, rL},
+//             {0x9E, rHL}}, SBC8Bit),
     ToList1({{0xA7, rA},
             {0xA0, rB},
             {0xA1, rC},
@@ -286,7 +287,7 @@ const vector<vector<Opcode>> opcodes = {
             {0xCB3A, rD},
             {0xCB3B, rE},
             {0xCB3C, rH},
-            {0xCB3D, rL}
+            {0xCB3D, rL},
             {0xCB3E, rHL}}, SRL),
     ToList1({{0xCB47, rA},
             {0xCB40, rB},
@@ -348,7 +349,7 @@ const vector<vector<Opcode>> opcodes = {
     ToList1({{0xD9, nullptr}}, ReturnInterrupt)
 };
 
-map<unsigned char, Opcode> opcode_map = ToMap(Flatten(opcodes));
+map<unsigned short, Opcode> opcode_map = ToMap(Flatten(opcodes));
 
 } // namespace opcodes
 } // namespace back_end
