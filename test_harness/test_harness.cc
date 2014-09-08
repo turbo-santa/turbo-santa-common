@@ -15,5 +15,9 @@ int main() {
     };
 
     OpcodeParser parser(test_input, 8);
+
+    for (int i = 0; i < 8; i++) {
+        parser.ReadInstruction();
+    }
     return 0;
 }

@@ -18,7 +18,8 @@ using opcodes::opcode_map;
 using opcodes::Opcode;
 
 class OpcodeParser {
-    int instruction_ptr_;
+    // TODO(Diego): It acutally starts at something like 0x100.
+    int instruction_ptr_ = 0;
     unsigned char* rom_;
     
   public: 
