@@ -44,37 +44,21 @@ struct WriteDispatcher {
     WriteAction action;
 };
 
-Predicate CreateIsInRange(unsigned short min, unsigned short max) {
-    return [min, max](unsigned short address) { return min <= address && address <= max; };
-}
+Predicate CreateIsInRange(unsigned short min, unsigned short max);
 
-ReadAction CreateReadAction(MemorySegment* memory_segment) {
-    return [memory_segment](unsigned short address) { return memory_segment->get(address); };
-}
+ReadAction CreateReadAction(MemorySegment* memory_segment);
 
-WriteAction CreateWriteAction(MemorySegment* memory_segment) {
-    return [memory_segment](unsigned short address, unsigned char value) { return memory_segment->set(address, value); };
-}
+WriteAction CreateWriteAction(MemorySegment* memory_segment);
 
-ReadDispatcher CreateReadDispatcher(unsigned short min, unsigned short max, MemorySegment* memory_segment) {
-    return { CreateIsInRange(min, max), CreateReadAction(memory_segment) };
-}
+ReadDispatcher CreateReadDispatcher(unsigned short min, unsigned short max, MemorySegment* memory_segment);
 
-WriteDispatcher CreateWriteDispatcher(unsigned short min, unsigned short max, MemorySegment* memory_segment) {
-    return { CreateIsInRange(min, max), CreateWriteAction(memory_segment) };
-}
+WriteDispatcher CreateWriteDispatcher(unsigned short min, unsigned short max, MemorySegment* memory_segment);
 
 class ReadOnlyMemorySegment : public TransparentMemorySegment {
     public:
         ReadOnlyMemorySegment(unsigned char* raw_memory) : TransparentMemorySegment(raw_memory) {}
 
-        virtual void set(unsigned short address, unsigned char value) {
-            for (WriteDispatcher dispatcher : dispatchers_) {
-                if (dispatcher.predicate(address)) {
-                    dispatcher.action(address, value);
-                }
-            }
-        }
+        virtual void set(unsigned short address, unsigned char value);
 
     protected:
         std::vector<WriteDispatcher> dispatchers_;

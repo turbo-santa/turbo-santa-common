@@ -26,9 +26,11 @@ class MemoryMapper {
         unsigned char get(unsigned short location);
 
         static const long kROMSegmentSize = 0x4000;
-        static const int kROMNumber;
+        // TODO(Brendan): Put an actual size here.
+        static const int kROMNumber = 1;
         static const long kRAMSegmentSize = 0x1000;
-        static const int kRAMNumber;
+        // TODO(Brendan): Put an actual size here.
+        static const int kRAMNumber = 1;
 
     private:
         std::unique_ptr<unsigned char> mapped_memory_;

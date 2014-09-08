@@ -13,20 +13,20 @@ namespace opcodes {
 
 using namespace handlers;
 
-unsigned char* rA = &cpu.flag_struct.rA;
-unsigned char* rB = &cpu.bc_struct.rB;
-unsigned char* rC = &cpu.bc_struct.rC;
-unsigned char* rD = &cpu.de_struct.rD;
-unsigned char* rE = &cpu.de_struct.rE;
-unsigned char* rF = (unsigned char*) &cpu.flag_struct.rF;
-unsigned char* rH = &cpu.hl_struct.rH;
-unsigned char* rL = &cpu.hl_struct.rL;
-unsigned char* rAF = (unsigned char*) &cpu.rAF;
-unsigned char* rBC = (unsigned char*) &cpu.rBC;
-unsigned char* rDE = (unsigned char*) &cpu.rDE;
-unsigned char* rHL = (unsigned char*) &cpu.rHL;
-unsigned char* rPC = (unsigned char*) &cpu.rPC;
-unsigned char* rSP = (unsigned char*) &cpu.rSP;
+extern unsigned char* rA; 
+extern unsigned char* rB; 
+extern unsigned char* rC; 
+extern unsigned char* rD; 
+extern unsigned char* rE; 
+extern unsigned char* rF; 
+extern unsigned char* rH; 
+extern unsigned char* rL; 
+extern unsigned char* rAF;
+extern unsigned char* rBC;
+extern unsigned char* rDE;
+extern unsigned char* rHL;
+extern unsigned char* rPC;
+extern unsigned char* rSP;
 
 extern std::map<unsigned short, Opcode> opcode_map;
 
