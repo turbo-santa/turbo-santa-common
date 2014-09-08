@@ -3,7 +3,7 @@
 namespace back_end {
 namespace memory {
 
-MemoryMapper::MemoryMapper(unsigned char* raw_rom) 
+MemoryMapper::MemoryMapper(unsigned char* raw_rom, long rom_size) 
     : mapped_memory_(std::unique_ptr<unsigned char>(new unsigned char[0x10000])),
     rom_bank_0_(mapped_memory_.get()),
     rom_bank_1_(mapped_memory_.get() + kROMSegmentSize),
@@ -11,8 +11,13 @@ MemoryMapper::MemoryMapper(unsigned char* raw_rom)
     ram_bank_0_(mapped_memory_.get() + 0xc000),
     ram_bank_1_(mapped_memory_.get() + 0xd000),
     ram_bank_manager_(mapped_memory_.get() + 0xd000, kRAMSegmentSize, kRAMNumber) {
-        for (int i = 0; i < 0x10000; i++) {
+        int i = 0;
+        for (; i < rom_size; i++) {
             mapped_memory_.get()[i] = raw_rom[i];
+            break;
+        }
+        for (; i < 0x10000; i++) {
+            mapped_memory_.get()[i] = 0;
         }
     }
 

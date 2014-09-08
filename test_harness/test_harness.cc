@@ -14,6 +14,6 @@ int main() {
         0x00
     };
 
-    OpcodeParser parser(test_input);
+    OpcodeParser parser(test_input, 8);
     return 0;
 }

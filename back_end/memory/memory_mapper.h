@@ -16,7 +16,7 @@ class InteruptEnable;
 
 class MemoryMapper {
     public:
-        MemoryMapper(unsigned char* raw_rom);
+        MemoryMapper(unsigned char* raw_rom, long rom_size);
 
         unsigned char* get_pointer() { return mapped_memory_.get(); }
 
@@ -34,12 +34,12 @@ class MemoryMapper {
 
     private:
         std::unique_ptr<unsigned char> mapped_memory_;
-        PageManager rom_bank_manager_;
         ReadOnlyMemorySegment rom_bank_0_;
         ReadOnlyMemorySegment rom_bank_1_;
-        PageManager ram_bank_manager_;
+        PageManager rom_bank_manager_;
         TransparentMemorySegment ram_bank_0_;
         TransparentMemorySegment ram_bank_1_;
+        PageManager ram_bank_manager_;
 //         VideoRam video_ram_;
 //         TransparentMemorySegment cartridge_ram_;
 //         ObjectAttributeMemory oam;

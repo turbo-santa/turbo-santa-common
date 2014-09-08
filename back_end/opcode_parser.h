@@ -22,12 +22,12 @@ class OpcodeParser {
     unsigned char* rom_;
     
   public: 
-    OpcodeParser(unsigned char* rom);
+    OpcodeParser(unsigned char* rom, long rom_size);
     void ReadInstruction();
 };
 
-OpcodeParser::OpcodeParser(unsigned char* rom) {
-    handlers::mem_map = unique_ptr<MemoryMapper>(new MemoryMapper(rom));
+OpcodeParser::OpcodeParser(unsigned char* rom, long rom_size) {
+    handlers::mem_map = unique_ptr<MemoryMapper>(new MemoryMapper(rom, rom_size));
     rom_ = handlers::mem_map->get_pointer();
 }
 
