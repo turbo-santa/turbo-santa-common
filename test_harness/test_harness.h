@@ -6,21 +6,30 @@
 #include "back_end/opcode_parser.h"
 #include "test_harness/test_harness_utils.h"
 
+#include "third_party/gtest/include/gtest/gtest.h"
+
 namespace test_harness {
 
-class TestHarness {
+class TestHarness : public ::testing::Test {
     public:
-        TestHarness() : parser_(new back_end::opcode_parser::OpcodeParser(nullptr, 0)) {}
+        void SetRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
+        void ExecuteInstruction(unsigned char instruction);
+        // void ExecuteInstruction(unsigned short instruction);
+        void AssertRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
 
-        bool RunTest(const DiffState& initial_state, const std::vector<InstructionExpectedStatePair>& instructions);
+    protected:
+        TestHarness(back_end::opcode_parser::OpcodeParser* parser) : parser_(parser) {}
+        virtual void TearDown() { ClearParser(); }
+
     private:
-        bool ExecuteAndValidateInstruction(const InstructionExpectedStatePair& instruction);
         bool VerifyCorrectInstruction(const std::vector<unsigned char>& instruction);
-        bool ValidateRegister(const RegisterNameValuePair& register_diff);
+        void ValidateRegister(const RegisterNameValuePair& register_diff);
         bool ClearParser();
         bool SetInitialState(const DiffState& initial_state);
         bool SetRegisterState(const RegisterNameValuePair& register_diff);
         bool LoadROM(const std::vector<InstructionExpectedStatePair>& instructions);
+        // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
+        // delete it when done.
         std::unique_ptr<back_end::opcode_parser::OpcodeParser> parser_;
 };
 

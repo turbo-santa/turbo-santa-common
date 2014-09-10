@@ -6,12 +6,5 @@ using std::endl;
 using test_harness::TestHarness;
 
 int main() {
-    TestHarness harness;
-    cout << harness.RunTest({{}, {}}, {
-            {{0x00}, {{}, {}}},
-            {{0x00}, {{}, {}}},
-            {{0x00}, {{}, {}}},
-            {{0x00}, {{}, {}}},
-            }) << endl;
     return 0;
 }
