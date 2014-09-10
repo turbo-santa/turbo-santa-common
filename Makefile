@@ -4,7 +4,7 @@ TESTEXE= test
 CPPFLAGS= $(PROJFLAGS) -I .
 OBJLIBS= libbackend.a libmemory.a
 LIBS= -L. -lbackend -lmemory #-L/usr/lib/x86_64-linux-gnu -l:libstdc++.so.6 -l:/lib/x86_64-linux-gnu/libc.so.6 -l:/lib/x86_64-linux-gnu/libgcc_s.so.1
-OBJS= test_harness.o
+OBJS= test_harness.o main.o
 
 all: $(TESTEXE)
 
@@ -14,7 +14,7 @@ $(TESTEXE): $(OBJLIBS) $(OBJS)
 libbackend.a libmemory.a: force_look
 	$(MAKE) -C back_end
 
-test_harness.o: force_look
+test_harness.o main.o: force_look
 	$(MAKE) -C test_harness
 
 clean:

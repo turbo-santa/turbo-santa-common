@@ -3,6 +3,7 @@
 
 #include "back_end/memory/memory_page.h"
 #include "back_end/memory/memory_segment.h"
+// #include "test_harness/test_harness.h"
 
 namespace back_end {
 namespace memory {
@@ -81,6 +82,7 @@ class MemoryMapper {
 //             CreateReadDispatcher(0xffff, interupt_enable_)
         };
 
+//         friend class test_harness::TestHarness;
 };
 } // namespace memory_mapper
 } // namespace back_end

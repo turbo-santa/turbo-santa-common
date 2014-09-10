@@ -1,7 +1,7 @@
 include ../Makefile.inc
 CPPFLAGS= $(PROJFLAGS) -I ..
 
-SOURCES= opcode_handlers.cc opcode_map.cc registers.cc opcodes.cc
+SOURCES= opcode_handlers.cc opcode_map.cc registers.cc opcodes.cc opcode_parser.cc
 OBJS= $(SOURCES:.cc=.o)
 OBJLIBS= ../libbackend.a ../libmemory.a
 

@@ -11,8 +11,6 @@
 namespace back_end {
 namespace opcodes {
 
-using namespace handlers;
-
 extern unsigned char* rA; 
 extern unsigned char* rB; 
 extern unsigned char* rC; 
