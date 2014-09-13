@@ -2,19 +2,16 @@ include Makefile.inc
 
 TESTEXE= test
 CPPFLAGS= $(PROJFLAGS) -I .
-OBJLIBS= libbackend.a libmemory.a
-LIBS= -L. -lbackend -lmemory #-L/usr/lib/x86_64-linux-gnu -l:libstdc++.so.6 -l:/lib/x86_64-linux-gnu/libc.so.6 -l:/lib/x86_64-linux-gnu/libgcc_s.so.1
-OBJS= test_harness.o main.o
+OBJLIBS= libbackend.a libmemory.a libtestharness.a
+LIBS= -L. -lbackend -lmemory -ltestharness
+OBJS=
 
-all: $(TESTEXE)
-
-$(TESTEXE): $(OBJLIBS) $(OBJS)
-	$(CC) -o $(TESTEXE) $(OBJS) $(LIBS)
+all: $(OBJLIBS) $(OBJS)
 
 libbackend.a libmemory.a: force_look
 	$(MAKE) -C back_end
 
-test_harness.o main.o: force_look
+libtestharness.a: force_look
 	$(MAKE) -C test_harness
 
 clean:

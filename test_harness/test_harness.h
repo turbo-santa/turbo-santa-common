@@ -16,6 +16,8 @@ class TestHarness : public ::testing::Test {
         void ExecuteInstruction(unsigned char instruction);
         // void ExecuteInstruction(unsigned short instruction);
         void AssertRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
+        unsigned char* get_rom_ptr() { return parser_->rom_; }
+        int get_instruction_ptr() { return parser_->instruction_ptr_; }
 
     protected:
         TestHarness(back_end::opcode_parser::OpcodeParser* parser) : parser_(parser) {}
@@ -24,13 +26,13 @@ class TestHarness : public ::testing::Test {
     private:
         bool VerifyCorrectInstruction(const std::vector<unsigned char>& instruction);
         void ValidateRegister(const RegisterNameValuePair& register_diff);
-        bool ClearParser();
+        void ClearParser();
         bool SetInitialState(const DiffState& initial_state);
         bool SetRegisterState(const RegisterNameValuePair& register_diff);
         bool LoadROM(const std::vector<InstructionExpectedStatePair>& instructions);
         // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
         // delete it when done.
-        std::unique_ptr<back_end::opcode_parser::OpcodeParser> parser_;
+        back_end::opcode_parser::OpcodeParser* parser_;
 };
 
 } // namespace test_harness

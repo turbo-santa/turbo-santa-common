@@ -9,14 +9,14 @@ using registers::cpu;
 
 std::unique_ptr<MemoryMapper> mem_map;
 
-unsigned char registers[] = { cpu.bc_struct.rB, cpu.bc_struct.rC, cpu.de_struct.rD,
-    cpu.de_struct.rE, cpu.hl_struct.rH, cpu.hl_struct.rL, (unsigned char)cpu.rHL, cpu.flag_struct.rA };
+unsigned char* registers[] = { &cpu.bc_struct.rB, &cpu.bc_struct.rC, &cpu.de_struct.rD,
+    &cpu.de_struct.rE, &cpu.hl_struct.rH, &cpu.hl_struct.rL, (unsigned char*) &cpu.rHL, &cpu.flag_struct.rA };
 unsigned short shortRegs[] = { cpu.rBC, cpu.rDE, cpu.rHL, cpu.rSP, cpu.rAF };
 
 unsigned char* GetRegister(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
     unsigned char opcode = rom[instruction_ptr];
     unsigned char register_index = opcode - opcode_name;
-    return registers + register_index;
+    return registers[register_index];
 }
 
 unsigned short* GetRegister16(unsigned char* rom, int instruction_ptr, unsigned char) {
@@ -28,7 +28,7 @@ unsigned short* GetRegister16(unsigned char* rom, int instruction_ptr, unsigned 
 unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
     unsigned char opcode = rom[instruction_ptr];
     unsigned char register_index = opcode - opcode_name;
-    return registers[register_index];
+    return *registers[register_index];
 }
 
 unsigned short GetRegisterValue16(unsigned char* rom, int instruction_ptr, unsigned char) {

@@ -101,11 +101,30 @@ bool TestHarness::VerifyCorrectInstruction(const vector<unsigned char>& instruct
     return true;
 }
 
-bool TestHarness::ClearParser() {
+void TestHarness::ClearParser() {
+    parser_->instruction_ptr_ = 0;
     for (int i = 0; i < 0x10000; i++) {
         mem_map->get_pointer()[i] = 0;
     }
-    return true;
+    typedef RegisterNameValuePair::RegisterName R;
+    SetRegisterState({
+            {R::B, 0},
+            {R::C, 0},
+            {R::D, 0},
+            {R::E, 0},
+            {R::H, 0},
+            {R::L, 0},
+            {R::A, 0},
+            {R::BC, 0},
+            {R::DE, 0},
+            {R::HL, 0},
+            {R::AF, 0},
+            {R::PC, 0},
+            {R::SP, 0},
+            {R::FZ, 0},
+            {R::FC, 0},
+            {R::FH, 0},
+            {R::FN, 0}});
 }
 
 bool TestHarness::SetInitialState(const DiffState& state_diff) {
