@@ -54,5 +54,15 @@ TEST_F(OpcodeHandlersTest, GetRegisterValue) {
     EXPECT_EQ(expected_register_value, actual_register_value);
 }
 
+TEST_F(OpcodeHandlersTest, Cp8Bit) {
+    SetRegisterState({{Register::A, 1}, {Register::B, 1}});
+    ExecuteInstruction(0xb8);
+    AssertRegisterState({{Register::FZ, 1}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
+
+    SetRegisterState({{Register::A, 1}, {Register::B, 2}});
+    ExecuteInstruction(0xb8);
+    AssertRegisterState({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
+}
+
 } // namespace handlers
 } // namespace back_end
