@@ -16,6 +16,7 @@ class TestHarness : public ::testing::Test {
         void ExecuteInstruction(unsigned char instruction);
         // void ExecuteInstruction(unsigned short instruction);
         void AssertRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
+        void AssertMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
         unsigned char* get_rom_ptr() { return parser_->rom_; }
         int get_instruction_ptr() { return parser_->instruction_ptr_; }
 

@@ -30,6 +30,12 @@ void TestHarness::AssertRegisterState(const vector<RegisterNameValuePair>& regis
     }
 }
 
+void TestHarness::AssertMemoryState(const vector<MemoryAddressValuePair>&  memory_diff_list) {
+    for (const MemoryAddressValuePair& memory_diff : memory_diff_list) {
+        EXPECT_EQ(memory_diff.value, mem_map->get_rom_ptr()[memory_diff.address]);
+    }
+}
+
 void TestHarness::ExecuteInstruction(unsigned char instruction) {
     parser_->rom_[parser_->instruction_ptr_] = instruction; // We put the instruction in right before it gets called.
     parser_->ReadInstruction();
