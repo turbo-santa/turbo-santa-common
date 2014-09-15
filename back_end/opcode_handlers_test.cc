@@ -1,3 +1,4 @@
+#include <vector>
 #include "back_end/opcode_handlers.h"
 #include "back_end/opcode_parser.h"
 #include "back_end/opcodes.h"
@@ -11,6 +12,7 @@ namespace handlers {
 
 unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned char opcode);
 
+using std::vector;
 using opcode_parser::OpcodeParser;
 using Register = test_harness::RegisterNameValuePair;
 
@@ -28,7 +30,7 @@ TEST_F(OpcodeHandlersTest, Add8Bit) {
     EXPECT_EQ(0, get_instruction_ptr());
     ExecuteInstruction(0x80);
     EXPECT_EQ(1, get_instruction_ptr());
-    AssertRegisterState({{Register::A, 3}, {Register::B, 2}});
+    EXPECT_REGISTER({{Register::A, 3}, {Register::B, 2}});
     EXPECT_EQ(1, get_instruction_ptr());
 }
 

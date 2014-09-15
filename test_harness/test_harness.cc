@@ -7,14 +7,25 @@
 
 namespace test_harness {
 using std::string;
+using std::to_string;
 using std::unique_ptr;
 using std::vector;
 using back_end::handlers::mem_map;
 using back_end::registers::cpu;
+using ::testing::AssertionResult;
+using ::testing::AssertionSuccess;
+using ::testing::AssertionFailure;
+using ::testing::Message;
 
 namespace {
-void ExpectRegisterEquals(unsigned short expected, unsigned short actual, const string& name) {
-    EXPECT_EQ(expected, actual) << "Expected register " << name << " to be " << expected << " but was " << actual;
+AssertionResult ExpectRegisterEquals(unsigned short expected, unsigned short actual, const string& name) {
+    if (expected != actual) {
+        Message failure_message;
+        failure_message << "Expected register " << name << " to be " << to_string(expected)
+            << " but was " << to_string(actual);
+        return AssertionFailure(failure_message);
+    }
+    return AssertionSuccess();
 }
 } // namespace
 
@@ -24,16 +35,28 @@ void TestHarness::SetRegisterState(const vector<RegisterNameValuePair>& register
     }
 }
 
-void TestHarness::AssertRegisterState(const vector<RegisterNameValuePair>& register_diff_list) {
+AssertionResult TestHarness::AssertRegisterState(const vector<RegisterNameValuePair>& register_diff_list) {
+    // TODO(Brendan): Compress all the assertions into one.
     for (const RegisterNameValuePair& register_diff : register_diff_list) {
-        ValidateRegister(register_diff);
+        AssertionResult result = ValidateRegister(register_diff);
+        if (!result) {
+            return result;
+        }
     }
+    return AssertionSuccess();
 }
 
-void TestHarness::AssertMemoryState(const vector<MemoryAddressValuePair>&  memory_diff_list) {
+AssertionResult TestHarness::AssertMemoryState(const vector<MemoryAddressValuePair>&  memory_diff_list) {
     for (const MemoryAddressValuePair& memory_diff : memory_diff_list) {
-        EXPECT_EQ(memory_diff.value, mem_map->get_rom_ptr()[memory_diff.address]);
+        unsigned char actual_value = mem_map->get_pointer()[memory_diff.address];
+        if (memory_diff.value == actual_value) {
+            Message failure_message;
+            failure_message << "Expected memory at " << to_string(memory_diff.address)
+                << " to be " << to_string(memory_diff.value) << " but was " << to_string(actual_value);
+            return AssertionFailure(failure_message);
+        }
     }
+    return AssertionSuccess();
 }
 
 void TestHarness::ExecuteInstruction(unsigned char instruction) {
@@ -41,61 +64,47 @@ void TestHarness::ExecuteInstruction(unsigned char instruction) {
     parser_->ReadInstruction();
 }
 
-void TestHarness::ValidateRegister(const RegisterNameValuePair& register_diff) {
+AssertionResult TestHarness::ValidateRegister(const RegisterNameValuePair& register_diff) {
     unsigned short value = register_diff.register_value;
     switch (register_diff.register_name) {
         case RegisterNameValuePair::B:
-            ExpectRegisterEquals(value, cpu.bc_struct.rB, "B");
-            break;
+            return ExpectRegisterEquals(value, cpu.bc_struct.rB, "B");
         case RegisterNameValuePair::C:
-            ExpectRegisterEquals(value, cpu.bc_struct.rC, "C");
-            break;
+            return ExpectRegisterEquals(value, cpu.bc_struct.rC, "C");
         case RegisterNameValuePair::D:
-            ExpectRegisterEquals(value, cpu.de_struct.rD, "D");
-            break;
+            return ExpectRegisterEquals(value, cpu.de_struct.rD, "D");
         case RegisterNameValuePair::E:
-            ExpectRegisterEquals(value, cpu.de_struct.rE, "E");
-            break;
+            return ExpectRegisterEquals(value, cpu.de_struct.rE, "E");
         case RegisterNameValuePair::H:
-            ExpectRegisterEquals(value, cpu.hl_struct.rH, "H");
-            break;
+            return ExpectRegisterEquals(value, cpu.hl_struct.rH, "H");
         case RegisterNameValuePair::L:
-            ExpectRegisterEquals(value, cpu.hl_struct.rL, "L");
-            break;
+            return ExpectRegisterEquals(value, cpu.hl_struct.rL, "L");
         case RegisterNameValuePair::A:
-            ExpectRegisterEquals(value, cpu.flag_struct.rA, "A");
-            break;
+            return ExpectRegisterEquals(value, cpu.flag_struct.rA, "A");
         case RegisterNameValuePair::BC:
-            ExpectRegisterEquals(value, cpu.rBC, "BC");
-            break;
+            return ExpectRegisterEquals(value, cpu.rBC, "BC");
         case RegisterNameValuePair::DE:
-            ExpectRegisterEquals(value, cpu.rDE, "DE");
-            break;
+            return ExpectRegisterEquals(value, cpu.rDE, "DE");
         case RegisterNameValuePair::HL:
-            ExpectRegisterEquals(value, cpu.rHL, "HL");
-            break;
+            return ExpectRegisterEquals(value, cpu.rHL, "HL");
         case RegisterNameValuePair::AF:
-            ExpectRegisterEquals(value, cpu.rAF, "AF");
-            break;
+            return ExpectRegisterEquals(value, cpu.rAF, "AF");
         case RegisterNameValuePair::PC:
-            ExpectRegisterEquals(value, cpu.rPC, "PC");
-            break;
+            return ExpectRegisterEquals(value, cpu.rPC, "PC");
         case RegisterNameValuePair::SP:
-            ExpectRegisterEquals(value, cpu.rSP, "SP");
-            break;
+            return ExpectRegisterEquals(value, cpu.rSP, "SP");
         case RegisterNameValuePair::FZ:
-            ExpectRegisterEquals(value, cpu.flag_struct.rF.Z, "FZ");
-            break;
+            return ExpectRegisterEquals(value, cpu.flag_struct.rF.Z, "FZ");
         case RegisterNameValuePair::FN:
-            ExpectRegisterEquals(value, cpu.flag_struct.rF.N, "FN");
-            break;
+            return ExpectRegisterEquals(value, cpu.flag_struct.rF.N, "FN");
         case RegisterNameValuePair::FH:
-            ExpectRegisterEquals(value, cpu.flag_struct.rF.H, "FH");
-            break;
+            return ExpectRegisterEquals(value, cpu.flag_struct.rF.H, "FH");
         case RegisterNameValuePair::FC:
-            ExpectRegisterEquals(value, cpu.flag_struct.rF.C, "FC");
-            break;
+            return ExpectRegisterEquals(value, cpu.flag_struct.rF.C, "FC");
     }
+    // TODO(Brendan): Maybe this should be a failure since the instruction does
+    // not match a known register.
+    return AssertionSuccess();
 }
 
 bool TestHarness::VerifyCorrectInstruction(const vector<unsigned char>& instruction) {
