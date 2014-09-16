@@ -14,11 +14,11 @@ class TestHarness;
 } // namespace test_harness
 
 namespace back_end {
-namespace opcode_parser {
+namespace handlers {
 
-class OpcodeParser {
+class OpcodeExecutor {
   public: 
-    OpcodeParser(unsigned char* rom, long rom_size);
+    OpcodeExecutor(unsigned char* rom, long rom_size);
     void ReadInstruction();
 
   private:
@@ -29,6 +29,6 @@ class OpcodeParser {
     friend class test_harness::TestHarness;
 };
 
-} // namespace opcode_parser
+} // namespace handlers
 } // namespace back_end
 #endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_

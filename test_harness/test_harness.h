@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "back_end/opcode_parser.h"
+#include "back_end/opcode_executor.h"
 #include "test_harness/test_harness_utils.h"
 
 #include "third_party/gtest/include/gtest/gtest.h"
@@ -31,7 +31,7 @@ class TestHarness : public ::testing::Test {
         int get_instruction_ptr() { return parser_->instruction_ptr_; }
 
     protected:
-        TestHarness(back_end::opcode_parser::OpcodeParser* parser) : parser_(parser) {}
+        TestHarness(back_end::handlers::OpcodeExecutor* parser) : parser_(parser) {}
         virtual void TearDown() { ClearParser(); }
 
     private:
@@ -43,7 +43,7 @@ class TestHarness : public ::testing::Test {
         bool LoadROM(const std::vector<InstructionExpectedStatePair>& instructions);
         // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
         // delete it when done.
-        back_end::opcode_parser::OpcodeParser* parser_;
+        back_end::handlers::OpcodeExecutor* parser_;
 };
 
 #define EXPECT_REGISTER(...)\

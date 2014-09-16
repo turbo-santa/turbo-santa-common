@@ -2,7 +2,7 @@ include ../Makefile.inc
 PROJECT_DIR= ..
 CPPFLAGS= $(PROJFLAGS) #-I ..
 
-SOURCES= opcode_handlers.cc opcode_map.cc registers.cc opcodes.cc opcode_parser.cc
+SOURCES= opcode_handlers.cc opcode_map.cc registers.cc opcodes.cc opcode_executor.cc
 OBJS= $(SOURCES:.cc=.o)
 OBJLIBS= $(PROJECT_DIR)/libbackend.a $(PROJECT_DIR)/libmemory.a
 GTEST_OBJLIB= $(PROJECT_DIR)/third_party/gtest/gtest_main.a
