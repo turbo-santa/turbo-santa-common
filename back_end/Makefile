@@ -1,4 +1,5 @@
 include ../Makefile.inc
+PROJECT_DIR= ..
 CPPFLAGS= $(PROJFLAGS) #-I ..
 
 SOURCES= opcode_handlers.cc opcode_map.cc registers.cc opcodes.cc opcode_parser.cc

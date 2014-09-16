@@ -1,4 +1,5 @@
 include Makefile.inc
+PROJECT_DIR= .
 
 TESTEXE= test
 CPPFLAGS= $(PROJFLAGS) -I .
