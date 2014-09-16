@@ -1,7 +1,7 @@
 #include <vector>
-#include "back_end/opcode_handlers.h"
-#include "back_end/opcode_parser.h"
-#include "back_end/opcodes.h"
+#include "back_end/opcode_executor/opcode_handlers.h"
+#include "back_end/opcode_executor/opcode_executor.h"
+#include "back_end/opcode_executor/opcodes.h"
 #include "test_harness/test_harness.h"
 #include "test_harness/test_harness_utils.h"
 
@@ -13,12 +13,12 @@ namespace handlers {
 unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned char opcode);
 
 using std::vector;
-using opcode_parser::OpcodeParser;
+using handlers::OpcodeExecutor;
 using Register = test_harness::RegisterNameValuePair;
 
 // The fixture gets instantiated once per test case. We would like to reuse the
-// OpcodeParser. Also, this will get cleaned up when the test is over.
-OpcodeParser* parser = new OpcodeParser(nullptr, 0);
+// OpcodeExecutor. Also, this will get cleaned up when the test is over.
+OpcodeExecutor* parser = new OpcodeExecutor(nullptr, 0);
 
 class OpcodeHandlersTest : public test_harness::TestHarness {
     protected:

@@ -1,5 +1,5 @@
-#include "back_end/opcode_handlers.h"
-#include "back_end/opcodes.h"
+#include "back_end/opcode_executor/opcode_handlers.h"
+#include "back_end/opcode_executor/opcodes.h"
 
 namespace back_end {
 namespace handlers {

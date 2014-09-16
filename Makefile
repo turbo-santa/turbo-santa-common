@@ -9,15 +9,19 @@ OBJS=
 
 all: $(OBJLIBS) $(OBJS)
 
-libbackend.a libmemory.a: force_look
-	$(MAKE) -C back_end
+libbackend.a: force_look
+	$(MAKE) -C back_end/opcode_executor
+
+libmemory.a: force_look
+	$(MAKE) -C back_end/memory
 
 libtestharness.a: force_look
 	$(MAKE) -C test_harness
 
 clean:
 	rm -rf $(OBJS) $(OBJLIBS) $(TESTEXE)
-	$(MAKE) -C back_end clean
+	$(MAKE) -C back_end/opcode_executor clean
+	$(MAKE) -C back_end/memory clean
 	$(MAKE) -C test_harness clean
 
 force_look:

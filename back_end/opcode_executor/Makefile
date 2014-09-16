@@ -1,5 +1,5 @@
-include ../Makefile.inc
-PROJECT_DIR= ..
+include ../../Makefile.inc
+PROJECT_DIR= ../..
 CPPFLAGS= $(PROJFLAGS) #-I ..
 
 SOURCES= opcode_handlers.cc opcode_map.cc registers.cc opcodes.cc opcode_executor.cc
@@ -16,7 +16,7 @@ $(PROJECT_DIR)/libbackend.a: $(OBJS)
 	$(AR) rv $(PROJECT_DIR)/libbackend.a $(OBJS)
 
 $(PROJECT_DIR)/libmemory.a: force_look
-	$(MAKE) -C memory
+	$(MAKE) -C $(PROJECT_DIR)/back_end/memory
 
 test: $(TESTS)
 	./test_bin
@@ -32,7 +32,7 @@ $(PROJECT_DIR)/libtestharness.a: force_look
 
 clean:
 	rm -rf $(OBJS) $(OBJLIBS) $(TEST_OBJS) $(TESTS)
-	$(MAKE) -C memory clean
+	$(MAKE) -C $(PROJECT_DIR)/back_end/memory clean
 
 force_look:
 	true

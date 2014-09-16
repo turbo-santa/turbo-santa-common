@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include "back_end/opcode_executor.h"
+#include "back_end/opcode_executor/opcode_executor.h"
 #include "test_harness/test_harness_utils.h"
 
 #include "third_party/gtest/include/gtest/gtest.h"

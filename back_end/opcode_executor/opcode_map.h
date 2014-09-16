@@ -4,9 +4,9 @@
 #include <vector>
 #include <map>
 
-#include "back_end/opcodes.h"
-#include "back_end/opcode_handlers.h"
-#include "back_end/registers.h"
+#include "back_end/opcode_executor/opcodes.h"
+#include "back_end/opcode_executor/opcode_handlers.h"
+#include "back_end/opcode_executor/registers.h"
 
 namespace back_end {
 namespace opcodes {

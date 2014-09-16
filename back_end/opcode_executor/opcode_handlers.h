@@ -4,8 +4,8 @@
 #include <memory>
 
 #include "back_end/memory/memory_mapper.h"
-#include "back_end/opcodes.h"
-#include "back_end/registers.h"
+#include "back_end/opcode_executor/opcodes.h"
+#include "back_end/opcode_executor/registers.h"
 
 namespace back_end {
 namespace handlers {

@@ -2,8 +2,8 @@
 
 #include <memory>
 #include <string>
-#include "back_end/opcode_handlers.h"
-#include "back_end/registers.h"
+#include "back_end/opcode_executor/opcode_handlers.h"
+#include "back_end/opcode_executor/registers.h"
 
 namespace test_harness {
 using std::string;
