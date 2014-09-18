@@ -1,6 +1,11 @@
 *.o
 *.a
+*.log
 test
 test_bin
 DS_Store
 third_party/glog/
+**/Makefile
+Makefile
+**/.deps
+.deps
