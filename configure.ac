@@ -7,6 +7,11 @@ AC_CONFIG_SRCDIR([third_party/gtest/src/gtest-internal-inl.h])
 # AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
 
+CXX='g++-4.8'
+CPPFLAGS='-I${top_srcdir}'
+CXXFLAGS='-std=c++11'
+CFLAGS=''
+
 # Checks for programs.
 AC_PROG_CXX
 AC_PROG_CC
