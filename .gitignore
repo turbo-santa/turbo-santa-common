@@ -2,10 +2,13 @@
 *.a
 *.log
 *.zip
+*.cache
 test
 test_bin
 DS_Store
 third_party/glog/
+third_party/gtest/samples/
+third_party/gtest/fused-src/
 **/Makefile
 Makefile
 **/.deps
