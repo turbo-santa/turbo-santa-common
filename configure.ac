@@ -14,7 +14,7 @@ CFLAGS=''
 #LDFLAGS='-lc++ -libstdc++ -libc++'
 
 # Checks for programs.
-AC_PROG_CXX([g++4.8 g++])
+AC_PROG_CXX([g++-4.8 g++])
 AC_PROG_CC
 AC_PROG_RANLIB
 
