@@ -32,7 +32,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-subdir = back_end/opcode_executor
+subdir = test_harness
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -44,12 +44,10 @@ CONFIG_CLEAN_VPATH_FILES =
 LIBRARIES = $(noinst_LIBRARIES)
 AR = ar
 ARFLAGS = cru
-libopcode_executor_a_AR = $(AR) $(ARFLAGS)
-libopcode_executor_a_LIBADD =
-am_libopcode_executor_a_OBJECTS = opcode_executor.$(OBJEXT) \
-	opcode_handlers.$(OBJEXT) opcode_map.$(OBJEXT) \
-	opcodes.$(OBJEXT) registers.$(OBJEXT)
-libopcode_executor_a_OBJECTS = $(am_libopcode_executor_a_OBJECTS)
+libtest_harness_a_AR = $(AR) $(ARFLAGS)
+libtest_harness_a_LIBADD =
+am_libtest_harness_a_OBJECTS = test_harness.$(OBJEXT)
+libtest_harness_a_OBJECTS = $(am_libtest_harness_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__depfiles_maybe = depfiles
@@ -63,8 +61,8 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libopcode_executor_a_SOURCES)
-DIST_SOURCES = $(libopcode_executor_a_SOURCES)
+SOURCES = $(libtest_harness_a_SOURCES)
+DIST_SOURCES = $(libtest_harness_a_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -160,8 +158,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = libopcode_executor.a
-libopcode_executor_a_SOURCES = opcode_executor.h opcode_executor.cc opcode_handlers.h opcode_handlers.cc opcode_map.h opcode_map.cc opcodes.h opcodes.cc registers.h registers.cc
+noinst_LIBRARIES = libtest_harness.a
+libtest_harness_a_SOURCES = test_harness.h test_harness.cc test_harness_utils.h
 all: all-am
 
 .SUFFIXES:
@@ -175,9 +173,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu back_end/opcode_executor/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu test_harness/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu back_end/opcode_executor/Makefile
+	  $(AUTOMAKE) --gnu test_harness/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -199,10 +197,10 @@ $(am__aclocal_m4_deps):
 
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
-libopcode_executor.a: $(libopcode_executor_a_OBJECTS) $(libopcode_executor_a_DEPENDENCIES) $(EXTRA_libopcode_executor_a_DEPENDENCIES) 
-	-rm -f libopcode_executor.a
-	$(libopcode_executor_a_AR) libopcode_executor.a $(libopcode_executor_a_OBJECTS) $(libopcode_executor_a_LIBADD)
-	$(RANLIB) libopcode_executor.a
+libtest_harness.a: $(libtest_harness_a_OBJECTS) $(libtest_harness_a_DEPENDENCIES) $(EXTRA_libtest_harness_a_DEPENDENCIES) 
+	-rm -f libtest_harness.a
+	$(libtest_harness_a_AR) libtest_harness.a $(libtest_harness_a_OBJECTS) $(libtest_harness_a_LIBADD)
+	$(RANLIB) libtest_harness.a
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -210,11 +208,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_executor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_handlers.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_map.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcodes.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/registers.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_harness.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

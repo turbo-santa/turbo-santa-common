@@ -8,7 +8,7 @@ AC_CONFIG_SRCDIR([third_party/gtest/src/gtest-internal-inl.h])
 AM_INIT_AUTOMAKE
 
 CXX='g++-4.8'
-CPPFLAGS='-I${top_srcdir}'
+CPPFLAGS='-I${top_srcdir} -I${top_srcdir}/third_party/gtest/include'
 CXXFLAGS='-std=c++11'
 CFLAGS=''
 
@@ -39,6 +39,9 @@ AC_CHECK_FUNCS([dup2 fchdir getcwd getpagesize gettimeofday memset mkdir munmap 
 AC_CONFIG_FILES([Makefile
                  back_end/Makefile
                  back_end/memory/Makefile
-                 back_end/opcode_executor/Makefile])
-#                  third_party/gtest/Makefile])
+                 back_end/opcode_executor/Makefile
+                 test_harness/Makefile])
+
+AC_CONFIG_SUBDIRS([third_party/gtest])
+
 AC_OUTPUT

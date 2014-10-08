@@ -1,6 +1,7 @@
 *.o
 *.a
 *.log
+*.zip
 test
 test_bin
 DS_Store

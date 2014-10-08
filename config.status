@@ -405,7 +405,7 @@ on `(hostname || uname -n) 2>/dev/null | sed 1q`
 "
 
 # Files that config.status was made for.
-config_files=" Makefile back_end/Makefile back_end/memory/Makefile back_end/opcode_executor/Makefile"
+config_files=" Makefile back_end/Makefile back_end/memory/Makefile back_end/opcode_executor/Makefile test_harness/Makefile"
 config_commands=" depfiles"
 
 ac_cs_usage="\
@@ -546,6 +546,7 @@ do
     "back_end/Makefile") CONFIG_FILES="$CONFIG_FILES back_end/Makefile" ;;
     "back_end/memory/Makefile") CONFIG_FILES="$CONFIG_FILES back_end/memory/Makefile" ;;
     "back_end/opcode_executor/Makefile") CONFIG_FILES="$CONFIG_FILES back_end/opcode_executor/Makefile" ;;
+    "test_harness/Makefile") CONFIG_FILES="$CONFIG_FILES test_harness/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
   esac
@@ -613,6 +614,7 @@ cat >>"$ac_tmp/subs1.awk" <<\_ACAWK &&
 S["am__EXEEXT_FALSE"]=""
 S["am__EXEEXT_TRUE"]="#"
 S["LTLIBOBJS"]=""
+S["subdirs"]=" third_party/gtest"
 S["LIBOBJS"]=""
 S["EGREP"]="/bin/grep -E"
 S["GREP"]="/bin/grep"
@@ -637,7 +639,7 @@ S["DEPDIR"]=".deps"
 S["OBJEXT"]="o"
 S["EXEEXT"]=""
 S["ac_ct_CXX"]=""
-S["CPPFLAGS"]="-I${top_srcdir}"
+S["CPPFLAGS"]="-I${top_srcdir} -I${top_srcdir}/third_party/gtest/include"
 S["LDFLAGS"]=""
 S["CXXFLAGS"]="-std=c++11"
 S["CXX"]="g++-4.8"
