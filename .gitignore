@@ -3,6 +3,7 @@
 *.log
 *.zip
 *.cache
+*.status
 test
 test_bin
 DS_Store
