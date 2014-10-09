@@ -1,0 +1,140 @@
+#ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_MBC_H_
+#define TURBO_SANTA_COMMON_BACK_END_MEMORY_MBC_H_
+
+#include <memory>
+#include <vector>
+
+#include "back_end/memory/memory_segment.h"
+
+namespace back_end {
+namespace memory {
+
+class ROMBank {
+  public:
+    ROMBank(RawMemoryBlock* memory) : memory_(memory) {}
+
+    virtual unsigned char Read(unsigned short address);
+
+  private:
+    std::unique_ptr<RawMemoryBlock> memory_;
+};
+
+class RAMBank {
+  public:
+    RAMBank(RawMemoryBlock* memory) : memory_(memory) {}
+
+    virtual unsigned char Read(unsigned short address);
+
+    virtual void Write(unsigned short address, unsigned char value);
+
+  private:
+    std::unique_ptr<RawMemoryBlock> memory_;
+};
+
+class MBC : public MemorySegment {
+  public:
+    virtual unsigned char Read(unsigned short address);
+    virtual void Write(unsigned short address, unsigned char value);
+    
+  protected:
+    virtual unsigned short lower_address_bound() { return 0x0000; }
+    virtual unsigned short upper_address_bound() { return 0xbfff; }
+};
+
+class NoMBC : public MBC {
+  public:
+    virtual unsigned char Read(unsigned short address);
+    virtual void Write(unsigned short address, unsigned char value);
+    
+  protected:
+    ROMBank rom_bank_0_;
+    ROMBank rom_bank_1_;
+    RAMBank ram_bank_0_;
+
+};
+
+class MBC1 : public MBC {
+  public:
+    virtual unsigned char Read(unsigned short address);
+    virtual void Write(unsigned short address, unsigned char value);
+   
+    // The documentation stated
+    // that the gameboy game may change the ROM/RAM addressing mode at anytime
+    // and stated that RAM bank 0 may still be accessed in ROM mode while ROM
+    // banks addressed with only with lower bits may be accessed in RAM mode.
+    // It did not, however, specify what the behavior is when the RAM bank was
+    // non zero when disabled. It would make the most sense that it is assumed
+    // zero. Based on the documentation, it appears that all of this is controled
+    // through a single 8-bit register with the 5 LSB specifying the 5 LSB of
+    // the ROM bank, the next 2 bits setting the 2 MSB of the the ROM bank or
+    // the RAM bank number depending on the mode. The mode is then controlled
+    // by the MSB.
+    class BankModeRegister {
+      public:
+        // Sets the bottom 5 bits of the BankModeRegister.
+        void SetLowerBits(unsigned char value);
+
+        // Sets bits 6 and 7 of the BankModeRegister.
+        void SetUpperBits(unsigned char value);
+
+        // Sets whether is ROM mode or RAM mode.
+        void SetIsRAMMode(unsigned char value);
+
+        // Gets the number of the selected RAM bank.
+        unsigned char GetRAMBank();
+
+        // Gets the number of the selected ROM bank.
+        unsigned char GetROMBank();
+
+      private:
+        // 7-bit register that stores that sets the selected ROM/RAM address(es).
+        unsigned char register_ = 0;
+        bool is_ram_mode_ = false;
+    };
+
+    class ROMBankN {
+      public:
+        virtual unsigned char Read(unsigned short address) {
+          return banks_[ComputeROMBank()]->Read(address);
+        }
+
+      private:
+        // Unlike the RAM bank, the ROM bank number does not directly correspond
+        // to that banks index in the vector of banks. When the user sets the
+        // bottom 5 bits of the RAM/ROM bank register (the BankModeRegister here)
+        // to 0 it actually gets set to 1 since bank 0 is always mapped into
+        // memory at a different range of addresses. Thus we have to translate
+        // the given ROM bank number to its index in the vector.
+        unsigned char ComputeROMBank();
+
+        std::vector<std::unique_ptr<ROMBank>> banks_;
+        BankModeRegister* bank_mode_register_;
+    };
+
+    class RAMBankN {
+      public:
+        virtual unsigned char Read(unsigned short address) {
+          return banks_[bank_mode_register_->GetRAMBank()]->Read(address);
+        }
+
+        virtual void Write(unsigned short address, unsigned char value) {
+          banks_[bank_mode_register_->GetRAMBank()]->Write(address, value);
+        }
+
+      private:
+        std::vector<std::unique_ptr<RAMBank>> banks_;
+        BankModeRegister* bank_mode_register_;
+    };
+
+  private:
+    void SetRAMEnabled(unsigned char value);
+    bool ram_enabled_ = false;
+    BankModeRegister bank_mode_register_;
+    ROMBank rom_bank_0_;
+    ROMBankN rom_bank_n_;
+    RAMBankN ram_bank_n_;
+};
+
+} // namespace memory
+} // namespace back_end
+#endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_MBC_H_
