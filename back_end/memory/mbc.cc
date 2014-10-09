@@ -5,6 +5,25 @@
 namespace back_end {
 namespace memory {
 
+using std::unique_ptr;
+using std::vector;
+
+namespace {
+void CreateROMBanks(unsigned char* program_rom, long size, ROMBank* rom_bank_0, ROMBank* rom_bank_1);
+void CreateRAMBank(RAMBank* ram_bank_0);
+
+// TODO(Brendan): Finish this.
+NoMBC* CreateNoMBC(unsigned char* program_rom, long size) {
+  ROMBank rom_bank_0;
+  ROMBank rom_bank_1;
+  RAMBank ram_bank_0;
+  CreateROMBanks(program_rom, size, &rom_bank_0, &rom_bank_1);
+  CreateRAMBank(&ram_bank_0);
+}
+
+MBC1* CreateMBC1(unsigned char* program_rom, long size);
+} // namespace
+
 unsigned char ROMBank::Read(unsigned short address) {
   return memory_->raw_memory_start[address];
 }
@@ -15,6 +34,26 @@ unsigned char RAMBank::Read(unsigned short address) {
 
 void RAMBank::Write(unsigned short address, unsigned char value) {
   memory_->raw_memory_start[address] = value;
+}
+
+unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size) {
+  MBC::CartridgeType cartridge_type = GetCartridgeType(program_rom[0x147]);
+//   int rom_bank_number = GetROMBankNumber(program_rom[0x148]);
+//   int ram_bank_number = GetRAMBankNumber(program_rom[0x149]);
+
+  switch (cartridge_type) {
+    case MBC::ROM_ONLY:
+    case MBC::ROM_AND_RAM:
+    case MBC::ROM_AND_RAM_BATTERY:
+      return unique_ptr<MBC>(CreateNoMBC(program_rom, size));
+    case MBC::MBC1:
+    case MBC::MBC1_WITH_RAM:
+    case MBC::MBC1_WITH_RAM_BATTERY:
+      return unique_ptr<MBC>(CreateMBC1(program_rom, size));
+    case MBC::UNSUPPORTED:
+    default:
+      LOG(FATAL) << "Cartridge Type, " << cartridge_type << ", is unsupported";
+  }
 }
 
 unsigned char NoMBC::Read(unsigned short address) {

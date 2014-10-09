@@ -11,8 +11,6 @@ namespace memory {
 
 class ROMBank {
   public:
-    ROMBank(RawMemoryBlock* memory) : memory_(memory) {}
-
     virtual unsigned char Read(unsigned short address);
 
   private:
@@ -21,8 +19,6 @@ class ROMBank {
 
 class RAMBank {
   public:
-    RAMBank(RawMemoryBlock* memory) : memory_(memory) {}
-
     virtual unsigned char Read(unsigned short address);
 
     virtual void Write(unsigned short address, unsigned char value);
@@ -33,6 +29,20 @@ class RAMBank {
 
 class MBC : public MemorySegment {
   public:
+    static const unsigned short kROMBank0Size = 0x4000;
+    static const unsigned short kROMBankNSize = 0x4000;
+    static const unsigned short kRAMBankNSize = 0x2000;
+
+    enum CartridgeType {
+      ROM_ONLY = 0x00,
+      MBC1 = 0x01,
+      MBC1_WITH_RAM = 0x02,
+      MBC1_WITH_RAM_BATTERY = 0x03, // We do not currently have support for battery.
+      ROM_AND_RAM = 0x08,
+      ROM_AND_RAM_BATTERY = 0x09, // We do not currently have support for battery.
+      UNSUPPORTED = 0xdd // 0xdd is unused so this is safe.
+    };
+
     virtual unsigned char Read(unsigned short address);
     virtual void Write(unsigned short address, unsigned char value);
     
@@ -40,6 +50,14 @@ class MBC : public MemorySegment {
     virtual unsigned short lower_address_bound() { return 0x0000; }
     virtual unsigned short upper_address_bound() { return 0xbfff; }
 };
+
+std::unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size);
+
+MBC::CartridgeType GetCartridgeType(unsigned char cartridge_type_value);
+
+int GetROMBankNumber(unsigned char rom_size_value);
+
+int GetRAMBankNumber(unsigned char ram_size_value);
 
 class NoMBC : public MBC {
   public:
