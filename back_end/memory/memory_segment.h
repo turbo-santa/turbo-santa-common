@@ -8,60 +8,50 @@ namespace back_end {
 namespace memory {
 
 class MemorySegment {
-    public:
-        virtual unsigned char get(unsigned short address) = 0;
+ public:
+  // Whether this is the memory segment that the address is in.
+  virtual bool InRange(unsigned short address) = 0;
 
-        virtual void set(unsigned short address, unsigned char value) = 0;
+  // Read the value at this memory address.
+  virtual unsigned char Read(unsigned short address) = 0;
+
+  // Write this value to this memory address.
+  virtual void Write(unsigned short address, unsigned char value) = 0;
 };
 
-class TransparentMemorySegment : public MemorySegment {
-    public:
-        TransparentMemorySegment(unsigned char* raw_memory) : raw_memory_(raw_memory) {}
+class ContiguousMemorySegment : public MemorySegment {
+ public:
+  virtual bool InRange(unsigned short address) {
+    return lower_address_bound() <= address && address <= upper_address_bound();
+  }
 
-        virtual unsigned char get(unsigned short address) {
-            return raw_memory_[address];
-        }
+ protected:
+  // Inclusive lower bound of this memory segment.
+  virtual unsigned short lower_address_bound() = 0;
 
-        virtual void set(unsigned short address, unsigned char value) {
-            raw_memory_[address] = value;
-        }
-
-    private:
-        unsigned char* raw_memory_;
+  // Inclusive upper bound of this memory segment.
+  virtual unsigned short upper_address_bound() = 0;
 };
 
-typedef std::function<bool(unsigned short address)> Predicate;
-typedef std::function<void(unsigned short address, unsigned char value)> WriteAction;
-typedef std::function<unsigned char (unsigned short address)> ReadAction;
+// For memory segments that we have not written yet.
+class NullMemorySegment : public ContiguousMemorySegment {
+ public:
+  NullMemorySegment(unsigned short lower_address_bound,
+                    unsigned short upper_address_bound) 
+      : lower_address_bound_(lower_address_bound),
+      upper_address_bound_(upper_address_bound) {}
 
-struct ReadDispatcher {
-    Predicate predicate;
-    ReadAction action;
-};
+  virtual unsigned char Read(unsigned short) { return 0; }
 
-struct WriteDispatcher {
-    Predicate predicate;
-    WriteAction action;
-};
+  virtual void Write(unsigned short, unsigned char) {}
 
-Predicate CreateIsInRange(unsigned short min, unsigned short max);
+ protected:
+  virtual unsigned short lower_address_bound() { return lower_address_bound_; }
+  virtual unsigned short upper_address_bound() { return upper_address_bound_; }
 
-ReadAction CreateReadAction(MemorySegment* memory_segment);
-
-WriteAction CreateWriteAction(MemorySegment* memory_segment);
-
-ReadDispatcher CreateReadDispatcher(unsigned short min, unsigned short max, MemorySegment* memory_segment);
-
-WriteDispatcher CreateWriteDispatcher(unsigned short min, unsigned short max, MemorySegment* memory_segment);
-
-class ReadOnlyMemorySegment : public TransparentMemorySegment {
-    public:
-        ReadOnlyMemorySegment(unsigned char* raw_memory) : TransparentMemorySegment(raw_memory) {}
-
-        virtual void set(unsigned short address, unsigned char value);
-
-    protected:
-        std::vector<WriteDispatcher> dispatchers_;
+ private:
+  unsigned short lower_address_bound_;
+  unsigned short upper_address_bound_;
 };
 
 } // namespace memory
