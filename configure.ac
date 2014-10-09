@@ -6,6 +6,7 @@ AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
 AC_CONFIG_SRCDIR([third_party/gtest/src/gtest-internal-inl.h])
 # AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
+AC_LANG([C++])
 
 # CXX='g++-4.8'
 CPPFLAGS='-I${top_srcdir} -I${top_srcdir}/third_party/gtest/include'
@@ -19,9 +20,12 @@ AC_PROG_CC
 AC_PROG_RANLIB
 
 # Checks for libraries.
+# Cannot check for glog since it is all C++ and does not provide a non-mangled function.
+# AC_SEARCH_LIBS([], [glog], [], [AC_MSG_ERROR([Could not find glog/logging.h. Please install from: code.google.com/p/google-glog/])])
 
 # Checks for header files.
-AC_CHECK_HEADERS([arpa/inet.h fcntl.h float.h limits.h netdb.h stddef.h stdlib.h string.h strings.h sys/time.h sys/timeb.h unistd.h wchar.h wctype.h])
+AC_CHECK_HEADERS([glog/logging.h], [], [AC_MSG_ERROR([Could not find glog/logging.h. Please install from: code.google.com/p/google-glog/])])
+AC_CHECK_HEADERS([float.h glog/logging.h limits.h stddef.h stdlib.h string.h strings.h sys/time.h sys/timeb.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_HEADER_STDBOOL
