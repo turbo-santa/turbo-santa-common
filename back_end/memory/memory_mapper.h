@@ -27,7 +27,7 @@ class MemoryMapper {
 
   unsigned char get(unsigned short location) { return mapped_memory_[location]; }
 
-  unsigned long kMaxSize = 0x10000;
+  const static unsigned long kMaxSize = 0x10000;
 
  private:
   unsigned char* mapped_memory_;
