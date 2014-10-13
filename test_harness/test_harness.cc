@@ -4,6 +4,7 @@
 #include <string>
 #include "back_end/opcode_executor/opcode_handlers.h"
 #include "back_end/opcode_executor/registers.h"
+#include "back_end/memory/memory_mapper.h"
 
 namespace test_harness {
 using std::string;
@@ -12,6 +13,7 @@ using std::unique_ptr;
 using std::vector;
 using back_end::handlers::mem_map;
 using back_end::registers::cpu;
+using back_end::memory::MemoryMapper;
 using ::testing::AssertionResult;
 using ::testing::AssertionSuccess;
 using ::testing::AssertionFailure;
@@ -118,8 +120,8 @@ bool TestHarness::VerifyCorrectInstruction(const vector<unsigned char>& instruct
 
 void TestHarness::ClearParser() {
     parser_->instruction_ptr_ = 0;
-    for (int i = 0; i < 0x10000; i++) {
-        mem_map->get_pointer()[i] = 0;
+    for (int i = 0; i < MemoryMapper::kMaxSize; i++) {
+        mem_map->get_pointer()[i] = (unsigned char) 0;
     }
     typedef RegisterNameValuePair::RegisterName R;
     SetRegisterState({

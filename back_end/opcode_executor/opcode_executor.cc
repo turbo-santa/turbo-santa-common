@@ -8,8 +8,8 @@ using opcodes::opcode_map;
 using opcodes::Opcode;
 using memory::MemoryMapper;
 
-OpcodeExecutor::OpcodeExecutor(unsigned char* rom, long rom_size) {
-    handlers::mem_map = unique_ptr<MemoryMapper>(new MemoryMapper(rom, rom_size));
+OpcodeExecutor::OpcodeExecutor(unsigned char*, long) {
+    handlers::mem_map = unique_ptr<MemoryMapper>(new MemoryMapper());
     rom_ = handlers::mem_map->get_pointer();
 }
 
