@@ -12,7 +12,7 @@ namespace back_end {
 namespace handlers {
 
 
-extern MemoryMapper* mem_map;
+extern memory::MemoryMapper* mem_map;
 
 // 8 Bit ALU
 opcodes::OpcodeResult Add8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
