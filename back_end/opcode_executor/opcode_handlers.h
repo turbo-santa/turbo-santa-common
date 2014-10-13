@@ -13,7 +13,7 @@ namespace handlers {
 using opcodes::Opcode;
 using memory::MemoryMapper;
 
-extern std::unique_ptr<MemoryMapper> mem_map;
+extern MemoryMapper* mem_map;
 
 // 8 Bit ALU
 int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);

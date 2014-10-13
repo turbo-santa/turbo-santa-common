@@ -7,7 +7,7 @@ namespace handlers {
 using opcodes::Opcode;
 using registers::cpu;
 
-std::unique_ptr<MemoryMapper> mem_map;
+MemoryMapper* mem_map;
 
 unsigned char* registers[] = { &cpu.bc_struct.rB, &cpu.bc_struct.rC, &cpu.de_struct.rD,
     &cpu.de_struct.rE, &cpu.hl_struct.rH, &cpu.hl_struct.rL, (unsigned char*) &cpu.rHL, &cpu.flag_struct.rA };
