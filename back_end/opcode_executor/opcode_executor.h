@@ -19,7 +19,7 @@ namespace handlers {
 class OpcodeExecutor {
   public: 
     OpcodeExecutor(unsigned char* rom, long rom_size);
-    void ReadInstruction();
+    unsigned int ReadInstruction();
 
   private:
     // TODO(Diego): It acutally starts at something like 0x100.

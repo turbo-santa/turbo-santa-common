@@ -13,7 +13,7 @@ OpcodeExecutor::OpcodeExecutor(unsigned char*, long) {
     rom_ = handlers::mem_map->get_pointer();
 }
 
-void OpcodeExecutor::ReadInstruction() {
+unsigned int OpcodeExecutor::ReadInstruction() {
     unsigned short opcode = rom_[instruction_ptr_];
     if (opcode == 0xCB || opcode == 0x10) {
         instruction_ptr_++;
@@ -21,7 +21,9 @@ void OpcodeExecutor::ReadInstruction() {
         opcode = opcode << 8 | opcode_lb;
     }
     Opcode opcode_struct = opcode_map[opcode];
-    instruction_ptr_ = opcode_struct.handler(rom_, instruction_ptr_, opcode_struct);
+    opcodes::OpcodeResult result = opcode_struct.handler(rom_, instruction_ptr_, opcode_struct);
+    instruction_ptr_ = result.instruction_ptr;
+    return result.clock_cycles;
 }
 
 } // namespace handlers

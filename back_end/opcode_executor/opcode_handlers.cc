@@ -1,5 +1,4 @@
 #include "back_end/opcode_executor/opcode_handlers.h"
-
 #include "back_end/opcode_executor/opcodes.h"
 
 namespace back_end {
@@ -73,55 +72,55 @@ unsigned char NthBit(unsigned int byte, int n) {
 
 // TODO(Brendan): These opcodes are not in the same order as with ALU operations.
 // 8-bit loads. Consider using opcodes::Opcode to address this.
-int Ld8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Ld8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     *reg = GetRegisterValue(rom, instruction_ptr + 1, opcode.opcode_name);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int Ld8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Ld8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     *reg = GetParameterValue(rom, instruction_ptr);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int LoadToA8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadToA8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadToA8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadToA8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = GetParameterValue(rom, instruction_ptr);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
 // See comment below about loading to an immediate.
-int LoadToA16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadToA16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = GetRegisterValue16(rom, instruction_ptr, opcode.opcode_name);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadToA16BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadToA16BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = GetParameterValue16(rom, instruction_ptr);
-    return instruction_ptr + 3;
+    return {instruction_ptr + 3, opcode.clock_cycles};
 }
 
-int LoadFromA8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadFromA8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     *reg = GetRegisterValue(rom, instruction_ptr + 1, opcode.opcode_name);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int LoadFromA16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadFromA16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     *reg = GetRegisterValue(rom, instruction_ptr + 1, opcode.opcode_name);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
 // TODO(Brendan): I am pretty sure I am missing something here. It does not
 // make any sense to load a value from A to an immediate.
-int LoadImediateFromA16Bit(unsigned char*, int, Opcode) {
-    return -1;
+opcodes::OpcodeResult LoadImediateFromA16Bit(unsigned char*, int, Opcode opcode) {
+    return {-1, opcode.clock_cycles};
 }
 
 // ALU.
@@ -184,14 +183,14 @@ void Add8BitImpl(unsigned char value) {
     SetNFlag(false);
 }
 
-int Add8Bit(unsigned char*, int instruction_ptr, Opcode opcode) {
-    Add8BitImpl(*opcode.reg1);
-    return instruction_ptr + 1;
+opcodes::OpcodeResult Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    Add8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Add8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Add8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     Add8BitImpl(GetParameterValue(rom, instruction_ptr));
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
 void ADC8BitImpl(unsigned char value) {
@@ -206,14 +205,14 @@ void ADC8BitImpl(unsigned char value) {
     SetNFlag(false);
 }
 
-int ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    ADC8BitImpl(*opcode.reg1);
-    return instruction_ptr + 1;
+opcodes::OpcodeResult ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    ADC8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     ADC8BitImpl(GetParameterValue(rom, instruction_ptr));
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
 void Sub8BitImpl(unsigned char value) {
@@ -224,14 +223,14 @@ void Sub8BitImpl(unsigned char value) {
     SetNFlag(true);
 }
 
-int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    Sub8BitImpl(*opcode.reg1);
-    return instruction_ptr + 1;
+opcodes::OpcodeResult Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    Sub8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     Sub8BitImpl(GetParameterValue(rom, instruction_ptr));
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
 void SBC8BitImpl(unsigned char value) {
@@ -255,109 +254,110 @@ int SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
 }
 
 int And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA &= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
     SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
     cpu.flag_struct.rF.H = 0;
     cpu.flag_struct.rF.C = 0;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int And8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult And8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA &= GetParameterValue(rom, instruction_ptr);
     SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
     cpu.flag_struct.rF.H = 0;
     cpu.flag_struct.rF.C = 0;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Or8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Or8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA |= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
     SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
     cpu.flag_struct.rF.H = 0;
     cpu.flag_struct.rF.C = 0;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Or8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Or8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA |= GetParameterValue(rom, instruction_ptr);
     SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
     cpu.flag_struct.rF.H = 0;
     cpu.flag_struct.rF.C = 0;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Xor8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Xor8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA ^= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
     SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
     cpu.flag_struct.rF.H = 0;
     cpu.flag_struct.rF.C = 0;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Xor8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Xor8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA ^= GetParameterValue(rom, instruction_ptr);
     SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
     cpu.flag_struct.rF.H = 0;
     cpu.flag_struct.rF.C = 0;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Cp8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Cp8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char result = cpu.flag_struct.rA - GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
     SetZFlag(result);
     SetNFlag(true); // Performed subtraction.
     cpu.flag_struct.rF.H = NthBit(cpu.flag_struct.rA, 4) != NthBit(result, 4);
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7) != NthBit(result, 7);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Cp8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Cp8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char result = cpu.flag_struct.rA - GetParameterValue(rom, instruction_ptr);
     SetZFlag(result);
     SetNFlag(true); // Performed subtraction.
     cpu.flag_struct.rF.H = NthBit(cpu.flag_struct.rA, 4) != NthBit(result, 4);
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7) != NthBit(result, 7);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Inc8Bit(unsigned char*, int instruction_ptr, Opcode opcode) {
-    unsigned char* reg = opcode.reg1;
+opcodes::OpcodeResult Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     unsigned char forth_bit = NthBit(*reg, 3);
     ++(*reg);
     bool borrowed_h = forth_bit != NthBit(*reg, 3);
     SetZFlag(*reg);
     SetNFlag(false);
     cpu.flag_struct.rF.H = borrowed_h;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Dec8Bit(unsigned char*, int instruction_ptr, Opcode opcode) {
-    unsigned char* reg = opcode.reg1;
+opcodes::OpcodeResult Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     unsigned char fourth_bit = NthBit(*reg, 4);
     --(*reg);
     bool borrowed_h = fourth_bit != NthBit(*reg, 4);
     SetZFlag(*reg);
     SetNFlag(true);
     cpu.flag_struct.rF.H = borrowed_h;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Add16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Add16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     short value = GetRegisterValue16(rom, instruction_ptr, opcode.opcode_name);
     cpu.flag_struct.rF.H = DoesHalfCarry16(cpu.flag_struct.rA, value);
     cpu.flag_struct.rF.C = DoesCarry16(cpu.flag_struct.rA, value);
     cpu.rHL += value;
     SetNFlag(false);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char value = GetParameterValue(rom, instruction_ptr);
     if (NthBit(value, 7)) {
         cpu.flag_struct.rF.H = DoesHalfBorrow16(cpu.rSP, value);
@@ -369,22 +369,22 @@ int AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
     SetNFlag(false);
     cpu.flag_struct.rF.Z = 0;
     cpu.rSP += value;
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int Inc16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Inc16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned short* reg = GetRegister16(rom, instruction_ptr, opcode.opcode_name);
     *reg += 1;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Dec16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Dec16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned short* reg = GetRegister16(rom, instruction_ptr, opcode.opcode_name);
     *reg -= 1;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Swap(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Swap(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     unsigned char value = *reg;
     *reg = (value << 4) | (value >> 4);
@@ -392,10 +392,10 @@ int Swap(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     SetNFlag(false);
     cpu.flag_struct.rF.H = 0;
     cpu.flag_struct.rF.C = 0;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int DAA(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult DAA(unsigned char*, int instruction_ptr, Opcode opcode) {
     unsigned char upper = cpu.flag_struct.rA >> 4;
     unsigned char lower = cpu.flag_struct.rA & 0x0F;
     unsigned char c = cpu.flag_struct.rF.C;
@@ -418,104 +418,104 @@ int DAA(unsigned char*, int instruction_ptr, Opcode) {
     }
     cpu.flag_struct.rF.H = 0;
     SetZFlag(cpu.flag_struct.rA);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int CPL(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult CPL(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = ~cpu.flag_struct.rA;
     cpu.flag_struct.rF.H = 1;
     SetNFlag(true);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int CCF(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult CCF(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = ~cpu.flag_struct.rA;
     cpu.flag_struct.rF.C = !cpu.flag_struct.rF.C;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int SCF(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult SCF(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rF.C = 1;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int NOP(unsigned char*, int instruction_ptr, Opcode) {
-    return instruction_ptr + 1;
+opcodes::OpcodeResult NOP(unsigned char*, int instruction_ptr, Opcode opcode) {
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Halt(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Halt(unsigned char*, int instruction_ptr, Opcode opcode) {
     // TODO: We should actually halt instead of just nop
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Stop(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Stop(unsigned char*, int instruction_ptr, Opcode opcode) {
     // TODO: We should actually stop instead of just nop
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int DI(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult DI(unsigned char*, int instruction_ptr, Opcode opcode) {
     // TODO: Actually disable the interrupts
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int EI(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult EI(unsigned char*, int instruction_ptr, Opcode opcode) {
     // TODO: Actually enable the interrupts
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int RLCA(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult RLCA(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7);
     cpu.flag_struct.rA = cpu.flag_struct.rA << 1;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(cpu.flag_struct.rA);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int RLA(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult RLA(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 7);
     cpu.flag_struct.rA = cpu.flag_struct.rA << 1;
     cpu.flag_struct.rA |= cpu.flag_struct.rF.C;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(cpu.flag_struct.rA);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int RRCA(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult RRCA(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 0);
     cpu.flag_struct.rA = cpu.flag_struct.rA >> 1;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(cpu.flag_struct.rA);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int RRA(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult RRA(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rF.C = NthBit(cpu.flag_struct.rA, 0);
     cpu.flag_struct.rA = cpu.flag_struct.rA >> 1;
     cpu.flag_struct.rA |= (((unsigned char) cpu.flag_struct.rF.C) << 7);
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(cpu.flag_struct.rA);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int RLC(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult RLC(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     cpu.flag_struct.rF.C = NthBit(*reg, 7);
     *reg = *reg << 1;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(*reg);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int RL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult RL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     cpu.flag_struct.rF.C = NthBit(*reg, 7);
     *reg = *reg << 1;
@@ -523,20 +523,20 @@ int RL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(*reg);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int RRC(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult RRC(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     cpu.flag_struct.rF.C = NthBit(*reg, 0);
     *reg = *reg >> 1;
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(*reg);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int RR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult RR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     cpu.flag_struct.rF.C = NthBit(*reg, 0);
     *reg = *reg >> 1;
@@ -544,14 +544,14 @@ int RR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(*reg);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int SLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult SLA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return RLC(rom, instruction_ptr, opcode);
 }
 
-int SRA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult SRA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     cpu.flag_struct.rF.C = NthBit(*reg, 0);
     unsigned char msb = NthBit(*reg, 7) << 7;
@@ -560,137 +560,137 @@ int SRA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rF.H = 0;
     SetNFlag(false);
     SetZFlag(*reg);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int SRL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult SRL(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return RRC(rom, instruction_ptr, opcode);
 }
 
-int Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     unsigned char bit = NthBit(*reg, GetParameterValue(rom, instruction_ptr));
     cpu.flag_struct.rF.H = 1;
     SetZFlag(bit);
     SetNFlag(false);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int Set(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Set(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     unsigned char bit = GetParameterValue(rom, instruction_ptr);
     *reg |= (0x1 << bit);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int Res(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Res(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
     unsigned char bit = GetParameterValue(rom, instruction_ptr);
     *reg &= ~(0x1 << bit);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
 
-int Jump(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Jump(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     instruction_ptr = GetAddress16(rom, instruction_ptr);
-    return instruction_ptr;
+    return {instruction_ptr, opcode.clock_cycles};
 }
 
-int JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     switch (opcode.opcode_name) {
         case 0xC2:
             if (!cpu.flag_struct.rF.Z) {
                 return Jump(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xCA:
             if (cpu.flag_struct.rF.Z) {
                 return Jump(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xD2:
             if (!cpu.flag_struct.rF.C) {
                 return Jump(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xDA:
             if (cpu.flag_struct.rF.C) {
                 return Jump(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
     }
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int JumpHL(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult JumpHL(unsigned char*, int instruction_ptr, Opcode opcode) {
     instruction_ptr = cpu.rHL;
-    return instruction_ptr;
+    return {instruction_ptr, opcode.clock_cycles};
 }
 
-int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult JumpRelative(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     instruction_ptr += GetParameterValue(rom, instruction_ptr);
-    return instruction_ptr;
+    return {instruction_ptr, opcode.clock_cycles};
 }
 
-int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     switch (opcode.opcode_name) {
         case 0x20:
             if (!cpu.flag_struct.rF.Z) {
                 return JumpRelative(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0x28:
             if (cpu.flag_struct.rF.Z) {
                 return JumpRelative(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0x30:
             if (!cpu.flag_struct.rF.C) {
                 return JumpRelative(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0x38:
             if (cpu.flag_struct.rF.C) {
                 return JumpRelative(rom, instruction_ptr, opcode);
             }
     }
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Call(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Call(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned short address = GetAddress16(rom, instruction_ptr);
     cpu.rSP = instruction_ptr + 1;
     instruction_ptr = address;
-    return instruction_ptr;
+    return {instruction_ptr, opcode.clock_cycles};
 }
 
-int CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     switch (opcode.opcode_name) {
         case 0xC4:
             if (!cpu.flag_struct.rF.Z) {
                 return Call(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xCC:
             if (cpu.flag_struct.rF.Z) {
                 return Call(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xD4:
             if (!cpu.flag_struct.rF.C) {
                 return Call(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xDC:
             if (cpu.flag_struct.rF.C) {
                 return Call(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
     }
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Restart(unsigned char*, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Restart(unsigned char*, int instruction_ptr, Opcode opcode) {
     unsigned char accum = 0;
     switch (opcode.opcode_name) {
         case 0xFF:
@@ -710,168 +710,168 @@ int Restart(unsigned char*, int instruction_ptr, Opcode opcode) {
         case 0xC7:
             instruction_ptr = accum;
     }
-    return instruction_ptr;
+    return {instruction_ptr, opcode.clock_cycles};
 }
 
-int Return(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult Return(unsigned char*, int instruction_ptr, Opcode opcode) {
     unsigned short address = 0; // = cpu.rSP[0];
     cpu.rSP -= 2;
     instruction_ptr = address;
-    return instruction_ptr;
+    return {instruction_ptr, opcode.clock_cycles};
 }
 
-int ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     switch (opcode.opcode_name) {
         case 0xC0:
             if (!cpu.flag_struct.rF.Z) {
                 return Return(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xC8:
             if (cpu.flag_struct.rF.Z) {
                 return Return(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xD0:
             if (!cpu.flag_struct.rF.C) {
                 return Return(rom, instruction_ptr, opcode);
             }
-            return instruction_ptr + 1;
+            return {instruction_ptr + 1, opcode.clock_cycles};
         case 0xD8:
             if (cpu.flag_struct.rF.C) {
                 return Return(rom, instruction_ptr, opcode);
             }
     }
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     // TODO(Brendan, Diego): Implement call stack.
     unsigned short address = 0; // = cpu.rSP[0];
     cpu.rSP -= 2;
     instruction_ptr = address;
     EI(rom, instruction_ptr, opcode);
-    return instruction_ptr;
+    return {instruction_ptr, opcode.clock_cycles};
 }
 
-int LoadN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     unsigned char value = GetParameterValue(rom, instruction_ptr);
     *opcode.reg1 = value;
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int LoadRR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadRR(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     if (opcode.opcode_name == 0x36) {
         unsigned char value = GetParameterValue(rom, instruction_ptr);
         *opcode.reg1 = value;
-        return instruction_ptr + 2;
+        return {instruction_ptr + 2, opcode.clock_cycles};
     } else {
         *opcode.reg1 = *opcode.reg2;
-        return instruction_ptr + 1;
+        return {instruction_ptr + 1, opcode.clock_cycles};
     }
 }
 
-int LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     if (opcode.opcode_name == 0xFA) {
         unsigned short address = GetParameterValue16LS(rom, instruction_ptr, opcode.opcode_name);
         // TODO: figure out what nn refers to.
     } else if (opcode.opcode_name == 0x3E) {
         unsigned char value = GetParameterValue(rom, instruction_ptr);
         cpu.flag_struct.rA = value;
-        return instruction_ptr + 2;
+        return {instruction_ptr + 2, opcode.clock_cycles};
     }
 
     cpu.flag_struct.rA = *opcode.reg1;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
 
-int LoadNA(unsigned char*, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadNA(unsigned char*, int instruction_ptr, Opcode opcode) {
     if (opcode.opcode_name == 0xEA) {
         // TODO: figure out what nn refers to.
     } else {
         *opcode.reg1 = cpu.flag_struct.rA;
     }
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadAC(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadAC(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = mem_map->get(0xFF00 + cpu.bc_struct.rC);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadCA(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadCA(unsigned char*, int instruction_ptr, Opcode opcode) {
     mem_map->set(0xFF00 + cpu.bc_struct.rC, cpu.flag_struct.rA);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadDecAHL(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadDecAHL(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = mem_map->get(cpu.rHL);
     cpu.rHL--;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadDecHLA(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadDecHLA(unsigned char*, int instruction_ptr, Opcode opcode) {
     mem_map->set(cpu.rHL, cpu.flag_struct.rA);
     cpu.rHL--;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadIncAHL(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadIncAHL(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = mem_map->get(cpu.rHL);
     cpu.rHL++;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadIncHLA(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadIncHLA(unsigned char*, int instruction_ptr, Opcode opcode) {
     mem_map->set(cpu.rHL, cpu.flag_struct.rA);
     cpu.rHL++;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadHNA(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     mem_map->set(0xFF00 + GetParameterValue(rom, instruction_ptr), cpu.flag_struct.rA);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA = mem_map->get(0xFF00 + GetParameterValue(rom, instruction_ptr));
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int LoadNN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult LoadNN(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     *opcode.reg1 = GetParameterValue16(rom, instruction_ptr);
-    return instruction_ptr + 3;
+    return {instruction_ptr + 3, opcode.clock_cycles};
 }
 
-int LoadSPHL(unsigned char*, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadSPHL(unsigned char*, int instruction_ptr, Opcode opcode) {
     cpu.rSP = cpu.rHL;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.rHL = cpu.rSP + (signed) GetParameterValue(rom, instruction_ptr);
     cpu.flag_struct.rF.Z = 0;
     SetNFlag(false);
 
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     mem_map->set(GetParameterValue(rom, instruction_ptr), cpu.rSP);
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
-int Push(unsigned char*, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Push(unsigned char*, int instruction_ptr, Opcode opcode) {
     mem_map->set(cpu.rSP, *opcode.reg1);
     cpu.rSP -= 2;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-int Pop(unsigned char*, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult Pop(unsigned char*, int instruction_ptr, Opcode opcode) {
     *opcode.reg1 = (((short)mem_map->get(cpu.rSP)) << 8) | mem_map->get(cpu.rSP + 1); 
     cpu.rSP += 2;
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
 } // namespace handlers

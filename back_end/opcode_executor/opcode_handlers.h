@@ -6,111 +6,110 @@
 #include "back_end/memory/memory_mapper.h"
 #include "back_end/opcode_executor/opcodes.h"
 #include "back_end/opcode_executor/registers.h"
+#include "back_end/opcode_executor/opcode_executor.h"
 
 namespace back_end {
 namespace handlers {
 
-using opcodes::Opcode;
-using memory::MemoryMapper;
 
 extern MemoryMapper* mem_map;
 
 // 8 Bit ALU
-int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Add8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SBC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int And8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Or8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Or8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Xor8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Xor8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Cp8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Cp8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult Add8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Add8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult ADC8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult ADC8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Sub8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Sub8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult SBC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult And8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult And8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Or8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Or8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Xor8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Xor8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Cp8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Cp8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Inc8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Dec8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // 16 Bit ALU
-int Add16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Inc16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Dec16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult Add16Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult AddSPLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Inc16Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Dec16Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // Miscelaneous
-int Swap(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int DAA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int CPL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int CCF(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SCF(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int NOP(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Halt(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Stop(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int DI(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int EI(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult Swap(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult DAA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult CPL(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult CCF(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult SCF(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult NOP(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Halt(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Stop(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult DI(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult EI(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // Rotates & Shifts
-int RLCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RRCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RRA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RLC(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RRC(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RR(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SRA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SRL(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult RLCA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult RLA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult RRCA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult RRA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult RLC(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult RL(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult RRC(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult RR(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult SLA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult SRA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult SRL(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // Bit operators
-int Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Set(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Res(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Set(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Res(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // Jumps
-int Jump(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult Jump(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult JumpConditional(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult JumpHL(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult JumpRelative(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult JumpRelativeConditional(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // Calls
-int Call(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult Call(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult CallConditional(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // Restart
-int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult Restart(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // Returns
-int Return(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult Return(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult ReturnConditional(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult ReturnInterrupt(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // 8-Bit Loads
-int LoadN(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadRR(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadNA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadAC(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadDecAHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadDecHLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadIncAHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadIncHLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult LoadN(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadRR(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadAN(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadNA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadAC(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadCA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadDecAHL(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadDecHLA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadIncAHL(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadIncHLA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadHNA(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadHAN(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 // 16-Bit Loads
-int LoadNN(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadSPHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Push(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Pop(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult LoadNN(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadSPHL(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadHLSP(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult LoadNNSP(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Push(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult Pop(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 
 } // namespace back_end
 } // namespace handlers
