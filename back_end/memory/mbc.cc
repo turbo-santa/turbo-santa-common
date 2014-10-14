@@ -9,35 +9,73 @@ using std::unique_ptr;
 using std::vector;
 
 namespace {
-void CreateROMBanks(unsigned char* program_rom, long size, ROMBank* rom_bank_0, ROMBank* rom_bank_1);
-void CreateRAMBank(RAMBank* ram_bank_0);
-
 // TODO(Brendan): Finish this.
-NoMBC* CreateNoMBC(unsigned char* program_rom, long size) {
+MBC* CreateNoMBC(unsigned char* program_rom, long size) {
   ROMBank rom_bank_0;
   ROMBank rom_bank_1;
   RAMBank ram_bank_0;
   CreateROMBanks(program_rom, size, &rom_bank_0, &rom_bank_1);
-  CreateRAMBank(&ram_bank_0);
+  return new NoMBC(rom_bank_0, rom_bank_1, ram_bank_0);
 }
 
-MBC1* CreateMBC1(unsigned char* program_rom, long size);
+MBC* CreateMBC1(unsigned char* program_rom, long size) {
+  ROMBank rom_bank_0;
+  vector<ROMBank> rom_bank_n;
+  vector<RAMBank> ram_bank_n;
+  CreateROMBanks(program_rom, size, &rom_bank_0, &rom_bank_n);
+  CreateRAMBanks(4, &ram_bank_n);
+  return new MBC1(rom_bank_0, rom_bank_n, ram_bank_n);
+}
 } // namespace
 
+void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, ROMBank* rom_bank_1) {
+  int address = 0;
+  for (; address < MBC::kROMBank0Size && address < rom_size; address++) {
+    rom_bank_0->memory_[address] = rom[address];
+  }
+
+  for (; address < MBC::kROMBankNSize && address < rom_size; address++) {
+    rom_bank_1->memory_[address] = rom[address];
+  }
+}
+
+void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, std::vector<ROMBank>* rom_bank_n) {
+  int address = 0;
+  for (; address < MBC::kROMBank0Size && address < rom_size; address++) {
+    rom_bank_0->memory_[address] = rom[address];
+  }
+
+  while (address < rom_size) {
+    ROMBank rom_bank;
+    for (; address < MBC::kROMBankNSize && address < rom_size; address++) {
+      rom_bank.memory_[address] = rom[address];
+    }
+    rom_bank_n->push_back(rom_bank);
+  }
+}
+
 unsigned char ROMBank::Read(unsigned short address) {
-  return memory_->raw_memory_start[address];
+  return memory_[address];
+}
+
+void CreateRAMBanks(int bank_number, vector<RAMBank>* ram_bank_n) {
+  for (int i = 0; i < bank_number; i++) {
+    ram_bank_n->push_back(RAMBank());
+  }
 }
 
 unsigned char RAMBank::Read(unsigned short address) {
-  return memory_->raw_memory_start[address];
+  return memory_[address];
 }
 
 void RAMBank::Write(unsigned short address, unsigned char value) {
-  memory_->raw_memory_start[address] = value;
+  memory_[address] = value;
 }
 
 unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size) {
   MBC::CartridgeType cartridge_type = GetCartridgeType(program_rom[0x147]);
+  // TODO(Brendan): We should have some type of check on the ROM/RAM size, I do
+  // not know what the behavior should be if the ROM states an incorrect size.
 //   int rom_bank_number = GetROMBankNumber(program_rom[0x148]);
 //   int ram_bank_number = GetRAMBankNumber(program_rom[0x149]);
 

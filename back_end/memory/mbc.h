@@ -9,22 +9,35 @@
 namespace back_end {
 namespace memory {
 
-class ROMBank {
-  public:
-    virtual unsigned char Read(unsigned short address);
+class ROMBank;
 
-  private:
-    std::unique_ptr<RawMemoryBlock> memory_;
+void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, ROMBank* rom_bank_1);
+void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, std::vector<ROMBank>* rom_bank_n);
+
+class ROMBank {
+ public:
+  virtual unsigned char Read(unsigned short address);
+
+ private:
+  std::vector<unsigned char> memory_;
+
+  friend void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, ROMBank* rom_bank_1);
+  friend void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, std::vector<ROMBank>* rom_bank_1);
 };
 
+class RAMBank;
+
+void CreateRAMBanks(int bank_number, std::vector<RAMBank>* ram_bank_n_);
+
 class RAMBank {
-  public:
-    virtual unsigned char Read(unsigned short address);
+ public:
+  virtual unsigned char Read(unsigned short address);
 
-    virtual void Write(unsigned short address, unsigned char value);
+  virtual void Write(unsigned short address, unsigned char value);
 
-  private:
-    std::unique_ptr<RawMemoryBlock> memory_;
+ private:
+  std::vector<unsigned char> memory_;
+  friend void CreateRAMBanks(int bank_number, std::vector<RAMBank>* ram_bank_n_);
 };
 
 class MBC : public MemorySegment {
@@ -45,6 +58,10 @@ class MBC : public MemorySegment {
 
     virtual unsigned char Read(unsigned short address);
     virtual void Write(unsigned short address, unsigned char value);
+
+    virtual bool InRange(unsigned short address) { 
+      return (0x0000 <= address && address <= 0x7fff) || (0xa000 <= address && address <= 0xbfff);
+    }
     
   protected:
     virtual unsigned short lower_address_bound() { return 0x0000; }
@@ -60,19 +77,25 @@ int GetROMBankNumber(unsigned char rom_size_value);
 int GetRAMBankNumber(unsigned char ram_size_value);
 
 class NoMBC : public MBC {
-  public:
-    virtual unsigned char Read(unsigned short address);
-    virtual void Write(unsigned short address, unsigned char value);
-    
-  protected:
-    ROMBank rom_bank_0_;
-    ROMBank rom_bank_1_;
-    RAMBank ram_bank_0_;
+ public:
+  NoMBC(ROMBank rom_bank_0, ROMBank rom_bank_1, RAMBank ram_bank_0)
+      : rom_bank_0_(rom_bank_0), rom_bank_1_(rom_bank_1), ram_bank_0_(ram_bank_0) {}
+
+  virtual unsigned char Read(unsigned short address);
+  virtual void Write(unsigned short address, unsigned char value);
+
+ protected:
+  ROMBank rom_bank_0_;
+  ROMBank rom_bank_1_;
+  RAMBank ram_bank_0_;
 
 };
 
 class MBC1 : public MBC {
   public:
+   MBC1(ROMBank rom_bank_0, std::vector<ROMBank> rom_bank_n, std::vector<RAMBank> ram_bank_n)
+       : rom_bank_0_(rom_bank_0), rom_bank_n_(rom_bank_n), ram_bank_n_(ram_bank_n) {}
+
     virtual unsigned char Read(unsigned short address);
     virtual void Write(unsigned short address, unsigned char value);
    
@@ -112,8 +135,9 @@ class MBC1 : public MBC {
 
     class ROMBankN {
       public:
+       ROMBankN(std::vector<ROMBank> banks) : banks_(banks) {}
         virtual unsigned char Read(unsigned short address) {
-          return banks_[ComputeROMBank()]->Read(address);
+          return banks_[ComputeROMBank()].Read(address);
         }
 
       private:
@@ -125,22 +149,24 @@ class MBC1 : public MBC {
         // the given ROM bank number to its index in the vector.
         unsigned char ComputeROMBank();
 
-        std::vector<std::unique_ptr<ROMBank>> banks_;
+        std::vector<ROMBank> banks_;
         BankModeRegister* bank_mode_register_;
     };
 
     class RAMBankN {
       public:
+       RAMBankN(std::vector<RAMBank> banks) : banks_(banks) {}
+
         virtual unsigned char Read(unsigned short address) {
-          return banks_[bank_mode_register_->GetRAMBank()]->Read(address);
+          return banks_[bank_mode_register_->GetRAMBank()].Read(address);
         }
 
         virtual void Write(unsigned short address, unsigned char value) {
-          banks_[bank_mode_register_->GetRAMBank()]->Write(address, value);
+          banks_[bank_mode_register_->GetRAMBank()].Write(address, value);
         }
 
       private:
-        std::vector<std::unique_ptr<RAMBank>> banks_;
+        std::vector<RAMBank> banks_;
         BankModeRegister* bank_mode_register_;
     };
 
