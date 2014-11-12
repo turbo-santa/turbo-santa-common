@@ -66,6 +66,18 @@ void TestHarness::ExecuteInstruction(unsigned char instruction) {
     parser_->ReadInstruction();
 }
 
+void TestHarness::ExecuteInstruction(unsigned char instruction, unsigned short value) {
+    parser_->rom_[parser_->instruction_ptr_] = instruction; // We put the instruction in right before it gets called.
+    parser_->rom_[parser_->instruction_ptr_ + 1] = value;
+    parser_->ReadInstruction();
+}
+
+void TestHarness::ExecuteInstruction(unsigned char instruction, unsigned char value) {
+    parser_->rom_[parser_->instruction_ptr_] = instruction; // We put the instruction in right before it gets called.
+    parser_->rom_[parser_->instruction_ptr_ + 1] = value;
+    parser_->ReadInstruction();
+}
+
 AssertionResult TestHarness::ValidateRegister(const RegisterNameValuePair& register_diff) {
     unsigned short value = register_diff.register_value;
     switch (register_diff.register_name) {
