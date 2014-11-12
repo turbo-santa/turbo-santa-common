@@ -8,7 +8,6 @@ namespace memory {
 using std::unique_ptr;
 using std::vector;
 
-namespace {
 // TODO(Brendan): Finish this.
 MBC* CreateNoMBC(unsigned char* program_rom, long size) {
   ROMBank rom_bank_0;
@@ -26,7 +25,6 @@ MBC* CreateMBC1(unsigned char* program_rom, long size) {
   CreateRAMBanks(4, &ram_bank_n);
   return new MBC1(rom_bank_0, rom_bank_n, ram_bank_n);
 }
-} // namespace
 
 void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, ROMBank* rom_bank_1) {
   int address = 0;

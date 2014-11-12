@@ -3,6 +3,7 @@
 
 #include <memory>
 
+#include "back_end/memory/mbc.h"
 #include "back_end/memory/memory_segment.h"
 
 namespace back_end {
@@ -10,11 +11,16 @@ namespace memory {
 
 class MemoryMapper {
  public:
+  MemoryMapper() : mbc_(CreateNoMBC({0x00}, 1)) {}
+
   virtual unsigned char Read(unsigned short address);
 
   virtual void Write(unsigned short address, unsigned char value);
 
  private:
+  std::unique_ptr<MBC> mbc_; // rom_bank_0    0x0000 - 0x3fff
+                             // rom_bank_n    0x4000 - 0x7fff
+                             // cartridge_ram 0xa000 - 0xbfff
   std::unique_ptr<NullMemorySegment> rom_bank_0_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0x0000, 0x3fff));
   std::unique_ptr<NullMemorySegment> rom_bank_n_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0x4000, 0x7fff));
   std::unique_ptr<NullMemorySegment> video_ram_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0x8000, 0x9fff));

@@ -70,6 +70,10 @@ class MBC : public MemorySegment {
 
 std::unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size);
 
+MBC* CreateNoMBC(unsigned char* program_rom, long size);
+
+MBC* CreateMBC1(unsigned char* program_rom, long size);
+
 MBC::CartridgeType GetCartridgeType(unsigned char cartridge_type_value);
 
 int GetROMBankNumber(unsigned char rom_size_value);
