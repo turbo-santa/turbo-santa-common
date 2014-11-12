@@ -207,7 +207,7 @@ void ADC8BitImpl(unsigned char value) {
 }
 
 int ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    ADC8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+    ADC8BitImpl(*opcode.reg1);
     return instruction_ptr + 1;
 }
 
