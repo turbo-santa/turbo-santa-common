@@ -184,7 +184,7 @@ void Add8BitImpl(unsigned char value) {
 }
 
 opcodes::OpcodeResult Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    Add8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+    Add8BitImpl(*opcode.reg1);
     return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
@@ -206,7 +206,7 @@ void ADC8BitImpl(unsigned char value) {
 }
 
 opcodes::OpcodeResult ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    ADC8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+    ADC8BitImpl(*opcode.reg1);
     return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
@@ -224,7 +224,7 @@ void Sub8BitImpl(unsigned char value) {
 }
 
 opcodes::OpcodeResult Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    Sub8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+    Sub8BitImpl(*opcode.reg1);
     return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
@@ -327,7 +327,7 @@ opcodes::OpcodeResult Cp8BitLiteral(unsigned char* rom, int instruction_ptr, Opc
 }
 
 opcodes::OpcodeResult Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    unsigned char* reg = opcode.reg1;
     unsigned char forth_bit = NthBit(*reg, 3);
     ++(*reg);
     bool borrowed_h = forth_bit != NthBit(*reg, 3);
@@ -338,7 +338,7 @@ opcodes::OpcodeResult Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode op
 }
 
 opcodes::OpcodeResult Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+    unsigned char* reg = opcode.reg1;
     unsigned char fourth_bit = NthBit(*reg, 4);
     --(*reg);
     bool borrowed_h = fourth_bit != NthBit(*reg, 4);
