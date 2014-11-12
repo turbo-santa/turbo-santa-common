@@ -69,6 +69,5 @@ Clocktroller::HandleLoop() {
     }
 }
 
-
-
 } // namespace back_end
+
