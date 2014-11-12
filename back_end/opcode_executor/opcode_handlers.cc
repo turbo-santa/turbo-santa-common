@@ -307,7 +307,7 @@ opcodes::OpcodeResult Xor8BitLiteral(unsigned char* rom, int instruction_ptr, Op
 }
 
 opcodes::OpcodeResult Cp8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned char result = cpu.flag_struct.rA - GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
+    unsigned char result = cpu.flag_struct.rA - *opcode.reg1;
     SetZFlag(result);
     SetNFlag(true); // Performed subtraction.
     cpu.flag_struct.rF.H = NthBit(cpu.flag_struct.rA, 4) != NthBit(result, 4);
