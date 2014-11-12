@@ -17,6 +17,8 @@ class MemoryMapper {
 
   virtual void Write(unsigned short address, unsigned char value);
 
+  static const int kMaxSize = 0x10000;
+
  private:
   std::unique_ptr<MBC> mbc_; // rom_bank_0    0x0000 - 0x3fff
                              // rom_bank_n    0x4000 - 0x7fff
