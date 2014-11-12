@@ -13,102 +13,100 @@ namespace handlers {
 using opcodes::Opcode;
 using memory::MemoryMapper;
 
-extern MemoryMapper* mem_map;
-
 // 8 Bit ALU
-int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Add8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int And8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Or8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Or8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Xor8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Xor8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Cp8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Cp8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Add8Bit(handlers::ExecutorContext* context);
+int Add8BitLiteral(handlers::ExecutorContext* context);
+int ADC8Bit(handlers::ExecutorContext* context);
+int ADC8BitLiteral(handlers::ExecutorContext* context);
+int Sub8Bit(handlers::ExecutorContext* context);
+int Sub8BitLiteral(handlers::ExecutorContext* context);
+int And8Bit(handlers::ExecutorContext* context);
+int And8BitLiteral(handlers::ExecutorContext* context);
+int Or8Bit(handlers::ExecutorContext* context);
+int Or8BitLiteral(handlers::ExecutorContext* context);
+int Xor8Bit(handlers::ExecutorContext* context);
+int Xor8BitLiteral(handlers::ExecutorContext* context);
+int Cp8Bit(handlers::ExecutorContext* context);
+int Cp8BitLiteral(handlers::ExecutorContext* context);
+int Inc8Bit(handlers::ExecutorContext* context);
+int Dec8Bit(handlers::ExecutorContext* context);
 
 // 16 Bit ALU
-int Add16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int AddSPLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Inc16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Dec16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Add16Bit(handlers::ExecutorContext* context);
+int AddSPLiteral(handlers::ExecutorContext* context);
+int Inc16Bit(handlers::ExecutorContext* context);
+int Dec16Bit(handlers::ExecutorContext* context);
 
 // Miscelaneous
-int Swap(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int DAA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int CPL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int CCF(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SCF(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int NOP(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Halt(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Stop(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int DI(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int EI(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Swap(handlers::ExecutorContext* context);
+int DAA(handlers::ExecutorContext* context);
+int CPL(handlers::ExecutorContext* context);
+int CCF(handlers::ExecutorContext* context);
+int SCF(handlers::ExecutorContext* context);
+int NOP(handlers::ExecutorContext* context);
+int Halt(handlers::ExecutorContext* context);
+int Stop(handlers::ExecutorContext* context);
+int DI(handlers::ExecutorContext* context);
+int EI(handlers::ExecutorContext* context);
 
 // Rotates & Shifts
-int RLCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RRCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RRA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RLC(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RRC(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int RR(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SRA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int SRL(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int RLCA(handlers::ExecutorContext* context);
+int RLA(handlers::ExecutorContext* context);
+int RRCA(handlers::ExecutorContext* context);
+int RRA(handlers::ExecutorContext* context);
+int RLC(handlers::ExecutorContext* context);
+int RL(handlers::ExecutorContext* context);
+int RRC(handlers::ExecutorContext* context);
+int RR(handlers::ExecutorContext* context);
+int SLA(handlers::ExecutorContext* context);
+int SRA(handlers::ExecutorContext* context);
+int SRL(handlers::ExecutorContext* context);
 
 // Bit operators
-int Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Set(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Res(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Bit(handlers::ExecutorContext* context);
+int Set(handlers::ExecutorContext* context);
+int Res(handlers::ExecutorContext* context);
 
 // Jumps
-int Jump(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpRelative(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int JumpRelativeConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Jump(handlers::ExecutorContext* context);
+int JumpConditional(handlers::ExecutorContext* context);
+int JumpHL(handlers::ExecutorContext* context);
+int JumpRelative(handlers::ExecutorContext* context);
+int JumpRelativeConditional(handlers::ExecutorContext* context);
 
 // Calls
-int Call(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int CallConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Call(handlers::ExecutorContext* context);
+int CallConditional(handlers::ExecutorContext* context);
 
 // Restart
-int Restart(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Restart(handlers::ExecutorContext* context);
 
 // Returns
-int Return(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int ReturnConditional(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int ReturnInterrupt(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int Return(handlers::ExecutorContext* context);
+int ReturnConditional(handlers::ExecutorContext* context);
+int ReturnInterrupt(handlers::ExecutorContext* context);
 
 // 8-Bit Loads
-int LoadN(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadRR(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadAN(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadNA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadAC(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadCA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadDecAHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadDecHLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadIncAHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadIncHLA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadHNA(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadHAN(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadN(handlers::ExecutorContext* context);
+int LoadRR(handlers::ExecutorContext* context);
+int LoadAN(handlers::ExecutorContext* context);
+int LoadNA(handlers::ExecutorContext* context);
+int LoadAC(handlers::ExecutorContext* context);
+int LoadCA(handlers::ExecutorContext* context);
+int LoadDecAHL(handlers::ExecutorContext* context);
+int LoadDecHLA(handlers::ExecutorContext* context);
+int LoadIncAHL(handlers::ExecutorContext* context);
+int LoadIncHLA(handlers::ExecutorContext* context);
+int LoadHNA(handlers::ExecutorContext* context);
+int LoadHAN(handlers::ExecutorContext* context);
 
 // 16-Bit Loads
-int LoadNN(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadSPHL(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadHLSP(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int LoadNNSP(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Push(unsigned char* rom, int instruction_ptr, Opcode opcode);
-int Pop(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int LoadNN(handlers::ExecutorContext* context);
+int LoadSPHL(handlers::ExecutorContext* context);
+int LoadHLSP(handlers::ExecutorContext* context);
+int LoadNNSP(handlers::ExecutorContext* context);
+int Push(handlers::ExecutorContext* context);
+int Pop(handlers::ExecutorContext* context);
 
 } // namespace back_end
 } // namespace handlers

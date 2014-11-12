@@ -6,11 +6,15 @@
 #include <vector>
 
 namespace back_end {
+namespace handlers {
+struct ExecutorContext;
+}
+}
+
+namespace back_end {
 namespace opcodes {
 
-struct Opcode;
-
-typedef std::function<int(unsigned char* rom, int instruction_ptr, Opcode opcode)> OpcodeHandler;
+typedef std::function<int(handlers::ExecutorContext* context)> OpcodeHandler;
 
 struct Opcode {
     unsigned short opcode_name;
