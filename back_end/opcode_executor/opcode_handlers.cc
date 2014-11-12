@@ -253,7 +253,7 @@ opcodes::OpcodeResult SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Op
 }
 
 opcodes::OpcodeResult And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    cpu.flag_struct.rA &= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
+    cpu.flag_struct.rA &= *opcode.reg1;
     SetZFlag(cpu.flag_struct.rA);
     SetNFlag(false);
     cpu.flag_struct.rF.H = 0;

@@ -25,6 +25,8 @@ class OpcodeHandlersTest : public test_harness::TestHarness {
         OpcodeHandlersTest() : test_harness::TestHarness(parser) {}
 };
 
+// Tests for 8-bit ALU
+
 // Tests for ADD A,n
 
 TEST_F(OpcodeHandlersTest, Add8BitAA) {
@@ -325,6 +327,76 @@ TEST_F(OpcodeHandlersTest, Sbc8BitLiteral) {
     EXPECT_REGISTER({{Register::A, 252}, {Register::FC, 0}});
 }
 
+// Test AND n
+// Logically AND n with A, result in A
+
+TEST_F(OpcodeHandlersTest, And8BitA) {
+    SetRegisterState({{Register::A, 1}});
+    ExecuteInstruction(0xA7);
+    EXPECT_REGISTER({{Register::A, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, And8BitB) {
+    SetRegisterState({{Register::A, 1}, {Register::B, 2}});
+    ExecuteInstruction(0xA0);
+    EXPECT_REGISTER({{Register::A, 0}, {Register::B, 2}});
+
+    SetRegisterState({{Register::A, 2}, {Register::B, 2}});
+    ExecuteInstruction(0xA0);
+    EXPECT_REGISTER({{Register::A, 2}, {Register::B, 2}});
+
+    SetRegisterState({{Register::A, 0}, {Register::B, 0}});
+    ExecuteInstruction(0xA0);
+    EXPECT_REGISTER({{Register::A, 0}, {Register::B, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, And8BitC) {
+    SetRegisterState({{Register::A, 2}, {Register::C, 2}});
+    EXPECT_EQ(4, ExecuteInstruction(0xA1));
+    EXPECT_REGISTER({{Register::A, 2}, {Register::C, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, And8BitD) {
+    SetRegisterState({{Register::A, 1}, {Register::D, 2}});
+    EXPECT_EQ(4, ExecuteInstruction(0xA2));
+    EXPECT_REGISTER({{Register::A, 0}, {Register::D, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, And8BitE) {
+    SetRegisterState({{Register::A, 0}, {Register::E, 0}});
+    EXPECT_EQ(4, ExecuteInstruction(0xA3));
+    EXPECT_REGISTER({{Register::A, 0}, {Register::E, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, And8BitH) {
+    SetRegisterState({{Register::A, 2}, {Register::H, 9}});
+    EXPECT_EQ(4, ExecuteInstruction(0xA4));
+    EXPECT_REGISTER({{Register::A, 0}, {Register::H, 9}});
+}
+
+TEST_F(OpcodeHandlersTest, And8BitL) {
+    SetRegisterState({{Register::A, 100}, {Register::L, 20}});
+    EXPECT_EQ(4, ExecuteInstruction(0xA5));
+    EXPECT_REGISTER({{Register::A, 4}, {Register::L, 20}});
+}
+
+TEST_F(OpcodeHandlersTest, And8BitHL) {
+    SetRegisterState({{Register::A, 50}, {Register::HL, 3}});
+    EXPECT_EQ(8, ExecuteInstruction(0xA6));
+    EXPECT_REGISTER({{Register::A, 2}, {Register::HL, 3}});
+}
+
+TEST_F(OpcodeHandlersTest, And8BitLiteral) {
+    SetRegisterState({{Register::A, 50}});
+    EXPECT_EQ(8, ExecuteInstruction(0xE6, static_cast<unsigned char>(53)));
+    EXPECT_REGISTER({{Register::A, 48}});
+}
+
+
+
+
+
+
 TEST_F(OpcodeHandlersTest, GetRegisterValue) {
     get_rom_ptr()[get_instruction_ptr()] = 0x80;
     SetRegisterState({{Register::B, 1}});
@@ -342,20 +414,6 @@ TEST_F(OpcodeHandlersTest, Cp8Bit) {
     SetRegisterState({{Register::A, 1}, {Register::B, 2}});
     ExecuteInstruction(0xb8);
     EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
-}
-
-TEST_F(OpcodeHandlersTest, And8Bit) {
-    SetRegisterState({{Register::A, 1}, {Register::B, 2}});
-    ExecuteInstruction(0xA0);
-    EXPECT_REGISTER({{Register::A, 0}, {Register::B, 2}});
-
-    SetRegisterState({{Register::A, 2}, {Register::B, 2}});
-    ExecuteInstruction(0xA0);
-    EXPECT_REGISTER({{Register::A, 2}, {Register::B, 2}});
-
-    SetRegisterState({{Register::A, 0}, {Register::B, 0}});
-    ExecuteInstruction(0xA0);
-    EXPECT_REGISTER({{Register::A, 0}, {Register::B, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Or8Bit) {
