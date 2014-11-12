@@ -120,7 +120,7 @@ bool TestHarness::VerifyCorrectInstruction(const vector<unsigned char>& instruct
 
 void TestHarness::ClearParser() {
     parser_->instruction_ptr_ = 0;
-    for (int i = 0; i < MemoryMapper::kMaxSize; i++) {
+    for (int i = 0; i <MemoryMapper::kMaxSize; i++) {
         mem_map->get_pointer()[i] = (unsigned char) 0;
     }
     typedef RegisterNameValuePair::RegisterName R;
