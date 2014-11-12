@@ -48,8 +48,6 @@ struct GB_CPU {
 	unsigned short rSP;	
 };
 
-extern GB_CPU cpu;
-
 } // namespace registers
 } // namespace back_end
 #endif // TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
