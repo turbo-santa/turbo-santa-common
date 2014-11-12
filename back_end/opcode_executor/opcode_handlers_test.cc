@@ -563,7 +563,107 @@ TEST_F(OpcodeHandlersTest, Cp8BitLiteral) {
     EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
 }
 
+// Test INC n
+// Increment register n
 
+TEST_F(OpcodeHandlersTest, INC8BitA) {
+    SetRegisterState({{Register::A, 1}});
+    EXPECT_EQ(4, ExecuteInstruction(0x3C));
+    EXPECT_REGISTER({{Register::A, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, INC8BitB) {
+    SetRegisterState({{Register::B, 4}});
+    EXPECT_EQ(4, ExecuteInstruction(0x04));
+    EXPECT_REGISTER({{Register::B, 5}});
+}
+
+TEST_F(OpcodeHandlersTest, INC8BitC) {
+    SetRegisterState({{Register::C, 1}});
+    EXPECT_EQ(4, ExecuteInstruction(0x0c));
+    EXPECT_REGISTER({{Register::C, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, INC8BitD) {
+    SetRegisterState({{Register::D, 0}});
+    EXPECT_EQ(4, ExecuteInstruction(0x14));
+    EXPECT_REGISTER({{Register::D, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, INC8BitE) {
+    SetRegisterState({{Register::E, 255}});
+    EXPECT_EQ(4, ExecuteInstruction(0x1c));
+    EXPECT_REGISTER({{Register::E, 0}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, INC8BitH) {
+    SetRegisterState({{Register::H, 7}});
+    EXPECT_EQ(4, ExecuteInstruction(0x24));
+    EXPECT_REGISTER({{Register::H, 8}, {Register::FH, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, INC8BitL) {
+    SetRegisterState({{Register::L, 1}});
+    EXPECT_EQ(4, ExecuteInstruction(0x2C));
+    EXPECT_REGISTER({{Register::L, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, INC8BitHL) {
+    SetRegisterState({{Register::HL, 1}});
+    EXPECT_EQ(12, ExecuteInstruction(0x34));
+    EXPECT_REGISTER({{Register::HL, 2}, {Register::FN, 0}});
+}
+
+// Test DEC n
+// Decrement register n
+
+TEST_F(OpcodeHandlersTest, Dec8BitA) {
+    SetRegisterState({{Register::A, 1}});
+    EXPECT_EQ(4, ExecuteInstruction(0x3D));
+    EXPECT_REGISTER({{Register::A, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec8BitB) {
+    SetRegisterState({{Register::B, 9}});
+    EXPECT_EQ(4, ExecuteInstruction(0x05));
+    EXPECT_REGISTER({{Register::B, 8}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec8BitC) {
+    SetRegisterState({{Register::C, 15}});
+    EXPECT_EQ(4, ExecuteInstruction(0x0D));
+    EXPECT_REGISTER({{Register::C, 14}, {Register::FH, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec8BitD) {
+    SetRegisterState({{Register::D, 3}});
+    EXPECT_EQ(4, ExecuteInstruction(0x15));
+    EXPECT_REGISTER({{Register::D, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec8BitE) {
+    SetRegisterState({{Register::E, 1}});
+    EXPECT_EQ(4, ExecuteInstruction(0x1D));
+    EXPECT_REGISTER({{Register::E, 0}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec8BitH) {
+    SetRegisterState({{Register::H, 4}});
+    EXPECT_EQ(4, ExecuteInstruction(0x25));
+    EXPECT_REGISTER({{Register::H, 3}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec8BitL) {
+    SetRegisterState({{Register::L, 2}});
+    EXPECT_EQ(4, ExecuteInstruction(0x2D));
+    EXPECT_REGISTER({{Register::L, 1}, {Register::FN, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec8BitHL) {
+    SetRegisterState({{Register::HL, 2}});
+    EXPECT_EQ(12, ExecuteInstruction(0x35));
+    EXPECT_REGISTER({{Register::HL, 1}});
+}
 
 
 
@@ -577,17 +677,6 @@ TEST_F(OpcodeHandlersTest, GetRegisterValue) {
     EXPECT_EQ(expected_register_value, actual_register_value);
 }
 
-TEST_F(OpcodeHandlersTest, INC8Bit) {
-    SetRegisterState({{Register::A, 1}});
-    ExecuteInstruction(0x3C);
-    EXPECT_REGISTER({{Register::A, 2}});
-}
-
-TEST_F(OpcodeHandlersTest, Dec8Bit) {
-    SetRegisterState({{Register::A, 1}});
-    ExecuteInstruction(0x3D);
-    EXPECT_REGISTER({{Register::A, 0}});
-}
 
 } // namespace handlers
 } // namespace back_end
