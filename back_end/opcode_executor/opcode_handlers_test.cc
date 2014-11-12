@@ -158,10 +158,10 @@ TEST_F(OpcodeHandlersTest, Adc8BitAL) {
     EXPECT_EQ(1, get_instruction_ptr());
 }
 
-TEST_F(OpcodeHandlersTest, Adc8BitAL) {
+TEST_F(OpcodeHandlersTest, Adc8BitAHL) {
     SetRegisterState({{Register::A, 100}, {Register::HL, 200}, {Register::FC, 0}});
     EXPECT_EQ(0, get_instruction_ptr());
-    ExecuteInstruction(0x8D);
+    ExecuteInstruction(0x8E);
     EXPECT_EQ(1, get_instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::HL, 200}, {Register::FC, 1}});
     EXPECT_EQ(1, get_instruction_ptr());
