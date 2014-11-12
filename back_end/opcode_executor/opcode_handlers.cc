@@ -1,4 +1,5 @@
 #include "back_end/opcode_executor/opcode_handlers.h"
+
 #include "back_end/opcode_executor/opcodes.h"
 
 namespace back_end {
@@ -183,8 +184,8 @@ void Add8BitImpl(unsigned char value) {
     SetNFlag(false);
 }
 
-int Add8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    Add8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+int Add8Bit(unsigned char*, int instruction_ptr, Opcode opcode) {
+    Add8BitImpl(*opcode.reg1);
     return instruction_ptr + 1;
 }
 
@@ -305,8 +306,8 @@ int Cp8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
     return instruction_ptr + 1;
 }
 
-int Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+int Inc8Bit(unsigned char*, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = opcode.reg1;
     unsigned char forth_bit = NthBit(*reg, 3);
     ++(*reg);
     bool borrowed_h = forth_bit != NthBit(*reg, 3);
@@ -316,8 +317,8 @@ int Inc8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     return instruction_ptr + 1;
 }
 
-int Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned char* reg = GetRegister(rom, instruction_ptr, opcode.opcode_name);
+int Dec8Bit(unsigned char*, int instruction_ptr, Opcode opcode) {
+    unsigned char* reg = opcode.reg1;
     unsigned char fourth_bit = NthBit(*reg, 4);
     --(*reg);
     bool borrowed_h = fourth_bit != NthBit(*reg, 4);

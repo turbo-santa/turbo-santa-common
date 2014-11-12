@@ -88,30 +88,6 @@ TEST_F(OpcodeHandlersTest, Add8BitAL) {
     EXPECT_EQ(1, get_instruction_ptr());
 }
 
-// TODO: Do Add8Bit for HL and #
-
-TEST_F(OpcodeHandlersTest, Add8BitDirect) {
-    EXPECT_EQ(0, get_instruction_ptr());
-    AssertRegisterState({{Register::A, 0}, {Register::B, 0}});
-    SetRegisterState({{Register::A, 1}, {Register::B, 2}});
-    EXPECT_REGISTER({{Register::A, 1}, {Register::B, 2}});
-
-    get_rom_ptr()[get_instruction_ptr()] = 0x80;
-    int actual_new_instruction_ptr = Add8Bit(get_rom_ptr(), get_instruction_ptr(), {0x80, nullptr, nullptr, nullptr});
-    int expected_new_instruction_ptr = 1;
-    EXPECT_EQ(expected_new_instruction_ptr, actual_new_instruction_ptr);
-    EXPECT_REGISTER({{Register::A, 3}, {Register::B, 2}});
-}
-
-TEST_F(OpcodeHandlersTest, GetRegisterValue) {
-    get_rom_ptr()[get_instruction_ptr()] = 0x80;
-    SetRegisterState({{Register::B, 1}});
-
-    int expected_register_value = 1;
-    int actual_register_value = GetRegisterValue(get_rom_ptr(), get_instruction_ptr(), 0x80);
-    EXPECT_EQ(expected_register_value, actual_register_value);
-}
-
 TEST_F(OpcodeHandlersTest, Cp8Bit) {
     SetRegisterState({{Register::A, 1}, {Register::B, 1}});
     ExecuteInstruction(0xb8);
@@ -175,13 +151,13 @@ TEST_F(OpcodeHandlersTest, Xor8Bit) {
 
 TEST_F(OpcodeHandlersTest, INC8Bit) {
     SetRegisterState({{Register::A, 1}});
-    ExecuteInstruction(0x04);
+    ExecuteInstruction(0x3C);
     EXPECT_REGISTER({{Register::A, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Dec8Bit) {
     SetRegisterState({{Register::A, 1}});
-    ExecuteInstruction(0x05);
+    ExecuteInstruction(0x3D);
     EXPECT_REGISTER({{Register::A, 0}});
 }
 
