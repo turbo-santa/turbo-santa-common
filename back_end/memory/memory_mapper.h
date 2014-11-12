@@ -14,6 +14,8 @@ class MemoryMapper {
 
   virtual void Write(unsigned short address, unsigned char value);
 
+  static const int kMaxSize = 0x10000;
+
  private:
   std::unique_ptr<NullMemorySegment> rom_bank_0_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0x0000, 0x3fff));
   std::unique_ptr<NullMemorySegment> rom_bank_n_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0x4000, 0x7fff));

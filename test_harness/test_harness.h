@@ -27,7 +27,6 @@ class TestHarness : public ::testing::Test {
             return AssertMemoryState(memory_diff);
         }
         ::testing::AssertionResult AssertMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
-        unsigned char* get_rom_ptr() { return parser_->rom_; }
         int get_instruction_ptr() { return parser_->instruction_ptr_; }
 
     protected:

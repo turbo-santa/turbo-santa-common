@@ -46,8 +46,7 @@ AR = ar
 ARFLAGS = cru
 libmemory_a_AR = $(AR) $(ARFLAGS)
 libmemory_a_LIBADD =
-am_libmemory_a_OBJECTS = memory_mapper.$(OBJEXT) \
-	memory_segment.$(OBJEXT)
+am_libmemory_a_OBJECTS = memory_mapper.$(OBJEXT) mbc.$(OBJEXT)
 libmemory_a_OBJECTS = $(am_libmemory_a_OBJECTS)
 DEFAULT_INCLUDES = -I.@am__isrc@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
@@ -160,7 +159,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libmemory.a
-libmemory_a_SOURCES = memory_mapper.h memory_mapper.cc memory_segment.h memory_segment.cc memory_page.h
+libmemory_a_SOURCES = memory_mapper.h memory_mapper.cc memory_segment.h mbc.h mbc.cc
 all: all-am
 
 .SUFFIXES:
@@ -209,8 +208,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mbc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/memory_mapper.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/memory_segment.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
