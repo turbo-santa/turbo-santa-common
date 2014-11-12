@@ -225,7 +225,7 @@ void Sub8BitImpl(unsigned char value) {
 }
 
 int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    Sub8BitImpl(GetRegisterValue(rom, instruction_ptr, opcode.opcode_name));
+    Sub8BitImpl(*opcode.reg1);
     return instruction_ptr + 1;
 }
 
