@@ -392,7 +392,62 @@ TEST_F(OpcodeHandlersTest, And8BitLiteral) {
     EXPECT_REGISTER({{Register::A, 48}});
 }
 
+// Test OR n
+// Logical OR n with A, result in A
 
+TEST_F(OpcodeHandlersTest, Or8BitA) {
+    SetRegisterState({{Register::A, 1}});
+    EXPECT_EQ(4, ExecuteInstruction(0xB7));
+    EXPECT_REGISTER({{Register::A, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, Or8BitB) {
+    SetRegisterState({{Register::A, 1}, {Register::B, 2}});
+    EXPECT_EQ(4, ExecuteInstruction(0xB0));
+    EXPECT_REGISTER({{Register::A, 3}, {Register::B, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, Or8BitC) {
+    SetRegisterState({{Register::A, 2}, {Register::C, 2}});
+    EXPECT_EQ(4, ExecuteInstruction(0xB1));
+    EXPECT_REGISTER({{Register::A, 2}, {Register::C, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, Or8BitD) {
+    SetRegisterState({{Register::A, 1}, {Register::D, 0}});
+    EXPECT_EQ(4, ExecuteInstruction(0xB2));
+    EXPECT_REGISTER({{Register::A, 1}, {Register::D, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, Or8BitE) {
+    SetRegisterState({{Register::A, 50}, {Register::E, 30}});
+    EXPECT_EQ(4, ExecuteInstruction(0xB3));
+    EXPECT_REGISTER({{Register::A, 62}, {Register::E, 30}});
+}
+
+TEST_F(OpcodeHandlersTest, Or8BitH) {
+    SetRegisterState({{Register::A, 0}, {Register::H, 255}});
+    EXPECT_EQ(4, ExecuteInstruction(0xB4));
+    EXPECT_REGISTER({{Register::A, 255}, {Register::H, 255}});
+}
+
+TEST_F(OpcodeHandlersTest, Or8BitL) {
+    SetRegisterState({{Register::A, 0}, {Register::L, 0}});
+    EXPECT_EQ(4, ExecuteInstruction(0xB5));
+    EXPECT_REGISTER({{Register::A, 0}, {Register::L, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, Or8BitHL) {
+    SetRegisterState({{Register::A, 29}, {Register::HL, 0}});
+    EXPECT_EQ(8, ExecuteInstruction(0xB6));
+    EXPECT_REGISTER({{Register::A, 29}, {Register::HL, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, Or8BitLiteral) {
+    SetRegisterState({{Register::A, 29}});
+    EXPECT_EQ(8, ExecuteInstruction(0xF6, static_cast<unsigned char>(27)));
+    EXPECT_REGISTER({{Register::A, 31}});
+}
 
 
 
@@ -414,20 +469,6 @@ TEST_F(OpcodeHandlersTest, Cp8Bit) {
     SetRegisterState({{Register::A, 1}, {Register::B, 2}});
     ExecuteInstruction(0xb8);
     EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
-}
-
-TEST_F(OpcodeHandlersTest, Or8Bit) {
-    SetRegisterState({{Register::A, 1}, {Register::B, 2}});
-    ExecuteInstruction(0xB0);
-    EXPECT_REGISTER({{Register::A, 3}, {Register::B, 2}});
-
-    SetRegisterState({{Register::A, 2}, {Register::B, 2}});
-    ExecuteInstruction(0xB0);
-    EXPECT_REGISTER({{Register::A, 2}, {Register::B, 2}});
-
-    SetRegisterState({{Register::A, 1}, {Register::B, 0}});
-    ExecuteInstruction(0xB0);
-    EXPECT_REGISTER({{Register::A, 1}, {Register::B, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Xor8Bit) {
