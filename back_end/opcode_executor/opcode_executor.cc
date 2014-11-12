@@ -9,7 +9,7 @@ using opcodes::Opcode;
 using memory::MemoryMapper;
 
 OpcodeExecutor::OpcodeExecutor(unsigned char*, long) {
-    handlers::mem_map = unique_ptr<MemoryMapper>(new MemoryMapper());
+    handlers::mem_map = new MemoryMapper();
     rom_ = handlers::mem_map->get_pointer();
 }
 
