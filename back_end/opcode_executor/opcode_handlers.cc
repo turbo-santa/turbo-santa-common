@@ -144,7 +144,7 @@ bool DoesUnderflow(unsigned int left, unsigned int right, int bit) {
 }
 
 bool DoesBorrow8(unsigned char left, unsigned char right) {
-    return !DoesUnderflow(left, right, 7);
+    return DoesUnderflow(left, right, 7);
 }
 
 bool DoesBorrow16(unsigned short left, unsigned short right) {
@@ -235,22 +235,21 @@ opcodes::OpcodeResult Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Op
 
 void SBC8BitImpl(unsigned char value) {
     char carry = cpu.flag_struct.rF.C;
-    cpu.flag_struct.rF.C = !DoesBorrow8(cpu.flag_struct.rA, value);
-    cpu.flag_struct.rF.H = !DoesHalfBorrow8(cpu.flag_struct.rA, value);
-    cpu.flag_struct.rA -= value;
-    cpu.flag_struct.rA -= carry;
+    cpu.flag_struct.rF.C = !DoesBorrow8(cpu.flag_struct.rA, value + carry);
+    cpu.flag_struct.rF.H = !DoesHalfBorrow8(cpu.flag_struct.rA, value + carry);
+    cpu.flag_struct.rA -= value + carry;
     SetZFlag(cpu.flag_struct.rA);
     SetNFlag(true);
 }
 
 opcodes::OpcodeResult SBC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     SBC8BitImpl(*opcode.reg1);
-    return {instruction_ptr + 1, 4};
+    return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
-opcodes::OpcodeResult SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     SBC8BitImpl(GetParameterValue(rom, instruction_ptr));
-    return {instruction_ptr + 2, 8};
+    return {instruction_ptr + 2, opcode.clock_cycles};
 }
 
 opcodes::OpcodeResult And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {

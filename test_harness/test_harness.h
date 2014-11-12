@@ -14,9 +14,9 @@ namespace test_harness {
 class TestHarness : public ::testing::Test {
     public:
         void SetRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
-        void ExecuteInstruction(unsigned char instruction);
-        void ExecuteInstruction(unsigned char instruction, unsigned short value);
-        void ExecuteInstruction(unsigned char instruction, unsigned char value);
+        unsigned int ExecuteInstruction(unsigned char instruction);
+        unsigned int ExecuteInstruction(unsigned char instruction, unsigned short value);
+        unsigned int ExecuteInstruction(unsigned char instruction, unsigned char value);
         ::testing::AssertionResult AssertRegisterAdapter(
                 const std::string& not_used,
                 std::vector<RegisterNameValuePair>& register_diff) {
