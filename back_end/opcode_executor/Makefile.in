@@ -52,8 +52,9 @@ am_libopcode_executor_a_OBJECTS = opcode_executor.$(OBJEXT) \
 	opcode_handlers.$(OBJEXT) opcode_map.$(OBJEXT) \
 	opcodes.$(OBJEXT) registers.$(OBJEXT)
 libopcode_executor_a_OBJECTS = $(am_libopcode_executor_a_OBJECTS)
-opcode_handlers_test_SOURCES = opcode_handlers_test.cpp
-opcode_handlers_test_OBJECTS = opcode_handlers_test.$(OBJEXT)
+am_opcode_handlers_test_OBJECTS = opcode_executor.$(OBJEXT) \
+	opcode_handlers_test.$(OBJEXT)
+opcode_handlers_test_OBJECTS = $(am_opcode_handlers_test_OBJECTS)
 opcode_handlers_test_DEPENDENCIES = libopcode_executor.a \
 	../memory/libmemory.a \
 	${top_srcdir}/test_harness/libtest_harness.a \
@@ -74,9 +75,10 @@ COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-SOURCES = $(libopcode_executor_a_SOURCES) opcode_handlers_test.cpp
+SOURCES = $(libopcode_executor_a_SOURCES) \
+	$(opcode_handlers_test_SOURCES)
 DIST_SOURCES = $(libopcode_executor_a_SOURCES) \
-	opcode_handlers_test.cpp
+	$(opcode_handlers_test_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors = \
@@ -176,13 +178,14 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libopcode_executor.a
 libopcode_executor_a_SOURCES = opcode_executor.h opcode_executor.cc opcode_handlers.h opcode_handlers.cc opcode_map.h opcode_map.cc opcodes.h opcodes.cc registers.h registers.cc
-AM_DEFAULT_SOURCE_EXT = .cpp
+AM_DEFAULT_SOURCE_EXT = .cc
+opcode_handlers_test_SOURCES = opcode_executor.cc opcode_handlers_test.cc
 opcode_handlers_test_LDFLAGS = -pthread
 opcode_handlers_test_LDADD = libopcode_executor.a ../memory/libmemory.a ${top_srcdir}/test_harness/libtest_harness.a ${top_srcdir}/third_party/gtest/lib/libgtest_main.a ${top_srcdir}/third_party/gtest/lib/libgtest.a
 all: all-am
 
 .SUFFIXES:
-.SUFFIXES: .cc .cpp .o .obj
+.SUFFIXES: .cc .o .obj
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -248,20 +251,6 @@ distclean-compile:
 @am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
 
 .cc.obj:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
-.cpp.o:
-@am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXXCOMPILE) -c -o $@ $<
-
-.cpp.obj:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
 @am__fastdepCXX_TRUE@	$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@

@@ -56,8 +56,8 @@ class MBC : public MemorySegment {
       UNSUPPORTED = 0xdd // 0xdd is unused so this is safe.
     };
 
-    virtual unsigned char Read(unsigned short address);
-    virtual void Write(unsigned short address, unsigned char value);
+    virtual unsigned char Read(unsigned short address) = 0;
+    virtual void Write(unsigned short address, unsigned char value) = 0;
 
     virtual bool InRange(unsigned short address) { 
       return (0x0000 <= address && address <= 0x7fff) || (0xa000 <= address && address <= 0xbfff);

@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include "back_end/opcode_executor/opcode_handlers.h"
+#include "back_end/opcode_executor/opcode_executor.h"
 #include "back_end/opcode_executor/registers.h"
 #include "back_end/memory/memory_mapper.h"
 
@@ -59,6 +60,10 @@ AssertionResult TestHarness::AssertMemoryState(const vector<MemoryAddressValuePa
     }
   }
   return AssertionSuccess();
+}
+
+int TestHarness::get_instruction_ptr() {
+  return parser_->instruction_ptr_;
 }
 
 void TestHarness::ExecuteInstruction(unsigned char instruction) {

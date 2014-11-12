@@ -92,6 +92,10 @@ unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size) {
   }
 }
 
+MBC::CartridgeType GetCartridgeType(unsigned char value) {
+  return static_cast<MBC::CartridgeType>(value);
+}
+
 unsigned char NoMBC::Read(unsigned short address) {
   if (0x0000 <= address && address <= 0x3fff) {
     return rom_bank_0_.Read(address - 0x0000);

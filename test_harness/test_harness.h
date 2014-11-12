@@ -6,7 +6,6 @@
 #include <vector>
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "test_harness/test_harness_utils.h"
-
 #include "third_party/gtest/include/gtest/gtest.h"
 
 namespace test_harness {
@@ -27,7 +26,7 @@ class TestHarness : public ::testing::Test {
             return AssertMemoryState(memory_diff);
         }
         ::testing::AssertionResult AssertMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
-        int get_instruction_ptr() { return parser_->instruction_ptr_; }
+        int get_instruction_ptr();
 
     protected:
         TestHarness(back_end::handlers::OpcodeExecutor* parser) : parser_(parser) {}
