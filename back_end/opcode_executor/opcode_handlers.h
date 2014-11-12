@@ -21,8 +21,8 @@ opcodes::OpcodeResult ADC8Bit(unsigned char* rom, int instruction_ptr, opcodes::
 opcodes::OpcodeResult ADC8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 opcodes::OpcodeResult Sub8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 opcodes::OpcodeResult Sub8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
-opcodes::OpcodeResult SBC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
-opcodes::OpcodeResult SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
+opcodes::OpcodeResult SBC8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
+opcodes::OpcodeResult SBC8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 opcodes::OpcodeResult And8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 opcodes::OpcodeResult And8BitLiteral(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);
 opcodes::OpcodeResult Or8Bit(unsigned char* rom, int instruction_ptr, opcodes::Opcode opcode);

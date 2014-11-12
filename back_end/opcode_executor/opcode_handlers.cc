@@ -243,17 +243,16 @@ void SBC8BitImpl(unsigned char value) {
     SetNFlag(true);
 }
 
-int SBC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+opcodes::OpcodeResult SBC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     SBC8BitImpl(*opcode.reg1);
-    return instruction_ptr + 1;
+    return {instruction_ptr + 1, 4};
 }
 
-int SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+opcodes::OpcodeResult SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
     SBC8BitImpl(GetParameterValue(rom, instruction_ptr));
-    return instruction_ptr + 2;
+    return {instruction_ptr + 2, 8};
 }
 
-int And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
 opcodes::OpcodeResult And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA &= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
     SetZFlag(cpu.flag_struct.rA);
