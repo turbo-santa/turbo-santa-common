@@ -249,6 +249,20 @@ TEST_F(OpcodeHandlersTest, Sub8BitLiteral) {
     EXPECT_REGISTER({{Register::A, 1}});
 }
 
+
+// Test SBC A,n
+// Subtract n + carry flag from A
+
+TEST_F(OpcodeHandlersTest, Sbc8BitA) {
+    SetRegisterState({{Register::A, 2}});
+    EXPECT_EQ(0, get_instruction_ptr());
+    ExecuteInstruction(0x9F);
+    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_REGISTER({{Register::A, 0}, {Register::FC, 0}});
+}
+
+
+
 TEST_F(OpcodeHandlersTest, GetRegisterValue) {
     get_rom_ptr()[get_instruction_ptr()] = 0x80;
     SetRegisterState({{Register::B, 1}});

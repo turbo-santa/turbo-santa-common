@@ -22,6 +22,8 @@ int ADC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int ADC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int Sub8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int SBC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
+int SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int And8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode opcode);
 int Or8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode);

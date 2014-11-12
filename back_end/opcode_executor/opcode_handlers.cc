@@ -234,6 +234,26 @@ int Sub8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
     return instruction_ptr + 2;
 }
 
+void SBC8BitImpl(unsigned char value) {
+    char carry = cpu.flag_struct.rF.C;
+    cpu.flag_struct.rF.C = !DoesBorrow8(cpu.flag_struct.rA, value);
+    cpu.flag_struct.rF.H = !DoesHalfBorrow8(cpu.flag_struct.rA, value);
+    cpu.flag_struct.rA -= value;
+    cpu.flag_struct.rA -= carry;
+    SetZFlag(cpu.flag_struct.rA);
+    SetNFlag(true);
+}
+
+int SBC8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
+    SBC8BitImpl(*opcode.reg1);
+    return instruction_ptr + 1;
+}
+
+int SBC8BitLiteral(unsigned char* rom, int instruction_ptr, Opcode) {
+    SBC8BitImpl(GetParameterValue(rom, instruction_ptr));
+    return instruction_ptr + 2;
+}
+
 int And8Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
     cpu.flag_struct.rA &= GetRegisterValue(rom, instruction_ptr, opcode.opcode_name);
     SetZFlag(cpu.flag_struct.rA);
