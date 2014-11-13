@@ -784,11 +784,32 @@ int JumpRelativeConditional(handlers::ExecutorContext* context) {
   return instruction_ptr + 1;
 }
 
+// TODO(Brendan, Diego, Aaron, Dave): We should make sure we are doing endian
+// specific work in functions that we can either swap out at compile time or at
+// runtime to preserve correct endianness.
+unsigned char GetLSB(unsigned short value) {
+  return static_cast<unsigned char>(value);
+}
+
+unsigned char GetMSB(unsigned short value) {
+  return static_cast<unsigned char>(value >> 8);
+}
+
 int Call(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned short address = GetAddress16(context->memory_mapper, instruction_ptr);
-  context->cpu->rSP = instruction_ptr + 1;
+  MemoryMapper* memory_mapper = context->memory_mapper;
+  GB_CPU* cpu = context->cpu;
+  unsigned short* rSP = &cpu->rSP;
+  unsigned short* rPC = &cpu->rPC;
+
+  ++*rPC;
+  memory_mapper->Write(*rSP, GetLSB(*rPC));
+  --*rSP;
+  memory_mapper->Write(*rSP, GetMSB(*rPC));
+  --*rSP;
+
+  unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
   instruction_ptr = address;
   return instruction_ptr;
 }
@@ -883,7 +904,7 @@ int ReturnConditional(handlers::ExecutorContext* context) {
 }
 
 int ReturnInterrupt(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
+  unsigned short instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   // TODO(Brendan, Diego): Implement call stack.
   unsigned short address = 0; // = context->cpu->rSP[0];

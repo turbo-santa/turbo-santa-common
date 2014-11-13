@@ -18,19 +18,23 @@ using memory::MemoryMapper;
 
 OpcodeExecutor::OpcodeExecutor(unsigned char*, long) {
   registers::cpu = &cpu_;
+  // TODO(Diego): It acutally starts at something like 0x100.
+  cpu_.rPC = 0x0000;
 }
 
 void OpcodeExecutor::ReadInstruction() {
-    unsigned short opcode = memory_mapper_.Read(instruction_ptr_);
+    unsigned short instruction_ptr = cpu_.rPC;
+    unsigned short opcode = memory_mapper_.Read(instruction_ptr);
     if (opcode == 0xCB || opcode == 0x10) {
-        instruction_ptr_++;
-        unsigned char opcode_lb = memory_mapper_.Read(instruction_ptr_);
+        instruction_ptr++;
+        unsigned char opcode_lb = memory_mapper_.Read(instruction_ptr);
         opcode = opcode << 8 | opcode_lb;
     }
+    cpu_.rPC = instruction_ptr;
     Opcode opcode_struct = opcode_map[opcode];
 
-    ExecutorContext context(&instruction_ptr_, &opcode_struct, &memory_mapper_, &cpu_);
-    instruction_ptr_ = opcode_struct.handler(&context);
+    ExecutorContext context(&cpu_.rPC, &opcode_struct, &memory_mapper_, &cpu_);
+    cpu_.rPC = opcode_struct.handler(&context);
 }
 
 } // namespace handlers

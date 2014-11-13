@@ -22,8 +22,6 @@ class OpcodeExecutor {
     void ReadInstruction();
 
   private:
-    // TODO(Diego): It acutally starts at something like 0x100.
-    int instruction_ptr_ = 0;
     memory::MemoryMapper memory_mapper_;
     registers::GB_CPU cpu_;
 
@@ -31,7 +29,7 @@ class OpcodeExecutor {
 };
 
 struct ExecutorContext {
-  ExecutorContext(int* instruction_ptr_, 
+  ExecutorContext(unsigned short* instruction_ptr_, 
                   Opcode* opcode_, 
                   MemoryMapper* memory_mapper_, 
                   registers::GB_CPU* cpu_)
@@ -46,7 +44,7 @@ struct ExecutorContext {
       memory_mapper(context->memory_mapper),
       cpu(context->cpu) {}
 
-  int* instruction_ptr;
+  unsigned short* instruction_ptr;
   Opcode* opcode;
   MemoryMapper* memory_mapper;
   registers::GB_CPU* cpu;

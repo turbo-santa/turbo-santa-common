@@ -30,73 +30,73 @@ class OpcodeHandlersTest : public test_harness::TestHarness {
 
 TEST_F(OpcodeHandlersTest, Add8BitAA) {
     SetRegisterState({{Register::A, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x87);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAB) {
     SetRegisterState({{Register::A, 1}, {Register::B, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x80);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 3}, {Register::B, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAC) {
     SetRegisterState({{Register::A, 1}, {Register::C, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x81);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 3}, {Register::C, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAD) {
     SetRegisterState({{Register::A, 1}, {Register::D, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x82);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 3}, {Register::D, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAE) {
     SetRegisterState({{Register::A, 1}, {Register::E, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x83);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 3}, {Register::E, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAH) {
     SetRegisterState({{Register::A, 1}, {Register::H, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x84);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 3}, {Register::H, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAL) {
     SetRegisterState({{Register::A, 1}, {Register::L, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x85);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 3}, {Register::L, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAHL) {
     SetRegisterState({{Register::A, 1}, {Register::HL, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x86);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 3}, {Register::HL, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitALiteral) {
     SetRegisterState({{Register::A, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0xC6, static_cast<unsigned char>(5));
-    EXPECT_EQ(2, get_instruction_ptr());
+    EXPECT_EQ(2, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 6}});
 }
 
@@ -105,73 +105,73 @@ TEST_F(OpcodeHandlersTest, Add8BitALiteral) {
 
 TEST_F(OpcodeHandlersTest, Adc8BitAA) {
     SetRegisterState({{Register::A, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x8F);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 2}});
 }
 
 TEST_F(OpcodeHandlersTest, Adc8BitAB) {
     SetRegisterState({{Register::A, 100}, {Register::B, 200}, {Register::FC, 0}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x88);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::B, 200}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Adc8BitAC) {
     SetRegisterState({{Register::A, 100}, {Register::C, 200}, {Register::FC, 0}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x89);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::C, 200}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Adc8BitAD) {
     SetRegisterState({{Register::A, 100}, {Register::D, 200}, {Register::FC, 0}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x8A);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::D, 200}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Adc8BitAE) {
     SetRegisterState({{Register::A, 100}, {Register::E, 200}, {Register::FC, 0}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x8B);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::E, 200}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Adc8BitAH) {
     SetRegisterState({{Register::A, 100}, {Register::H, 200}, {Register::FC, 0}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x8C);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::H, 200}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Adc8BitAL) {
     SetRegisterState({{Register::A, 100}, {Register::L, 200}, {Register::FC, 0}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x8D);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::L, 200}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Adc8BitAHL) {
     SetRegisterState({{Register::A, 100}, {Register::HL, 200}, {Register::FC, 0}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x8E);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::HL, 200}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Adc8BitALiteral) {
     SetRegisterState({{Register::A, 100}, {Register::FC, 0}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0xCE, static_cast<unsigned char>(200));
-    EXPECT_EQ(2, get_instruction_ptr());
+    EXPECT_EQ(2, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 44}, {Register::FC, 1}});
 }
 
@@ -180,73 +180,73 @@ TEST_F(OpcodeHandlersTest, Adc8BitALiteral) {
 
 TEST_F(OpcodeHandlersTest, Sub8BitA) {
     SetRegisterState({{Register::A, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x97);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Sub8BitB) {
     SetRegisterState({{Register::A, 2}, {Register::B, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x90);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 1}, {Register::B, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Sub8BitC) {
     SetRegisterState({{Register::A, 2}, {Register::C, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x91);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 1}, {Register::C, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Sub8BitD) {
     SetRegisterState({{Register::A, 2}, {Register::D, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x92);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 1}, {Register::D, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Sub8BitE) {
     SetRegisterState({{Register::A, 2}, {Register::E, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x93);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 1}, {Register::E, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Sub8BitH) {
     SetRegisterState({{Register::A, 2}, {Register::H, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x94);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 1}, {Register::H, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Sub8BitL) {
     SetRegisterState({{Register::A, 2}, {Register::L, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x95);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 1}, {Register::L, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Sub8BitHL) {
     SetRegisterState({{Register::A, 2}, {Register::HL, 1}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x96);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 1}, {Register::HL, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Sub8BitLiteral) {
     SetRegisterState({{Register::A, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0xD6, static_cast<unsigned char>(1));
-    EXPECT_EQ(2, get_instruction_ptr());
+    EXPECT_EQ(2, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 1}});
 }
 
@@ -256,9 +256,9 @@ TEST_F(OpcodeHandlersTest, Sub8BitLiteral) {
 
 TEST_F(OpcodeHandlersTest, Sbc8BitA) {
     SetRegisterState({{Register::A, 2}});
-    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(0, instruction_ptr());
     ExecuteInstruction(0x9F);
-    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_EQ(1, instruction_ptr());
     EXPECT_REGISTER({{Register::A, 0}, {Register::FC, 0}});
 }
 
@@ -336,10 +336,10 @@ TEST_F(OpcodeHandlersTest, LoadDecHLA) {
 }
 
 TEST_F(OpcodeHandlersTest, Call) {
-  SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1111}});
-  ExecuteInstruction(0xcd, static_cast<unsigned short>(0x2222));
-  EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x2222}});
-  EXPECT_MEMORY({{0xfffe, 0x22}, {0xfffd, 0x22}});
+  SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1234}});
+  ExecuteInstruction(0xcd, static_cast<unsigned short>(0x2345));
+  EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x2345}});
+  EXPECT_MEMORY({{0xfffe, 0x35}, {0xfffd, 0x12}});
 }
 
 } // namespace handlers
