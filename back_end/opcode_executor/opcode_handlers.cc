@@ -961,7 +961,6 @@ int LoadCA(handlers::ExecutorContext* context) {
 
 int LoadDecAHL(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(context->cpu->rHL);
   context->cpu->rHL--;
   return instruction_ptr + 1;
@@ -969,7 +968,6 @@ int LoadDecAHL(handlers::ExecutorContext* context) {
 
 int LoadDecHLA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->memory_mapper->Write(context->cpu->rHL, context->cpu->flag_struct.rA);
   context->cpu->rHL--;
   return instruction_ptr + 1;
@@ -977,7 +975,6 @@ int LoadDecHLA(handlers::ExecutorContext* context) {
 
 int LoadIncAHL(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(context->cpu->rHL);
   context->cpu->rHL++;
   return instruction_ptr + 1;
@@ -985,7 +982,6 @@ int LoadIncAHL(handlers::ExecutorContext* context) {
 
 int LoadIncHLA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->memory_mapper->Write(context->cpu->rHL, context->cpu->flag_struct.rA);
   context->cpu->rHL++;
   return instruction_ptr + 1;

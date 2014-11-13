@@ -325,5 +325,14 @@ TEST_F(OpcodeHandlersTest, Dec8Bit) {
     EXPECT_REGISTER({{Register::A, 0}});
 }
 
+TEST_F(OpcodeHandlersTest, LoadDecHLA) {
+  SetRegisterState({{Register::A, 0xab}, {Register::HL, 0xa001}});
+  ExecuteInstruction(0x32);
+  EXPECT_REGISTER({{Register::A, 0xab}, {Register::HL, 0xa000}});
+  SetRegisterState({{Register::A, 0}, {Register::HL, 0xa001}});
+  ExecuteInstruction(0x2a);
+  EXPECT_REGISTER({{Register::A, 0xab}, {Register::HL, 0xa002}});
+}
+
 } // namespace handlers
 } // namespace back_end
