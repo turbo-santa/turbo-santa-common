@@ -1,5 +1,6 @@
 #include "back_end/memory/mbc.h"
 
+#include <stdio.h>
 #include <glog/logging.h>
 
 namespace back_end {
@@ -54,6 +55,10 @@ void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, std:
 
 unsigned char ROMBank::Read(unsigned short address) {
   return memory_[address];
+}
+
+void ROMBank::ForceWrite(unsigned short address, unsigned char value) {
+  memory_[address] = value;
 }
 
 void CreateRAMBanks(int bank_number, vector<RAMBank>* ram_bank_n) {
@@ -116,6 +121,18 @@ void NoMBC::Write(unsigned short address, unsigned char value) {
     ram_bank_0_.Write(address - 0xa000, value);
   } else {
     LOG(FATAL) << "Write attempted outside of MBC region: " << address;
+  }
+}
+
+void NoMBC::ForceWrite(unsigned short address, unsigned char value) {
+  if (0x0000 <= address && address <= 0x3fff) {
+    rom_bank_0_.ForceWrite(address - 0x0000, value);
+  } else if (0x4000 <= address && address <= 0x7fff) {
+    rom_bank_1_.ForceWrite(address - 0x4000, value);
+  } else if (0xa000 <= address && address <= 0xbfff) {
+    ram_bank_0_.ForceWrite(address - 0xa000, value);
+  } else {
+    LOG(FATAL) << "ForceWrite attempted outside of MBC region: " << address;
   }
 }
 
@@ -205,6 +222,18 @@ void MBC1::Write(unsigned short address, unsigned char value) {
     }
   } else {
     LOG(FATAL) << "Write attempted outside of MBC region: " << address;
+  }
+}
+
+void MBC1::ForceWrite(unsigned short address, unsigned char value) {
+  if (0x0000 <= address && address <= 0x3fff) {
+    rom_bank_0_.ForceWrite(address - 0x0000, value);
+  } else if (0x4000 <= address && address <= 0x4000) {
+    rom_bank_n_.ForceWrite(address - 0x4000, value);
+  } else if (0xa000 <= address && address <= 0xbfff) {
+    rom_bank_n_.ForceWrite(address - 0xa000, value);
+  } else {
+    LOG(FATAL) << "Read attempted outside of MBC region: " << address;
   }
 }
 

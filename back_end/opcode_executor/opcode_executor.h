@@ -18,7 +18,7 @@ namespace handlers {
 
 class OpcodeExecutor {
   public: 
-    OpcodeExecutor(unsigned char*, long) {}
+    OpcodeExecutor(unsigned char*, long);
     void ReadInstruction();
 
   private:

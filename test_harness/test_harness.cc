@@ -6,6 +6,7 @@
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "back_end/opcode_executor/registers.h"
 #include "back_end/memory/memory_mapper.h"
+#include "back_end/memory/mbc.h"
 
 namespace test_harness {
 using std::string;
@@ -13,6 +14,7 @@ using std::to_string;
 using std::unique_ptr;
 using std::vector;
 using back_end::memory::MemoryMapper;
+using back_end::memory::MBC;
 using back_end::registers::GB_CPU;
 using ::testing::AssertionResult;
 using ::testing::AssertionSuccess;
@@ -67,7 +69,7 @@ int TestHarness::get_instruction_ptr() {
 }
 
 void TestHarness::ExecuteInstruction(unsigned char instruction) {
-  parser_->memory_mapper_.Write(parser_->instruction_ptr_, instruction); // We put the instruction in right before it gets called.
+  parser_->memory_mapper_.mbc_->ForceWrite(static_cast<unsigned short>(parser_->instruction_ptr_), instruction); // We put the instruction in right before it gets called.
   parser_->ReadInstruction();
 }
 
@@ -126,8 +128,8 @@ bool TestHarness::VerifyCorrectInstruction(const vector<unsigned char>& instruct
 
 void TestHarness::ClearParser() {
   parser_->instruction_ptr_ = 0;
-  for (int i = 0; i < MemoryMapper::kMaxSize; i++) {
-    parser_->memory_mapper_.Write(i, (unsigned char) 0);
+  for (int i = 0; i < MBC::kROMBank0Size; i++) {
+    parser_->memory_mapper_.mbc_->ForceWrite(i, 0x00);
   }
   typedef RegisterNameValuePair::RegisterName R;
   SetRegisterState({

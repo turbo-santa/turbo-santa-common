@@ -6,6 +6,10 @@
 
 #include "back_end/memory/memory_segment.h"
 
+namespace test_harness {
+class TestHarness;
+} // namespace test_harness
+
 namespace back_end {
 namespace memory {
 
@@ -16,7 +20,11 @@ void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, std:
 
 class ROMBank {
  public:
+  ROMBank() : memory_(0x4000, 0x00) {}
+
   virtual unsigned char Read(unsigned short address);
+
+  virtual void ForceWrite(unsigned short address, unsigned char value);
 
  private:
   std::vector<unsigned char> memory_;
@@ -31,9 +39,15 @@ void CreateRAMBanks(int bank_number, std::vector<RAMBank>* ram_bank_n_);
 
 class RAMBank {
  public:
+  RAMBank() : memory_(0x2000, 0x00) {}
+
   virtual unsigned char Read(unsigned short address);
 
   virtual void Write(unsigned short address, unsigned char value);
+
+  virtual void ForceWrite(unsigned short address, unsigned char value) {
+    Write(address, value);
+  }
 
  private:
   std::vector<unsigned char> memory_;
@@ -66,6 +80,8 @@ class MBC : public MemorySegment {
   protected:
     virtual unsigned short lower_address_bound() { return 0x0000; }
     virtual unsigned short upper_address_bound() { return 0xbfff; }
+    virtual void ForceWrite(unsigned short address, unsigned char value) = 0;
+    friend class test_harness::TestHarness;
 };
 
 std::unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size);
@@ -93,6 +109,7 @@ class NoMBC : public MBC {
   ROMBank rom_bank_1_;
   RAMBank ram_bank_0_;
 
+  virtual void ForceWrite(unsigned short address, unsigned char value);
 };
 
 class MBC1 : public MBC {
@@ -144,6 +161,10 @@ class MBC1 : public MBC {
           return banks_[ComputeROMBank()].Read(address);
         }
 
+        virtual void ForceWrite(unsigned short address, unsigned char value) {
+          banks_[ComputeROMBank()].ForceWrite(address, value);
+        }
+
       private:
         // Unlike the RAM bank, the ROM bank number does not directly correspond
         // to that banks index in the vector of banks. When the user sets the
@@ -169,6 +190,10 @@ class MBC1 : public MBC {
           banks_[bank_mode_register_->GetRAMBank()].Write(address, value);
         }
 
+        virtual void ForceWrite(unsigned short address, unsigned char value) {
+          Write(address, value);
+        }
+
       private:
         std::vector<RAMBank> banks_;
         BankModeRegister* bank_mode_register_;
@@ -176,6 +201,8 @@ class MBC1 : public MBC {
 
   private:
     void SetRAMEnabled(unsigned char value);
+    virtual void ForceWrite(unsigned short address, unsigned char value);
+    
     bool ram_enabled_ = false;
     BankModeRegister bank_mode_register_;
     ROMBank rom_bank_0_;

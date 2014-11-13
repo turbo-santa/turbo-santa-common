@@ -50,7 +50,7 @@ libopcode_executor_a_AR = $(AR) $(ARFLAGS)
 libopcode_executor_a_LIBADD =
 am_libopcode_executor_a_OBJECTS = opcode_executor.$(OBJEXT) \
 	opcode_handlers.$(OBJEXT) opcode_map.$(OBJEXT) \
-	opcodes.$(OBJEXT) registers.$(OBJEXT)
+	opcodes.$(OBJEXT)
 libopcode_executor_a_OBJECTS = $(am_libopcode_executor_a_OBJECTS)
 am_opcode_handlers_test_OBJECTS = opcode_executor.$(OBJEXT) \
 	opcode_handlers_test.$(OBJEXT)
@@ -177,7 +177,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libopcode_executor.a
-libopcode_executor_a_SOURCES = opcode_executor.h opcode_executor.cc opcode_handlers.h opcode_handlers.cc opcode_map.h opcode_map.cc opcodes.h opcodes.cc registers.h registers.cc
+libopcode_executor_a_SOURCES = opcode_executor.h opcode_executor.cc opcode_handlers.h opcode_handlers.cc opcode_map.h opcode_map.cc opcodes.h opcodes.cc registers.h
 AM_DEFAULT_SOURCE_EXT = .cc
 opcode_handlers_test_SOURCES = opcode_executor.cc opcode_handlers_test.cc
 opcode_handlers_test_LDFLAGS = -pthread
@@ -241,7 +241,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_handlers_test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_map.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcodes.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/registers.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
