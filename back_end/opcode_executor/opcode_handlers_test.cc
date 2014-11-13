@@ -15,6 +15,7 @@ unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned
 using std::vector;
 using handlers::OpcodeExecutor;
 using Register = test_harness::RegisterNameValuePair;
+using Memory = test_harness::MemoryAddressValuePair;
 
 // The fixture gets instantiated once per test case. We would like to reuse the
 // OpcodeExecutor. Also, this will get cleaned up when the test is over.
@@ -332,6 +333,13 @@ TEST_F(OpcodeHandlersTest, LoadDecHLA) {
   SetRegisterState({{Register::A, 0}, {Register::HL, 0xa001}});
   ExecuteInstruction(0x2a);
   EXPECT_REGISTER({{Register::A, 0xab}, {Register::HL, 0xa002}});
+}
+
+TEST_F(OpcodeHandlersTest, Call) {
+  SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1111}});
+  ExecuteInstruction(0xcd, static_cast<unsigned short>(0x2222));
+  EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x2222}});
+  EXPECT_MEMORY({{0xfffe, 0x22}, {0xfffd, 0x22}});
 }
 
 } // namespace handlers
