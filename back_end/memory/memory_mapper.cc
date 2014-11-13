@@ -18,8 +18,10 @@ unsigned char MemoryMapper::Read(unsigned short address) {
     return mbc_->Read(address);
   } else if (video_ram_->InRange(address)) {
     return video_ram_->Read(address);
-  } else if (internal_ram_->InRange(address)) {
-    return internal_ram_->Read(address);
+  } else if (internal_ram_0_->InRange(address)) {
+    return internal_ram_0_->Read(address);
+  } else if (internal_ram_1_->InRange(address)) {
+    return internal_ram_1_->Read(address);
   } else if (echo_ram_->InRange(address)) {
     return echo_ram_->Read(address);
   } else if (sprite_attribute_table_->InRange(address)) {
@@ -44,8 +46,10 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
     mbc_->Write(address, value);
   } else if (video_ram_->InRange(address)) {
     video_ram_->Write(address, value);
-  } else if (internal_ram_->InRange(address)) {
-    internal_ram_->Write(address, value);
+  } else if (internal_ram_0_->InRange(address)) {
+    internal_ram_0_->Write(address, value);
+  } else if (internal_ram_1_->InRange(address)) {
+    internal_ram_1_->Write(address, value);
   } else if (echo_ram_->InRange(address)) {
     echo_ram_->Write(address, value);
   } else if (sprite_attribute_table_->InRange(address)) {
