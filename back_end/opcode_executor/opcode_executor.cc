@@ -3,12 +3,22 @@
 #include "back_end/opcode_executor/registers.h"
 
 namespace back_end {
+namespace registers {
+GB_CPU* cpu;
+}
+}
+
+namespace back_end {
 namespace handlers {
 
 using std::unique_ptr;
 using opcodes::opcode_map;
 using opcodes::Opcode;
 using memory::MemoryMapper;
+
+OpcodeExecutor::OpcodeExecutor(unsigned char*, long) {
+  registers::cpu = &cpu_;
+}
 
 void OpcodeExecutor::ReadInstruction() {
     unsigned short opcode = memory_mapper_.Read(instruction_ptr_);

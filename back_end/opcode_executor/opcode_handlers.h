@@ -20,6 +20,8 @@ int ADC8Bit(handlers::ExecutorContext* context);
 int ADC8BitLiteral(handlers::ExecutorContext* context);
 int Sub8Bit(handlers::ExecutorContext* context);
 int Sub8BitLiteral(handlers::ExecutorContext* context);
+int SBC8Bit(handlers::ExecutorContext* context);
+int SBC8BitLiteral(handlers::ExecutorContext* context);
 int And8Bit(handlers::ExecutorContext* context);
 int And8BitLiteral(handlers::ExecutorContext* context);
 int Or8Bit(handlers::ExecutorContext* context);

@@ -48,7 +48,7 @@ struct GB_CPU {
 	unsigned short rSP;	
 };
 
-extern GB_CPU cpu;
+extern GB_CPU* cpu;
 
 } // namespace registers
 } // namespace back_end

@@ -2790,7 +2790,8 @@ ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
 CPPFLAGS='-I${top_srcdir} -I${top_srcdir}/third_party/gtest/include'
 CXXFLAGS='-std=c++11'
 CFLAGS=''
-#LDFLAGS='-lc++ -libstdc++ -libc++'
+LDFLAGS='-L/usr/local/lib'
+LIBS='-lglog'
 
 # Checks for programs.
 ac_ext=cpp

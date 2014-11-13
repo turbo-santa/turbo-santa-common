@@ -261,17 +261,6 @@ TEST_F(OpcodeHandlersTest, Sbc8BitA) {
     EXPECT_REGISTER({{Register::A, 0}, {Register::FC, 0}});
 }
 
-
-
-TEST_F(OpcodeHandlersTest, GetRegisterValue) {
-    get_rom_ptr()[get_instruction_ptr()] = 0x80;
-    SetRegisterState({{Register::B, 1}});
-
-    int expected_register_value = 1;
-    int actual_register_value = GetRegisterValue(get_rom_ptr(), get_instruction_ptr(), 0x80);
-    EXPECT_EQ(expected_register_value, actual_register_value);
-}
-
 TEST_F(OpcodeHandlersTest, Cp8Bit) {
     SetRegisterState({{Register::A, 1}, {Register::B, 1}});
     ExecuteInstruction(0xb8);
