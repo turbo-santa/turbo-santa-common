@@ -28,7 +28,7 @@ class TestHarness : public ::testing::Test {
             return AssertMemoryState(memory_diff);
         }
         ::testing::AssertionResult AssertMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
-        int get_instruction_ptr();
+        unsigned short instruction_ptr() { return parser_->cpu_.rPC; }
 
     protected:
         TestHarness(back_end::handlers::OpcodeExecutor* parser) : parser_(parser) {}

@@ -54,7 +54,7 @@ AssertionResult TestHarness::AssertMemoryState(const vector<MemoryAddressValuePa
   for (const MemoryAddressValuePair& memory_diff : memory_diff_list) {
     MemoryMapper* memory_mapper = &parser_->memory_mapper_;
     unsigned char actual_value = memory_mapper->Read(memory_diff.address);
-    if (memory_diff.value == actual_value) {
+    if (memory_diff.value != actual_value) {
       Message failure_message;
       failure_message << "Expected memory at " << to_string(memory_diff.address)
           << " to be " << to_string(memory_diff.value) << " but was " << to_string(actual_value);
@@ -64,26 +64,22 @@ AssertionResult TestHarness::AssertMemoryState(const vector<MemoryAddressValuePa
   return AssertionSuccess();
 }
 
-int TestHarness::get_instruction_ptr() {
-  return parser_->instruction_ptr_;
-}
-
 void TestHarness::ExecuteInstruction(unsigned char instruction) {
-  parser_->memory_mapper_.mbc_->ForceWrite(parser_->instruction_ptr_, instruction); // We put the instruction in right before it gets called.
+  parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
   parser_->ReadInstruction();
 }
 
 void TestHarness::ExecuteInstruction(unsigned char instruction, unsigned short value) {
-    parser_->memory_mapper_.mbc_->ForceWrite(parser_->instruction_ptr_, instruction); // We put the instruction in right before it gets called.
+    parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
     // TODO(Deigo): Make sure that we are actually MSB.
-    parser_->memory_mapper_.mbc_->ForceWrite(parser_->instruction_ptr_ + 1, static_cast<unsigned char>(value >> 8));
-    parser_->memory_mapper_.mbc_->ForceWrite(parser_->instruction_ptr_ + 1, static_cast<unsigned char>(value));
+    parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 1, static_cast<unsigned char>(value >> 8));
+    parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 2, static_cast<unsigned char>(value));
     parser_->ReadInstruction();
 }
 
 void TestHarness::ExecuteInstruction(unsigned char instruction, unsigned char value) {
-    parser_->memory_mapper_.mbc_->ForceWrite(parser_->instruction_ptr_, instruction); // We put the instruction in right before it gets called.
-    parser_->memory_mapper_.mbc_->ForceWrite(parser_->instruction_ptr_ + 1, value);
+    parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
+    parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 1, value);
     parser_->ReadInstruction();
 }
 
@@ -141,7 +137,6 @@ bool TestHarness::VerifyCorrectInstruction(const vector<unsigned char>& instruct
 }
 
 void TestHarness::ClearParser() {
-  parser_->instruction_ptr_ = 0;
   for (int i = 0; i < MBC::kROMBank0Size; i++) {
     parser_->memory_mapper_.mbc_->ForceWrite(i, 0x00);
   }
