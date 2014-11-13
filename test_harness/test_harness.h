@@ -54,8 +54,8 @@ class TestHarness : public ::testing::Test {
 
 #define EXPECT_MEMORY(...)\
 {\
-    std::vector<test_harness::RegisterNameValuePair> reg_list_macro = __VA_ARGS__;\
-    EXPECT_PRED_FORMAT1(AssertMemoryAdapter, reg_list_macro);\
+    std::vector<test_harness::MemoryAddressValuePair> mem_list_macro = __VA_ARGS__;\
+    EXPECT_PRED_FORMAT1(AssertMemoryAdapter, mem_list_macro);\
 }
 
 } // namespace test_harness
