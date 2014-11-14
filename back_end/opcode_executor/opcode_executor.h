@@ -1,6 +1,7 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
 
+#include <map>
 #include <memory>
 
 #include "back_end/memory/memory_mapper.h"
@@ -24,6 +25,7 @@ class OpcodeExecutor {
   private:
     memory::MemoryMapper memory_mapper_;
     registers::GB_CPU cpu_;
+    std::map<unsigned short, Opcode> opcode_map;
 
     friend class test_harness::TestHarness;
 };

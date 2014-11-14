@@ -3,23 +3,17 @@
 #include "back_end/opcode_executor/registers.h"
 
 namespace back_end {
-namespace registers {
-GB_CPU* cpu;
-}
-}
-
-namespace back_end {
 namespace handlers {
 
 using std::unique_ptr;
-using opcodes::opcode_map;
+using opcodes::CreateOpcodeMap;
 using opcodes::Opcode;
 using memory::MemoryMapper;
 
 OpcodeExecutor::OpcodeExecutor(unsigned char*, long) {
-  registers::cpu = &cpu_;
   // TODO(Diego): It acutally starts at something like 0x100.
   cpu_.rPC = 0x0000;
+  opcode_map = CreateOpcodeMap(&cpu_);
 }
 
 void OpcodeExecutor::ReadInstruction() {

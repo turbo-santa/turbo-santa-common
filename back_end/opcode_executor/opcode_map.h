@@ -26,7 +26,7 @@ extern unsigned char* rHL;
 extern unsigned char* rPC;
 extern unsigned char* rSP;
 
-extern std::map<unsigned short, Opcode> opcode_map;
+std::map<unsigned short, Opcode> CreateOpcodeMap(registers::GB_CPU* cpu);
 
 } // namespace opcodes
 } // namespace back_end
