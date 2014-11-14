@@ -12,7 +12,8 @@ AC_LANG([C++])
 CPPFLAGS='-I${top_srcdir} -I${top_srcdir}/third_party/gtest/include'
 CXXFLAGS='-std=c++11'
 CFLAGS=''
-#LDFLAGS='-lc++ -libstdc++ -libc++'
+LDFLAGS='-L/usr/local/lib'
+LIBS='-lglog'
 
 # Checks for programs.
 AC_PROG_CXX([g++-4.8 g++])
@@ -45,6 +46,7 @@ AC_CONFIG_FILES([Makefile
                  back_end/Makefile
                  back_end/memory/Makefile
                  back_end/opcode_executor/Makefile
+                 back_end/clocktroller/Makefile
                  test_harness/Makefile])
 
 AC_CONFIG_SUBDIRS([third_party/gtest])
