@@ -2,6 +2,7 @@
 
 #include "back_end/opcode_executor/registers.h"
 
+#include <glog/logging.h>
 namespace back_end {
 namespace registers {
 GB_CPU* cpu;
@@ -22,7 +23,7 @@ OpcodeExecutor::OpcodeExecutor(unsigned char*, long) {
   cpu_.rPC = 0x0000;
 }
 
-void OpcodeExecutor::ReadInstruction() {
+unsigned int OpcodeExecutor::ReadInstruction() {
     unsigned short instruction_ptr = cpu_.rPC;
     unsigned short opcode = memory_mapper_.Read(instruction_ptr);
     if (opcode == 0xCB || opcode == 0x10) {
@@ -35,6 +36,7 @@ void OpcodeExecutor::ReadInstruction() {
 
     ExecutorContext context(&cpu_.rPC, &opcode_struct, &memory_mapper_, &cpu_);
     cpu_.rPC = opcode_struct.handler(&context);
+ 	return context->opcode.clock_cycles;
 }
 
 } // namespace handlers

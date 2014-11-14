@@ -14,18 +14,25 @@ class TestHarness;
 } // namespace test_harness
 
 namespace back_end {
+namespace clocktroller {
+class ClocktrollerTest;
+} // namespace clocktroller
+} // namespace back_end
+
+namespace back_end {
 namespace handlers {
 
 class OpcodeExecutor {
   public: 
-    OpcodeExecutor(unsigned char*, long);
-    void ReadInstruction();
+    OpcodeExecutor(unsigned char* rom, unsigned long rom_size);
+    unsigned int ReadInstruction();
 
   private:
     memory::MemoryMapper memory_mapper_;
     registers::GB_CPU cpu_;
 
     friend class test_harness::TestHarness;
+    friend class back_end::clocktroller::ClocktrollerTest;
 };
 
 struct ExecutorContext {

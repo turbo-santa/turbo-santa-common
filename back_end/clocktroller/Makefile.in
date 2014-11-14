@@ -76,9 +76,9 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-check_PROGRAMS = opcode_handlers_test$(EXEEXT)
+check_PROGRAMS = clocktroller_test$(EXEEXT)
 TESTS = $(check_PROGRAMS)
-subdir = back_end/opcode_executor
+subdir = back_end/clocktroller
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Makefile.am \
 	$(top_srcdir)/depcomp $(top_srcdir)/test-driver
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -95,22 +95,20 @@ AM_V_AR = $(am__v_AR_@AM_V@)
 am__v_AR_ = $(am__v_AR_@AM_DEFAULT_V@)
 am__v_AR_0 = @echo "  AR      " $@;
 am__v_AR_1 = 
-libopcode_executor_a_AR = $(AR) $(ARFLAGS)
-libopcode_executor_a_LIBADD =
-am_libopcode_executor_a_OBJECTS = opcode_executor.$(OBJEXT) \
-	opcode_handlers.$(OBJEXT) opcode_map.$(OBJEXT) \
-	opcodes.$(OBJEXT)
-libopcode_executor_a_OBJECTS = $(am_libopcode_executor_a_OBJECTS)
-am_opcode_handlers_test_OBJECTS = opcode_executor.$(OBJEXT) \
-	opcode_handlers_test.$(OBJEXT)
-opcode_handlers_test_OBJECTS = $(am_opcode_handlers_test_OBJECTS)
-opcode_handlers_test_DEPENDENCIES = libopcode_executor.a \
-	../memory/libmemory.a \
+libclocktroller_a_AR = $(AR) $(ARFLAGS)
+libclocktroller_a_LIBADD =
+am_libclocktroller_a_OBJECTS = clocktroller.$(OBJEXT) \
+	clocktroller_test.$(OBJEXT)
+libclocktroller_a_OBJECTS = $(am_libclocktroller_a_OBJECTS)
+clocktroller_test_SOURCES = clocktroller_test.cc
+clocktroller_test_OBJECTS = clocktroller_test.$(OBJEXT)
+clocktroller_test_DEPENDENCIES = libclocktroller.a \
+	../opcode_executor/libopcode_executor.a \
 	${top_srcdir}/test_harness/libtest_harness.a \
 	${top_srcdir}/third_party/gtest/lib/libgtest_main.a \
 	${top_srcdir}/third_party/gtest/lib/libgtest.a
-opcode_handlers_test_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
-	$(opcode_handlers_test_LDFLAGS) $(LDFLAGS) -o $@
+clocktroller_test_LINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
+	$(clocktroller_test_LDFLAGS) $(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -148,19 +146,12 @@ am__v_CC_0 = @echo "  CC      " $@;
 am__v_CC_1 = 
 CCLD = $(CC)
 LINK = $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) -o $@
-<<<<<<< HEAD
-SOURCES = $(libopcode_executor_a_SOURCES) \
-	$(opcode_handlers_test_SOURCES)
-DIST_SOURCES = $(libopcode_executor_a_SOURCES) \
-	$(opcode_handlers_test_SOURCES)
-=======
 AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libopcode_executor_a_SOURCES) opcode_handlers_test.cpp
-DIST_SOURCES = $(libopcode_executor_a_SOURCES) \
-	opcode_handlers_test.cpp
+SOURCES = $(libclocktroller_a_SOURCES) clocktroller_test.cc
+DIST_SOURCES = $(libclocktroller_a_SOURCES) clocktroller_test.cc
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -183,7 +174,6 @@ am__define_uniq_tagged_files = \
   unique=`for i in $$list; do \
     if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
   done | $(am__uniquify_input)`
->>>>>>> clocktroller
 ETAGS = etags
 CTAGS = ctags
 am__tty_colors_dummy = \
@@ -484,20 +474,15 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-noinst_LIBRARIES = libopcode_executor.a
-libopcode_executor_a_SOURCES = opcode_executor.h opcode_executor.cc opcode_handlers.h opcode_handlers.cc opcode_map.h opcode_map.cc opcodes.h opcodes.cc registers.h
+noinst_LIBRARIES = libclocktroller.a
+libclocktroller_a_SOURCES = clocktroller.h clocktroller.cc clocktroller_test.cc
 AM_DEFAULT_SOURCE_EXT = .cc
-opcode_handlers_test_SOURCES = opcode_executor.cc opcode_handlers_test.cc
-opcode_handlers_test_LDFLAGS = -pthread
-opcode_handlers_test_LDADD = libopcode_executor.a ../memory/libmemory.a ${top_srcdir}/test_harness/libtest_harness.a ${top_srcdir}/third_party/gtest/lib/libgtest_main.a ${top_srcdir}/third_party/gtest/lib/libgtest.a
+clocktroller_test_LDFLAGS = -pthread
+clocktroller_test_LDADD = libclocktroller.a ../opcode_executor/libopcode_executor.a ${top_srcdir}/test_harness/libtest_harness.a ${top_srcdir}/third_party/gtest/lib/libgtest_main.a ${top_srcdir}/third_party/gtest/lib/libgtest.a
 all: all-am
 
 .SUFFIXES:
-<<<<<<< HEAD
-.SUFFIXES: .cc .o .obj
-=======
-.SUFFIXES: .cc .cpp .log .o .obj .test .test$(EXEEXT) .trs
->>>>>>> clocktroller
+.SUFFIXES: .cc .log .o .obj .test .test$(EXEEXT) .trs
 $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	@for dep in $?; do \
 	  case '$(am__configure_deps)' in \
@@ -507,9 +492,9 @@ $(srcdir)/Makefile.in:  $(srcdir)/Makefile.am  $(am__configure_deps)
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu back_end/opcode_executor/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu back_end/clocktroller/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu back_end/opcode_executor/Makefile
+	  $(AUTOMAKE) --gnu back_end/clocktroller/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -532,17 +517,17 @@ $(am__aclocal_m4_deps):
 clean-noinstLIBRARIES:
 	-test -z "$(noinst_LIBRARIES)" || rm -f $(noinst_LIBRARIES)
 
-libopcode_executor.a: $(libopcode_executor_a_OBJECTS) $(libopcode_executor_a_DEPENDENCIES) $(EXTRA_libopcode_executor_a_DEPENDENCIES) 
-	$(AM_V_at)-rm -f libopcode_executor.a
-	$(AM_V_AR)$(libopcode_executor_a_AR) libopcode_executor.a $(libopcode_executor_a_OBJECTS) $(libopcode_executor_a_LIBADD)
-	$(AM_V_at)$(RANLIB) libopcode_executor.a
+libclocktroller.a: $(libclocktroller_a_OBJECTS) $(libclocktroller_a_DEPENDENCIES) $(EXTRA_libclocktroller_a_DEPENDENCIES) 
+	$(AM_V_at)-rm -f libclocktroller.a
+	$(AM_V_AR)$(libclocktroller_a_AR) libclocktroller.a $(libclocktroller_a_OBJECTS) $(libclocktroller_a_LIBADD)
+	$(AM_V_at)$(RANLIB) libclocktroller.a
 
 clean-checkPROGRAMS:
 	-test -z "$(check_PROGRAMS)" || rm -f $(check_PROGRAMS)
 
-opcode_handlers_test$(EXEEXT): $(opcode_handlers_test_OBJECTS) $(opcode_handlers_test_DEPENDENCIES) $(EXTRA_opcode_handlers_test_DEPENDENCIES) 
-	@rm -f opcode_handlers_test$(EXEEXT)
-	$(AM_V_CXXLD)$(opcode_handlers_test_LINK) $(opcode_handlers_test_OBJECTS) $(opcode_handlers_test_LDADD) $(LIBS)
+clocktroller_test$(EXEEXT): $(clocktroller_test_OBJECTS) $(clocktroller_test_DEPENDENCIES) $(EXTRA_clocktroller_test_DEPENDENCIES) 
+	@rm -f clocktroller_test$(EXEEXT)
+	$(AM_V_CXXLD)$(clocktroller_test_LINK) $(clocktroller_test_OBJECTS) $(clocktroller_test_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -550,11 +535,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_executor.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_handlers.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_handlers_test.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcode_map.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/opcodes.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clocktroller.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/clocktroller_test.Po@am__quote@
 
 .cc.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -570,41 +552,12 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
 
-<<<<<<< HEAD
-ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
-	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
-	unique=`for i in $$list; do \
-	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
-	  done | \
-	  $(AWK) '{ files[$$0] = 1; nonempty = 1; } \
-	      END { if (nonempty) { for (i in files) print i; }; }'`; \
-	mkid -fID $$unique
-tags: TAGS
-
-TAGS:  $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
-		$(TAGS_FILES) $(LISP)
-=======
-.cpp.o:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ $<
-
-.cpp.obj:
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ `$(CYGPATH_W) '$<'`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/$*.Tpo $(DEPDIR)/$*.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXXCOMPILE) -c -o $@ `$(CYGPATH_W) '$<'`
-
 ID: $(am__tagged_files)
 	$(am__define_uniq_tagged_files); mkid -fID $$unique
 tags: tags-am
 TAGS: tags
 
 tags-am: $(TAGS_DEPENDENCIES) $(am__tagged_files)
->>>>>>> clocktroller
 	set x; \
 	here=`pwd`; \
 	$(am__define_uniq_tagged_files); \
@@ -792,9 +745,9 @@ recheck: all $(check_PROGRAMS)
 	        am__force_recheck=am--force-recheck \
 	        TEST_LOGS="$$log_list"; \
 	exit $$?
-opcode_handlers_test.log: opcode_handlers_test$(EXEEXT)
-	@p='opcode_handlers_test$(EXEEXT)'; \
-	b='opcode_handlers_test'; \
+clocktroller_test.log: clocktroller_test$(EXEEXT)
+	@p='clocktroller_test$(EXEEXT)'; \
+	b='clocktroller_test'; \
 	$(am__check_pre) $(LOG_DRIVER) --test-name "$$f" \
 	--log-file $$b.log --trs-file $$b.trs \
 	$(am__common_driver_flags) $(AM_LOG_DRIVER_FLAGS) $(LOG_DRIVER_FLAGS) -- $(LOG_COMPILE) \
