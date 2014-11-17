@@ -342,5 +342,14 @@ TEST_F(OpcodeHandlersTest, Call) {
   EXPECT_MEMORY({{0xfffe, 0x35}, {0xfffd, 0x12}});
 }
 
+TEST_F(OpcodeHandlersTest, LoadAndRunROM) {
+  SetRegisterState({{Register::PC, 0x0100}, {Register::B, 0x01}});
+  LoadAndRunROM({{0x0100, {
+                0x00, // NOP
+                0x80, // ADD A, B
+                }}});
+  EXPECT_REGISTER({{Register::PC, 0x0102}, {Register::A, 0x01}});
+}
+
 } // namespace handlers
 } // namespace back_end
