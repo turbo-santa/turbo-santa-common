@@ -29,6 +29,8 @@ class TestHarness : public ::testing::Test {
             return AssertMemoryState(memory_diff);
         }
         ::testing::AssertionResult AssertMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
+        // XXX: LoadROM and LoadAndRunROM are only implemented for 8-bit
+        // instructions that take no arguments after the actual opcode!!!
         void LoadROM(const std::vector<TestROM>& test_rom);
         void Run(int instruction_number_to_run);
         void LoadAndRunROM(const std::vector<TestROM>& test_rom);
