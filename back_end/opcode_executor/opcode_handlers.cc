@@ -795,19 +795,22 @@ unsigned char GetMSB(unsigned short value) {
   return static_cast<unsigned char>(value >> 8);
 }
 
+void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
+  unsigned short* rSP = &cpu->rSP;
+  memory_mapper->Write(*rSP, GetLSB(*reg));
+  --*rSP;
+  memory_mapper->Write(*rSP, GetMSB(*reg));
+  --*rSP;
+}
+
 int Call(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  MemoryMapper* memory_mapper = context->memory_mapper;
   GB_CPU* cpu = context->cpu;
-  unsigned short* rSP = &cpu->rSP;
   unsigned short* rPC = &cpu->rPC;
 
   ++*rPC;
-  memory_mapper->Write(*rSP, GetLSB(*rPC));
-  --*rSP;
-  memory_mapper->Write(*rSP, GetMSB(*rPC));
-  --*rSP;
+  PushRegister(context->memory_mapper, cpu, rPC);
 
   unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
   instruction_ptr = address;

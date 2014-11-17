@@ -30,12 +30,14 @@ unsigned char MemoryMapper::Read(unsigned short address) {
     // LOG(ERROR) << "Attempted read in non-usable region, address = " << address;
     return 0;
     return not_usable_->Read(address);
+  } else if (interrupt_flag_->InRange(address)) {
+    return interrupt_flag_->Read(address);
   } else if (io_ports_->InRange(address)) {
     return io_ports_->Read(address);
   } else if (high_ram_->InRange(address)) {
     return high_ram_->Read(address);
-  } else if (interupt_enable_register_->InRange(address)) {
-    return interupt_enable_register_->Read(address);
+  } else if (interrupt_enable_->InRange(address)) {
+    return interrupt_enable_->Read(address);
   } else {
     LOG(FATAL) << "Read was attempted at non-existent memory address: " << address;
   }
@@ -58,12 +60,14 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
     // LOG(ERROR) << "Attempted write in non-usable region, address = " << address 
     //     << " value = " << value;
     not_usable_->Write(address, value);
+  } else if (interrupt_flag_->InRange(address)) {
+    interrupt_flag_->Write(address, value);
   } else if (io_ports_->InRange(address)) {
     io_ports_->Write(address, value);
   } else if (high_ram_->InRange(address)) {
     high_ram_->Write(address, value);
-  } else if (interupt_enable_register_->InRange(address)) {
-    interupt_enable_register_->Write(address, value);
+  } else if (interrupt_enable_->InRange(address)) {
+    interrupt_enable_->Write(address, value);
   } else {
     LOG(FATAL) << "Write was attempted at non-existent memory address: " << address;
   }
