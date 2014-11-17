@@ -549,14 +549,14 @@ int Stop(handlers::ExecutorContext* context) {
 int DI(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  // TODO: Actually disable the interrupts
+  *context->interrupt_master_enable = false;
   return instruction_ptr + 1;
 }
 
 int EI(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  // TODO: Actually enable the interrupts
+  *context->interrupt_master_enable = true;
   return instruction_ptr + 1;
 }
 
