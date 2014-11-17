@@ -33,6 +33,17 @@ AssertionResult ExpectRegisterEquals(unsigned short expected, unsigned short act
 }
 } // namespace
 
+void TestHarness::SetMemoryState(const vector<MemoryAddressValuePair>& memory_diff_list) {
+  for (const MemoryAddressValuePair& memory_diff : memory_diff_list) {
+    SetMemoryState(memory_diff);
+  }
+}
+
+void TestHarness::SetMemoryState(const MemoryAddressValuePair& memory_diff) {
+  MemoryMapper* memory_mapper = &parser_->memory_mapper_;
+  memory_mapper->Write(memory_diff.address, memory_diff.value);
+}
+
 void TestHarness::SetRegisterState(const vector<RegisterNameValuePair>& register_diff_list) {
   for (const RegisterNameValuePair& register_diff : register_diff_list) {
     SetRegisterState(register_diff);

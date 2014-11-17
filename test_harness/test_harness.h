@@ -12,6 +12,7 @@ namespace test_harness {
 
 class TestHarness : public ::testing::Test {
     public:
+        void SetMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
         void SetRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
         void ExecuteInstruction(unsigned char instruction);
         void ExecuteInstruction(unsigned char instruction, unsigned short value);
@@ -40,6 +41,7 @@ class TestHarness : public ::testing::Test {
         void ClearParser();
         bool SetInitialState(const DiffState& initial_state);
         bool SetRegisterState(const RegisterNameValuePair& register_diff);
+        void SetMemoryState(const MemoryAddressValuePair& memory_diff);
         bool LoadROM(const std::vector<InstructionExpectedStatePair>& instructions);
         // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
         // delete it when done.
