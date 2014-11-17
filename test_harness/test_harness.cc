@@ -94,6 +94,34 @@ void TestHarness::ExecuteInstruction(unsigned char instruction, unsigned char va
     parser_->ReadInstruction();
 }
 
+void TestHarness::LoadROM(const vector<TestROM>& test_rom) {
+  MBC* mbc = parser_->memory_mapper_.mbc_.get();
+  for (const TestROM& segment : test_rom) {
+    unsigned short address = segment.start_address;
+    for (unsigned char instruction : segment.instructions) {
+      mbc->ForceWrite(address, instruction);
+      address++;
+    }
+  }
+}
+
+void TestHarness::Run(int instruction_number_to_run) {
+  for (int i = 0; i < instruction_number_to_run; i++) {
+    parser_->ReadInstruction();
+  }
+}
+
+void TestHarness::LoadAndRunROM(const vector<TestROM>& test_rom) {
+  int instruction_number_to_run = 0;
+  for (const TestROM& segment : test_rom) {
+    for (unsigned char address : segment.instructions) {
+      instruction_number_to_run++;
+    }
+  }
+  LoadROM(test_rom);
+  Run(instruction_number_to_run);
+}
+
 AssertionResult TestHarness::ValidateRegister(const RegisterNameValuePair& register_diff) {
   unsigned short value = register_diff.register_value;
   GB_CPU* cpu = &parser_->cpu_;

@@ -29,6 +29,9 @@ class TestHarness : public ::testing::Test {
             return AssertMemoryState(memory_diff);
         }
         ::testing::AssertionResult AssertMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
+        void LoadROM(const std::vector<TestROM>& test_rom);
+        void Run(int instruction_number_to_run);
+        void LoadAndRunROM(const std::vector<TestROM>& test_rom);
         unsigned short instruction_ptr() { return parser_->cpu_.rPC; }
 
     protected:
