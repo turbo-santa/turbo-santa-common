@@ -10,12 +10,12 @@ class GraphicsController {
  public:
   void Tick(unsigned int number_of_cycles);
 
-  static const int kSmallPeriod = 0;
-  static const int kLargePeriod = 1;
-  static const int kHBlankLowerBound = 0;
-  static const int kVBlankLowerBound = 0;
-  static const int kOAMLockedLowerBound = 0;
-  static const int kVRAMOAMLockedLowerBound = 0;
+  static const int kSmallPeriod = 456;
+  static const int kLargePeriod = 70224;
+  static const int kVBlankLowerBound = kLargePeriod - kSmallPeriod * 10; // Mode 1.
+  static const int kOAMLockedLowerBound = 80; // Mode 2.
+  static const int kVRAMOAMLockedLowerBound = 172 + kOAMLockedLowerBound; // Mode 3.
+  static const int kHBlankLowerBound = 204 + kVRAMOAMLockedLowerBound; // Mode 0.
 
   enum Mode {
     H_BLANK = 0,
@@ -26,7 +26,20 @@ class GraphicsController {
  private:
   void draw();
   Mode mode();
+  bool coincidence_interrupt();
+  bool oam_interrupt();
+  bool v_blank_interrupt();
+  bool h_blank_interrupt();
+  bool coincidence_flag();
   void set_mode(Mode mode);
+  void set_coincidence_flag(bool value);
+  void SetLCDSTATInterrupt();
+  void SetVBlankInterrupt();
+  void EnableVRAM();
+  void EnableORAM();
+  void DisableVRAM();
+  void DisableORAM();
+
   unsigned long time_ = 0;
   unsigned char lcd_status_ = 0;
   std::vector<unsigned char> screen_;
