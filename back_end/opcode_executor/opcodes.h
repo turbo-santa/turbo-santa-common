@@ -21,17 +21,25 @@ struct Opcode {
     unsigned char* reg1;
     unsigned char* reg2;
     OpcodeHandler handler;
+    unsigned int clock_cycles;
 };
 
 struct PartialOpcode {
     unsigned short opcode_name;
     unsigned char* reg1;
+    unsigned int clock_cycles;
 };
 
 struct PartialOpcodeExtraReg {
     unsigned short opcode_name;
     unsigned char* reg1;
     unsigned char* reg2;
+    unsigned int clock_cycles;
+};
+
+struct OpcodeResult {
+    int instruction_ptr;
+    unsigned int clock_cycles;
 };
 
 std::vector<Opcode> ToList2(std::vector<PartialOpcodeExtraReg> partial_opcodes, OpcodeHandler handler); 

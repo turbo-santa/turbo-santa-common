@@ -1,5 +1,4 @@
 #include "back_end/opcode_executor/opcode_handlers.h"
-
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "back_end/opcode_executor/opcodes.h"
 #include <glog/logging.h>
@@ -9,6 +8,7 @@ namespace handlers {
 
 using opcodes::Opcode;
 using registers::GB_CPU;
+using memory::MemoryMapper;
 
 MemoryMapper* mem_map;
 
