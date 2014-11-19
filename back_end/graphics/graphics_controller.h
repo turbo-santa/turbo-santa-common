@@ -3,8 +3,14 @@
 
 #include <vector>
 
+#include "back_end/graphics/graphics_flags.h"
+#include "back_end/memory/interrupt_flag.h"
+#include "back_end/memory/vram_segment.h"
+
 namespace back_end {
 namespace graphics {
+
+class MonochromePalette;
 
 class GraphicsController {
  public:
@@ -17,32 +23,31 @@ class GraphicsController {
   static const int kVRAMOAMLockedLowerBound = 172 + kOAMLockedLowerBound; // Mode 3.
   static const int kHBlankLowerBound = 204 + kVRAMOAMLockedLowerBound; // Mode 0.
 
-  enum Mode {
-    H_BLANK = 0,
-    V_BLANK = 1,
-    OAM_LOCKED = 2,
-    VRAM_OAM_LOCKED = 3
-  };
+  static const int kScreenBufferSize = 256; // Square.
+
  private:
-  void draw();
-  Mode mode();
-  bool coincidence_interrupt();
-  bool oam_interrupt();
-  bool v_blank_interrupt();
-  bool h_blank_interrupt();
-  bool coincidence_flag();
-  void set_mode(Mode mode);
-  void set_coincidence_flag(bool value);
-  void SetLCDSTATInterrupt();
-  void SetVBlankInterrupt();
-  void EnableVRAM();
-  void EnableORAM();
-  void DisableVRAM();
-  void DisableORAM();
+  GraphicsFlags* graphics_flags();
+  memory::VRAMSegment* vram_segment();
+  memory::OAMSegment* oam_segment();
+  memory::InterruptFlag* interrupt_flag();
+
+  void Draw();
+  void SetLCDSTATInterrupt() { interrupt_flag()->set_lcd_stat(true); }
+  void SetVBlankInterrupt() { interrupt_flag()->set_v_blank(true); }
+  void RenderLowPrioritySprites();
+  void RenderHighPrioritySprites();
+  void RenderBackground();
+  void RenderWindow();
+  void RenderSprite(memory::SpriteAttribute* sprite_attribute);
+  void RenderTile(memory::Tile* tile, unsigned char y, unsigned char x, MonochromePalette* palette);
+
+  void EnableVRAM() { vram_segment()->Enable(); }
+  void EnableOAM() { oam_segment()->Enable(); }
+  void DisableVRAM() { vram_segment()->Disable(); }
+  void DisableOAM() { oam_segment()->Disable(); }
 
   unsigned long time_ = 0;
-  unsigned char lcd_status_ = 0;
-  std::vector<unsigned char> screen_;
+  std::vector<unsigned char> screen_buffer_;
 };
 
 } // namespace graphics

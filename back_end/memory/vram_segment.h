@@ -13,6 +13,13 @@ class TileData;
 
 class Tile {
  public:
+  virtual unsigned char Get(unsigned int y, unsigned int x) = 0;
+  virtual void Set(unsigned int y, unsigned int x, unsigned char value) = 0;
+  static const int kTileSize = 16;
+};
+
+class ConcreteTile : public Tile {
+ public:
   virtual unsigned char Get(unsigned int y, unsigned int x) {
     if (y >= 8 || x >= 8) {
       LOG(FATAL) << "x or y is out of range: x = " << x << " y = " << y;
@@ -51,7 +58,6 @@ class Tile {
     }
   }
 
-  static const int kTileSize = 16;
  private:
   unsigned char* start_ptr_ = nullptr;
   friend class TileData;
@@ -75,7 +81,7 @@ class TileData : public ContiguousMemorySegment {
  private:
   std::vector<unsigned char>* data_;
   unsigned short start_address_;
-  Tile tile_;
+  ConcreteTile tile_;
 };
 
 class LowerTileData : public TileData {
@@ -123,6 +129,10 @@ class VRAMSegment : public ContiguousMemorySegment {
       upper_tile_data_(&raw_tile_data_) {}
 
   virtual unsigned char Read(unsigned short address) {
+    if (!enabled_) {
+      return 0xff;
+    }
+
     if (lower_background_map_.InRange(address)) {
       return lower_background_map_.Read(address);
     } else if (upper_background_map_.InRange(address)) {
@@ -136,11 +146,39 @@ class VRAMSegment : public ContiguousMemorySegment {
     }
   }
 
+  virtual void Write(unsigned short address, unsigned char value) {
+    if (!enabled_) {
+      return;
+    }
+
+    if (lower_background_map_.InRange(address)) {
+      lower_background_map_.Write(address, value);
+    } else if (upper_background_map_.InRange(address)) {
+      upper_background_map_.Write(address, value);
+    } else if (lower_tile_data_.InRange(address)) {
+      lower_tile_data_.Write(address, value);
+    } else if (upper_tile_data_.InRange(address)) {
+      upper_tile_data_.Write(address, value);
+    } else {
+      LOG(FATAL) << "Attempted Write outside of owned region: " << address;
+    }
+  }
+
+  virtual void Enable() { enabled_ = true; }
+
+  virtual void Disable() { enabled_ = false; }
+
+  BackgroundMap* lower_background_map() { return &lower_background_map_; }
+  BackgroundMap* upper_background_map() { return &upper_background_map_; }
+  TileData* lower_tile_data() { return &lower_tile_data_; }
+  TileData* upper_tile_data() { return &upper_tile_data_; }
+
  protected:
   unsigned short lower_address_bound() { return 0x8000; }
   unsigned short upper_address_bound() { return 0x9fff; }
 
  private:
+  bool enabled_ = true;
   std::vector<unsigned char> raw_tile_data_;
   BackgroundMap lower_background_map_;
   BackgroundMap upper_background_map_;
@@ -181,13 +219,18 @@ class OAMSegment : public ContiguousMemorySegment {
   virtual unsigned char Read(unsigned short address) { return data_[address - kStartAddress]; }
   virtual void Write(unsigned short address, unsigned char value) { data_[address - kStartAddress] = value; }
 
+  virtual void Enable() { enabled_ = true; }
+  virtual void Disable() { enabled_ = false; }
+
   virtual SpriteAttribute* sprite_attribute(unsigned int value) {
-    if (value >= 40) {
+    if (value >= kAttributeNumber) {
       LOG(FATAL) << "Attempted to access sprite beyond 40: " << value;
     }
     sprite_attribute_.data_ = data_.data() + value * 4;
     return &sprite_attribute_;
   }
+
+  static const int kAttributeNumber = 40;
 
  protected:
   unsigned short lower_address_bound() { return kStartAddress; }
@@ -195,6 +238,7 @@ class OAMSegment : public ContiguousMemorySegment {
  private:
   std::vector<unsigned char> data_;
   SpriteAttribute sprite_attribute_;
+  bool enabled_ = true;
 };
 
 } // namespace memory
