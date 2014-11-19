@@ -347,9 +347,9 @@ opcodes::OpcodeResult Dec8Bit(unsigned char* rom, int instruction_ptr, Opcode op
 }
 
 opcodes::OpcodeResult Add16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    short value = GetRegisterValue16(rom, instruction_ptr, opcode.opcode_name);
-    cpu.flag_struct.rF.H = DoesHalfCarry16(cpu.flag_struct.rA, value);
-    cpu.flag_struct.rF.C = DoesCarry16(cpu.flag_struct.rA, value);
+    short value = *opcode.reg1;
+    cpu.flag_struct.rF.H = DoesHalfCarry16(cpu.rHL, value);
+    cpu.flag_struct.rF.C = DoesCarry16(cpu.rHL, value);
     cpu.rHL += value;
     SetNFlag(false);
     return {instruction_ptr + 1, opcode.clock_cycles};
@@ -371,13 +371,17 @@ opcodes::OpcodeResult AddSPLiteral(unsigned char* rom, int instruction_ptr, Opco
 }
 
 opcodes::OpcodeResult Inc16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned short* reg = GetRegister16(rom, instruction_ptr, opcode.opcode_name);
+    // This fails at overflow
+    //unsigned short* reg = GetRegister16(rom, instruction_ptr, opcode.opcode_name);
+    unsigned char* reg = opcode.reg1;
     *reg += 1;
     return {instruction_ptr + 1, opcode.clock_cycles};
 }
 
 opcodes::OpcodeResult Dec16Bit(unsigned char* rom, int instruction_ptr, Opcode opcode) {
-    unsigned short* reg = GetRegister16(rom, instruction_ptr, opcode.opcode_name);
+    // This fails at underflow
+    //unsigned short* reg = GetRegister16(rom, instruction_ptr, opcode.opcode_name);
+    unsigned char* reg = opcode.reg1;
     *reg -= 1;
     return {instruction_ptr + 1, opcode.clock_cycles};
 }

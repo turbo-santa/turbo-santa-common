@@ -25,16 +25,16 @@ class OpcodeHandlersTest : public test_harness::TestHarness {
         OpcodeHandlersTest() : test_harness::TestHarness(parser) {}
 };
 
-// Tests for 8-bit ALU
+// Begin tests for 8-bit ALU
 
 // Tests for ADD A,n
 
 TEST_F(OpcodeHandlersTest, Add8BitAA) {
-    SetRegisterState({{Register::A, 1}});
+    SetRegisterState({{Register::A, 0x1}});
     EXPECT_EQ(0, get_instruction_ptr());
     EXPECT_EQ(4, ExecuteInstruction(0x87));
     EXPECT_EQ(1, get_instruction_ptr());
-    EXPECT_REGISTER({{Register::A, 2}});
+    EXPECT_REGISTER({{Register::A, 0x2}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAB) {
@@ -46,11 +46,11 @@ TEST_F(OpcodeHandlersTest, Add8BitAB) {
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAC) {
-    SetRegisterState({{Register::A, 100}, {Register::C, 200}, {Register::FC, 0}});
+    SetRegisterState({{Register::A, 0xFF}, {Register::C, 0x1}, {Register::FC, 0}});
     EXPECT_EQ(0, get_instruction_ptr());
     EXPECT_EQ(4, ExecuteInstruction(0x81));
     EXPECT_EQ(1, get_instruction_ptr());
-    EXPECT_REGISTER({{Register::A, 44}, {Register::C, 200}, {Register::FC, 1}});
+    EXPECT_REGISTER({{Register::A, 0x0}, {Register::C, 0x1}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Add8BitAD) {
@@ -665,6 +665,120 @@ TEST_F(OpcodeHandlersTest, Dec8BitHL) {
     EXPECT_REGISTER({{Register::HL, 1}});
 }
 
+// End 8-bit ALU Tests
+
+// Begin 16-bit ALU Tests
+
+// Tests for ADD HL,n
+// Add n to HL
+
+TEST_F(OpcodeHandlersTest, Add16BitHLBC) {
+    SetRegisterState({{Register::HL, 1}, {Register::BC, 2}});
+    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(8, ExecuteInstruction(0x09));
+    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_REGISTER({{Register::HL, 3}, {Register::BC, 2}});
+}
+
+TEST_F(OpcodeHandlersTest, Add16BitHLDE) {
+    SetRegisterState({{Register::HL, 0xFFFF}, {Register::DE, 0x0001}, {Register::FC, 0}});
+    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(8, ExecuteInstruction(0x19));
+    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_REGISTER({{Register::HL, 0x0}, {Register::DE, 0x0001}, {Register::FC, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, Add16BitHLHL) {
+    SetRegisterState({{Register::HL, 0x1}});
+    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(8, ExecuteInstruction(0x29));
+    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_REGISTER({{Register::HL, 0x2}});
+}
+
+TEST_F(OpcodeHandlersTest, Add16BitHLSP) {
+    SetRegisterState({{Register::HL, 1}, {Register::SP, 2}});
+    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(8, ExecuteInstruction(0x39));
+    EXPECT_EQ(1, get_instruction_ptr());
+    EXPECT_REGISTER({{Register::HL, 3}, {Register::SP, 2}});
+}
+
+// Tests for ADD SP,n
+// Add n to Stack Pointer (SP)
+
+TEST_F(OpcodeHandlersTest, Add16BitSPLiteral1) {
+    SetRegisterState({{Register::SP, 0xFFFF}});
+    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(16, ExecuteInstruction(0xE8, static_cast<unsigned char>(0xA)));
+    EXPECT_EQ(2, get_instruction_ptr());
+    EXPECT_REGISTER({{Register::SP, 0x09}, {Register::FC, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, Add16BitSPLiteral2) {
+    SetRegisterState({{Register::SP, 0x05}});
+    EXPECT_EQ(0, get_instruction_ptr());
+    EXPECT_EQ(16, ExecuteInstruction(0xE8, static_cast<unsigned char>(0xF0)));
+    EXPECT_EQ(2, get_instruction_ptr());
+    EXPECT_REGISTER({{Register::SP, 0xF5}});
+}
+
+// Test INC nn
+// Increment register nn
+
+TEST_F(OpcodeHandlersTest, INC16BitBC) {
+    SetRegisterState({{Register::BC, 0xFE}});
+    EXPECT_EQ(8, ExecuteInstruction(0x03));
+    EXPECT_REGISTER({{Register::BC, 0xFF}});
+}
+
+TEST_F(OpcodeHandlersTest, INC16BitDE) {
+    SetRegisterState({{Register::DE, 0xFFFF}});
+    EXPECT_EQ(8, ExecuteInstruction(0x13));
+    EXPECT_REGISTER({{Register::DE, 0x0}});
+}
+
+TEST_F(OpcodeHandlersTest, INC16BitHL) {
+    SetRegisterState({{Register::HL, 0x0}});
+    EXPECT_EQ(8, ExecuteInstruction(0x23));
+    EXPECT_REGISTER({{Register::HL, 0x1}});
+}
+
+TEST_F(OpcodeHandlersTest, INC16BitSP) {
+    SetRegisterState({{Register::SP, 0xFFFE}});
+    EXPECT_EQ(8, ExecuteInstruction(0x33));
+    EXPECT_REGISTER({{Register::SP, 0xFFFF}});
+}
+
+
+// Test DEC nn
+// Decerement register nn
+
+TEST_F(OpcodeHandlersTest, Dec16BitBC) {
+    SetRegisterState({{Register::BC, 0xFE}});
+    EXPECT_EQ(8, ExecuteInstruction(0x0B));
+    EXPECT_REGISTER({{Register::BC, 0xFD}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec16BitDE) {
+    SetRegisterState({{Register::DE, 0xFFFF}});
+    EXPECT_EQ(8, ExecuteInstruction(0x1B));
+    EXPECT_REGISTER({{Register::DE, 0xFFFE}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec16BitHL) {
+    SetRegisterState({{Register::HL, 0x0}});
+    EXPECT_EQ(8, ExecuteInstruction(0x2B));
+    EXPECT_REGISTER({{Register::HL, 0xFFFF}});
+}
+
+TEST_F(OpcodeHandlersTest, Dec16BitSP) {
+    SetRegisterState({{Register::SP, 0xF}});
+    EXPECT_EQ(8, ExecuteInstruction(0x3B));
+    EXPECT_REGISTER({{Register::SP, 0xE}});
+}
+
+// End 16-bit ALU tests
 
 
 
