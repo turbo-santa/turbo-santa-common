@@ -6,12 +6,15 @@
 *.status
 test
 test_bin
-DS_Store
+.DS_Store
 third_party/glog/
 third_party/gtest/samples/
 third_party/gtest/fused-src/
 third_party/gtest/scripts/
+*.m4
+**/Makefile.in
 **/Makefile
 Makefile
+Makefile.in
 **/.deps
 .deps

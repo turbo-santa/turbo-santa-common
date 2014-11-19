@@ -19,7 +19,7 @@ using Memory = test_harness::MemoryAddressValuePair;
 
 // The fixture gets instantiated once per test case. We would like to reuse the
 // OpcodeExecutor. Also, this will get cleaned up when the test is over.
-OpcodeExecutor* parser = new OpcodeExecutor(nullptr, 0);
+OpcodeExecutor* parser = new OpcodeExecutor();
 
 class OpcodeHandlersTest : public test_harness::TestHarness {
     protected:

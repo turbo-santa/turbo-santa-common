@@ -6,7 +6,7 @@ namespace opcodes {
 std::vector<Opcode> ToList2(std::vector<PartialOpcodeExtraReg> partial_opcodes, OpcodeHandler handler) {
     std::vector<Opcode> full_opcodes;
     for (PartialOpcodeExtraReg partial_opcode : partial_opcodes) {
-        full_opcodes.push_back({partial_opcode.opcode_name, partial_opcode.reg1, partial_opcode.reg2, handler});
+        full_opcodes.push_back({partial_opcode.opcode_name, partial_opcode.reg1, partial_opcode.reg2, handler, partial_opcode.clock_cycles});
     }
     return full_opcodes;
 }
@@ -14,7 +14,7 @@ std::vector<Opcode> ToList2(std::vector<PartialOpcodeExtraReg> partial_opcodes, 
 std::vector<Opcode> ToList1(std::vector<PartialOpcode> partial_opcodes, OpcodeHandler handler) {
     std::vector<Opcode> full_opcodes;
     for (PartialOpcode partial_opcode : partial_opcodes) {
-        full_opcodes.push_back({partial_opcode.opcode_name, partial_opcode.reg1, nullptr, handler});
+        full_opcodes.push_back({partial_opcode.opcode_name, partial_opcode.reg1, nullptr, handler, partial_opcode.clock_cycles});
     }
     return full_opcodes;
 }

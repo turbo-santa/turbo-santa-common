@@ -16,11 +16,18 @@ class TestHarness;
 } // namespace test_harness
 
 namespace back_end {
+namespace clocktroller {
+class ClocktrollerTest;
+} // namespace back_end
+} // namespace clocktroller
+
+namespace back_end {
 namespace memory {
 
 class MemoryMapper {
  public:
   MemoryMapper(); 
+  MemoryMapper(unsigned char* rom, long size);
 
   virtual unsigned char Read(unsigned short address);
 
@@ -53,6 +60,7 @@ class MemoryMapper {
   std::unique_ptr<InterruptEnable> interrupt_enable_ = std::unique_ptr<InterruptEnable>(new InterruptEnable()); // 0xffff
 
   friend class test_harness::TestHarness;
+  friend class back_end::clocktroller::ClocktrollerTest;
 };
 
 } // namespace memory

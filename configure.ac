@@ -47,6 +47,7 @@ AC_CONFIG_FILES([Makefile
                  back_end/graphics/Makefile
                  back_end/memory/Makefile
                  back_end/opcode_executor/Makefile
+                 back_end/clocktroller/Makefile
                  test_harness/Makefile])
 
 AC_CONFIG_SUBDIRS([third_party/gtest])

@@ -1,5 +1,4 @@
 #include "back_end/opcode_executor/opcode_handlers.h"
-
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "back_end/opcode_executor/opcodes.h"
 #include <glog/logging.h>
@@ -9,6 +8,7 @@ namespace handlers {
 
 using opcodes::Opcode;
 using registers::GB_CPU;
+using memory::MemoryMapper;
 
 MemoryMapper* mem_map;
 
@@ -797,6 +797,7 @@ unsigned char GetMSB(unsigned short value) {
 
 void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
   unsigned short* rSP = &cpu->rSP;
+  // memory_mapper->Write(0xfffe, GetLSB(*reg));
   memory_mapper->Write(*rSP, GetLSB(*reg));
   --*rSP;
   memory_mapper->Write(*rSP, GetMSB(*reg));

@@ -39,6 +39,9 @@ class TestHarness : public ::testing::Test {
     protected:
         TestHarness(back_end::handlers::OpcodeExecutor* parser) : parser_(parser) {}
         virtual void TearDown() { ClearParser(); }
+        // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
+        // delete it when done.
+        back_end::handlers::OpcodeExecutor* parser_;
 
     private:
         bool VerifyCorrectInstruction(const std::vector<unsigned char>& instruction);
@@ -48,9 +51,6 @@ class TestHarness : public ::testing::Test {
         bool SetRegisterState(const RegisterNameValuePair& register_diff);
         void SetMemoryState(const MemoryAddressValuePair& memory_diff);
         bool LoadROM(const std::vector<InstructionExpectedStatePair>& instructions);
-        // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
-        // delete it when done.
-        back_end::handlers::OpcodeExecutor* parser_;
 };
 
 #define EXPECT_REGISTER(...)\

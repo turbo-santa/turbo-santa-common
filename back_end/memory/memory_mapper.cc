@@ -13,6 +13,10 @@ MemoryMapper::MemoryMapper() {
   mbc_ = unique_ptr<MBC>(CreateNoMBC(&data, 1));
 }
 
+MemoryMapper::MemoryMapper(unsigned char* rom, long size) {
+  mbc_ = ConstructMBC(rom, size);
+}
+
 unsigned char MemoryMapper::Read(unsigned short address) {
   if (mbc_->InRange(address)) {
     return mbc_->Read(address);

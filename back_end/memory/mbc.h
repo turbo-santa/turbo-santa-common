@@ -11,6 +11,12 @@ class TestHarness;
 } // namespace test_harness
 
 namespace back_end {
+namespace clocktroller {
+class ClocktrollerTest;
+}
+}
+
+namespace back_end {
 namespace memory {
 
 class ROMBank;
@@ -82,6 +88,7 @@ class MBC : public MemorySegment {
     virtual unsigned short upper_address_bound() { return 0xbfff; }
     virtual void ForceWrite(unsigned short address, unsigned char value) = 0;
     friend class test_harness::TestHarness;
+    friend class clocktroller::ClocktrollerTest;
 };
 
 std::unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size);
