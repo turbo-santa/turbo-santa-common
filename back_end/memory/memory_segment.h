@@ -33,6 +33,16 @@ class ContiguousMemorySegment : public MemorySegment {
   virtual unsigned short upper_address_bound() = 0;
 };
 
+class SingleAddressSegment : public MemorySegment {
+ public:
+  SingleAddressSegment(unsigned short address) : address_(address) {}
+
+  unsigned short address() { return address_; }
+
+ private:
+  unsigned short address_;
+};
+
 // For memory segments that we have not written yet.
 class NullMemorySegment : public ContiguousMemorySegment {
  public:
