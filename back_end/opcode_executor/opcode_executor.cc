@@ -1,5 +1,4 @@
 #include "back_end/opcode_executor/opcode_executor.h"
-
 #include "back_end/memory/interrupt_flag.h"
 #include "back_end/opcode_executor/opcode_handlers.h"
 #include "back_end/opcode_executor/registers.h"
@@ -15,16 +14,22 @@ using memory::MemoryMapper;
 using memory::InterruptEnable;
 using memory::InterruptFlag;
 
-OpcodeExecutor::OpcodeExecutor(unsigned char*, long) {
+OpcodeExecutor::OpcodeExecutor() {
   // TODO(Diego): It acutally starts at something like 0x100.
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
 }
 
+OpcodeExecutor::OpcodeExecutor(unsigned char* rom, long size) {
+  cpu_.rPC = 0x0000;
+  opcode_map = CreateOpcodeMap(&cpu_);
+  memory_mapper_ = MemoryMapper(rom, size);
+}
+
 unsigned int OpcodeExecutor::ReadInstruction() {
   HandleInterrupts(); // Before a fetch we must check for and handle interrupts.
   unsigned short instruction_ptr = cpu_.rPC;
-  unsigned short opcode = memory_mapper_.Read(instruction_ptr);
+  unsigned short opcode = memory_mapper_.Read(instruction_ptr); 
   if (opcode == 0xCB || opcode == 0x10) {
     instruction_ptr++;
     unsigned char opcode_lb = memory_mapper_.Read(instruction_ptr);

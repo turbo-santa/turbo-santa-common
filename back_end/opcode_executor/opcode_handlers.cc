@@ -8,6 +8,7 @@ namespace handlers {
 
 using opcodes::Opcode;
 using registers::GB_CPU;
+using memory::MemoryMapper;
 
 MemoryMapper* mem_map;
 

@@ -10,9 +10,6 @@
 namespace back_end {
 namespace handlers {
 
-using opcodes::Opcode;
-using memory::MemoryMapper;
-
 // Helper functions.
 void PushRegister(memory::MemoryMapper* memory_mapper,
                   registers::GB_CPU* cpu, unsigned short* reg);

@@ -25,6 +25,7 @@ namespace handlers {
 
 class OpcodeExecutor {
   public: 
+    OpcodeExecutor();
     OpcodeExecutor(unsigned char* rom, long rom_size);
     unsigned int ReadInstruction();
 
@@ -34,7 +35,7 @@ class OpcodeExecutor {
     
     memory::MemoryMapper memory_mapper_;
     registers::GB_CPU cpu_;
-    std::map<unsigned short, Opcode> opcode_map;
+    std::map<unsigned short, opcodes::Opcode> opcode_map;
     // This is a special flag/register that can only be set or unset and can
     // only be accessed by the user using the EI, DI or RETI instructions.
     bool interrupt_master_enable_ = false;
@@ -46,8 +47,8 @@ class OpcodeExecutor {
 struct ExecutorContext {
   ExecutorContext(bool* interrupt_master_enable_,
                   unsigned short* instruction_ptr_, 
-                  Opcode* opcode_, 
-                  MemoryMapper* memory_mapper_, 
+                  opcodes::Opcode* opcode_, 
+                  memory::MemoryMapper* memory_mapper_, 
                   registers::GB_CPU* cpu_) : 
       interrupt_master_enable(interrupt_master_enable_),
       instruction_ptr(instruction_ptr_),
@@ -64,8 +65,8 @@ struct ExecutorContext {
 
   bool* interrupt_master_enable;
   unsigned short* instruction_ptr;
-  Opcode* opcode;
-  MemoryMapper* memory_mapper;
+  opcodes::Opcode* opcode;
+  memory::MemoryMapper* memory_mapper;
   registers::GB_CPU* cpu;
 };
 

@@ -1,6 +1,6 @@
 #include <thread>
+#include <chrono>
 #include <mutex>
-#include <unistd.h>
 #include <time.h>
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "clocktroller.h"
@@ -16,10 +16,7 @@ const double CLOCK_RATE = 8388000; // 8.388 MHz
 int MAX_INSTRUCTIONS; // TODO: get rid of this hack
 
 unsigned char* raw_rom;
-char should_run = 1;
-char start = 0;
 std::mutex execution_lock;
-std::unique_ptr<OpcodeExecutor> executor;
 std::thread handler_thread;
 std::thread clock_thread;
 unsigned int clock_cycles;
@@ -32,15 +29,19 @@ void LaunchClockLoop(Clocktroller* member) {
     member->ClockLoop();
 }
 
-Clocktroller::Clocktroller(unsigned char* rom, unsigned long length) {
-    executor = std::unique_ptr<OpcodeExecutor>(new OpcodeExecutor::OpcodeExecutor(rom, length));
+Clocktroller::Clocktroller(unsigned char* rom, long length) {
+    LOG(INFO) << "Creating OpcodeExecutor";
+    executor = new OpcodeExecutor::OpcodeExecutor();
     raw_rom = rom;
     MAX_INSTRUCTIONS = length;
+}
+
+void Clocktroller::Setup() {
     LOG(INFO) << "Launching Handle Thread";
-    std::thread handler_thread(LaunchHandleLoop, this);
+    handler_thread = std::thread(LaunchHandleLoop, this);
     LOG(INFO) << "Handle Thread Launched";
     LOG(INFO) << "Launching Clock Thread";
-    std::thread clock_thread(LaunchClockLoop, this);
+    clock_thread = std::thread(LaunchClockLoop, this);
     LOG(INFO) << "Clock Thread Launched";
 }
 
@@ -77,8 +78,10 @@ void Clocktroller::ClockLoop() {
     clock_t start = clock();
     clock_t elapsed;
     LOG(INFO) << "Clock Loop Spinning Up";
+    std::chrono::milliseconds dur(50);
     while (!start) {
-        usleep(50000); // wait 50ms
+        LOG(INFO) << "Clock Loop Waiting";
+        std::this_thread::sleep_for(dur);
     }
     while(should_run && MAX_INSTRUCTIONS > 0) {
         if (execution_lock.try_lock()) {
@@ -87,7 +90,7 @@ void Clocktroller::ClockLoop() {
             int wait_time = 1 / (CLOCK_RATE / clock_cycles) - (elapsed / CLOCKS_PER_SEC);
             if (wait_time < 0) wait_time = 0;
 
-            usleep(wait_time);
+            usleep(wait_time); // TODO: not portable, needs replaced
             start = clock();
             execution_lock.unlock();
         }
@@ -99,14 +102,15 @@ void Clocktroller::HandleLoop() {
     clock_t clock_start;
     clock_t clock_stop;
     LOG(INFO) << "Handle Loop Spinning Up";
+    std::chrono::milliseconds dur(50);
     while (!start) {
-        usleep(50000); // wait 50ms
+        LOG(INFO) << "Handle Loop Waiting";
+        std::this_thread::sleep_for(dur);
     }
     while(should_run && MAX_INSTRUCTIONS-- > 0) {
         execution_lock.lock();
 
         // TODO: handle interrupt
-        LOG(INFO) << "Reading Instruction";
         clock_cycles = executor->ReadInstruction();
 
         execution_lock.unlock();

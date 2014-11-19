@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libclocktroller.a
 
-libclocktroller_a_SOURCES = clocktroller.h clocktroller.cc clocktroller_test.cc
+libclocktroller_a_SOURCES = clocktroller.h clocktroller.cc clocktroller_test.cc clocktroller_test.h
 
 check_PROGRAMS = clocktroller_test
 AM_DEFAULT_SOURCE_EXT = .cc
