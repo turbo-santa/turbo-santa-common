@@ -13,6 +13,10 @@ namespace handlers {
 using opcodes::Opcode;
 using memory::MemoryMapper;
 
+// Helper functions.
+void PushRegister(memory::MemoryMapper* memory_mapper,
+                  registers::GB_CPU* cpu, unsigned short* reg);
+
 // 8 Bit ALU
 int Add8Bit(handlers::ExecutorContext* context);
 int Add8BitLiteral(handlers::ExecutorContext* context);

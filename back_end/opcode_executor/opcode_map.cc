@@ -8,24 +8,23 @@ namespace opcodes {
 
 using std::map;
 using std::vector;
-using registers::cpu;
+using registers::GB_CPU;
 using namespace handlers;
 
-unsigned char* rA = &cpu->flag_struct.rA;
-unsigned char* rB = &cpu->bc_struct.rB;
-unsigned char* rC = &cpu->bc_struct.rC;
-unsigned char* rD = &cpu->de_struct.rD;
-unsigned char* rE = &cpu->de_struct.rE;
-unsigned char* rF = (unsigned char*) &cpu->flag_struct.rF;
-unsigned char* rH = &cpu->hl_struct.rH;
-unsigned char* rL = &cpu->hl_struct.rL;
-unsigned char* rAF = (unsigned char*) &cpu->rAF;
-unsigned char* rBC = (unsigned char*) &cpu->rBC;
-unsigned char* rDE = (unsigned char*) &cpu->rDE;
-unsigned char* rHL = (unsigned char*) &cpu->rHL;
-unsigned char* rPC = (unsigned char*) &cpu->rPC;
-unsigned char* rSP = (unsigned char*) &cpu->rSP;
 
+map<unsigned short, Opcode> CreateOpcodeMap(GB_CPU* cpu) {
+  unsigned char* rA = &cpu->flag_struct.rA;
+  unsigned char* rB = &cpu->bc_struct.rB;
+  unsigned char* rC = &cpu->bc_struct.rC;
+  unsigned char* rD = &cpu->de_struct.rD;
+  unsigned char* rE = &cpu->de_struct.rE;
+  unsigned char* rH = &cpu->hl_struct.rH;
+  unsigned char* rL = &cpu->hl_struct.rL;
+  unsigned char* rAF = (unsigned char*) &cpu->rAF;
+  unsigned char* rBC = (unsigned char*) &cpu->rBC;
+  unsigned char* rDE = (unsigned char*) &cpu->rDE;
+  unsigned char* rHL = (unsigned char*) &cpu->rHL;
+  unsigned char* rSP = (unsigned char*) &cpu->rSP;
 
 const vector<vector<Opcode>> opcodes = {
     ToList1({{0x06, rB, 8},
@@ -90,7 +89,7 @@ const vector<vector<Opcode>> opcodes = {
             {0x73, rHL, rE, 8},
             {0x74, rHL, rH, 8},
             {0x75, rHL, rL, 8},
-            {0x36, rHL, nullptr, 12}}, LoadRR),
+    /*        {0x36, rHL, n, 12} */}, LoadRR),
     ToList1({{0x7F, rA, 4},
             {0x0A, rBC, 8},
             {0x1A, rDE, 8},
@@ -367,7 +366,8 @@ const vector<vector<Opcode>> opcodes = {
     ToList1({{0xD9, nullptr, 8}}, ReturnInterrupt)
 };
 
-map<unsigned short, Opcode> opcode_map = ToMap(Flatten(opcodes));
+  return ToMap(Flatten(opcodes));
+}
 
 } // namespace opcodes
 } // namespace back_end

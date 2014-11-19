@@ -33,6 +33,17 @@ AssertionResult ExpectRegisterEquals(unsigned short expected, unsigned short act
 }
 } // namespace
 
+void TestHarness::SetMemoryState(const vector<MemoryAddressValuePair>& memory_diff_list) {
+  for (const MemoryAddressValuePair& memory_diff : memory_diff_list) {
+    SetMemoryState(memory_diff);
+  }
+}
+
+void TestHarness::SetMemoryState(const MemoryAddressValuePair& memory_diff) {
+  MemoryMapper* memory_mapper = &parser_->memory_mapper_;
+  memory_mapper->Write(memory_diff.address, memory_diff.value);
+}
+
 void TestHarness::SetRegisterState(const vector<RegisterNameValuePair>& register_diff_list) {
   for (const RegisterNameValuePair& register_diff : register_diff_list) {
     SetRegisterState(register_diff);
@@ -81,6 +92,34 @@ void TestHarness::ExecuteInstruction(unsigned char instruction, unsigned char va
     parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
     parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 1, value);
     parser_->ReadInstruction();
+}
+
+void TestHarness::LoadROM(const vector<TestROM>& test_rom) {
+  MBC* mbc = parser_->memory_mapper_.mbc_.get();
+  for (const TestROM& segment : test_rom) {
+    unsigned short address = segment.start_address;
+    for (unsigned char instruction : segment.instructions) {
+      mbc->ForceWrite(address, instruction);
+      address++;
+    }
+  }
+}
+
+void TestHarness::Run(int instruction_number_to_run) {
+  for (int i = 0; i < instruction_number_to_run; i++) {
+    parser_->ReadInstruction();
+  }
+}
+
+void TestHarness::LoadAndRunROM(const vector<TestROM>& test_rom) {
+  int instruction_number_to_run = 0;
+  for (const TestROM& segment : test_rom) {
+    for (unsigned char address : segment.instructions) {
+      instruction_number_to_run++;
+    }
+  }
+  LoadROM(test_rom);
+  Run(instruction_number_to_run);
 }
 
 AssertionResult TestHarness::ValidateRegister(const RegisterNameValuePair& register_diff) {

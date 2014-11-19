@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "back_end/memory/echo_segment.h"
+#include "back_end/memory/interrupt_flag.h"
 #include "back_end/memory/mbc.h"
 #include "back_end/memory/memory_segment.h"
 #include "back_end/memory/ram_segment.h"
@@ -23,6 +24,10 @@ class MemoryMapper {
 
   virtual void Write(unsigned short address, unsigned char value);
 
+  virtual InterruptFlag* interrupt_flag() { return interrupt_flag_.get(); }
+
+  virtual InterruptEnable* interrupt_enable() { return interrupt_enable_.get(); }
+
   static const int kMaxSize = 0x10000;
 
  private:
@@ -37,9 +42,10 @@ class MemoryMapper {
   std::unique_ptr<EchoSegment> echo_ram_ = std::unique_ptr<EchoSegment>(new EchoSegment(internal_ram_0_.get(), internal_ram_1_.get())); // 0xe000 - 0xfdff
   std::unique_ptr<NullMemorySegment> sprite_attribute_table_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xfe00, 0xfe9f));
   std::unique_ptr<NullMemorySegment> not_usable_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xfea0, 0xfeff));
+  std::unique_ptr<InterruptFlag> interrupt_flag_ = std::unique_ptr<InterruptFlag>(new InterruptFlag()); // 0xff0f
   std::unique_ptr<NullMemorySegment> io_ports_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xff00, 0xff7f));
   std::unique_ptr<RAMSegment> high_ram_ = std::unique_ptr<RAMSegment>(new RAMSegment(0xff80, 0xfffe));
-  std::unique_ptr<NullMemorySegment> interupt_enable_register_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xffff, 0xffff));
+  std::unique_ptr<InterruptEnable> interrupt_enable_ = std::unique_ptr<InterruptEnable>(new InterruptEnable()); // 0xffff
 
   friend class test_harness::TestHarness;
 };

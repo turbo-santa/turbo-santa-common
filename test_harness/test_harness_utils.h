@@ -46,6 +46,10 @@ struct InstructionExpectedStatePair {
     DiffState expected_state;
 };
 
+struct TestROM {
+  unsigned short start_address;
+  std::vector<unsigned char> instructions;
+};
 } // namespace test_harness
 
 #endif // TURBO_SANTA_TEST_HARNESS_TEST_HARNESS_UTILS_H_
