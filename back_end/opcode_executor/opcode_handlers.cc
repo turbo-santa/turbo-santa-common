@@ -797,6 +797,7 @@ unsigned char GetMSB(unsigned short value) {
 
 void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
   unsigned short* rSP = &cpu->rSP;
+  // memory_mapper->Write(0xfffe, GetLSB(*reg));
   memory_mapper->Write(*rSP, GetLSB(*reg));
   --*rSP;
   memory_mapper->Write(*rSP, GetMSB(*reg));

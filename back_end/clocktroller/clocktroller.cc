@@ -10,10 +10,12 @@ namespace back_end {
 namespace clocktroller {
 
 using handlers::OpcodeExecutor;
+using std::chrono::microseconds;
 
-const double CLOCK_RATE = 8388000; // 8.388 MHz
+static const double kClockRate = 8388000; // 8.388 MHz
+static const microseconds kZero(0);
 
-int MAX_INSTRUCTIONS; // TODO: get rid of this hack
+int MAX_INSTRUCTIONS; // TODO(Diego): get rid of this hack
 
 unsigned char* raw_rom;
 std::mutex execution_lock;
@@ -29,9 +31,9 @@ void LaunchClockLoop(Clocktroller* member) {
     member->ClockLoop();
 }
 
-Clocktroller::Clocktroller(unsigned char* rom, long length) {
+Clocktroller::Clocktroller(unsigned char* rom, long length) : start_(false) {
     LOG(INFO) << "Creating OpcodeExecutor";
-    executor = new OpcodeExecutor::OpcodeExecutor();
+    executor = new OpcodeExecutor();
     raw_rom = rom;
     MAX_INSTRUCTIONS = length;
 }
@@ -46,7 +48,8 @@ void Clocktroller::Setup() {
 }
 
 void Clocktroller::Start() {
-    start = 1;
+    start_ = true;
+    LOG(INFO) << "Start = " << start_;
 }
 
 void Clocktroller::Pause() {
@@ -57,7 +60,7 @@ void Clocktroller::Pause() {
 
 void Clocktroller::Resume() {
     if (!should_run) {
-        should_run = 1;
+        should_run = true;
         std::thread handler_thread(LaunchHandleLoop, this);
         std::thread clock_thread(LaunchClockLoop, this);
     }
@@ -79,15 +82,20 @@ void Clocktroller::ClockLoop() {
     clock_t elapsed;
     LOG(INFO) << "Clock Loop Spinning Up";
     std::chrono::milliseconds dur(50);
-    while (!start) {
+    while (!start_) {
         std::this_thread::sleep_for(dur);
+        LOG(INFO) << "Wake from start wait, start = " << start;
     }
+    LOG(INFO) << "Starting...";
     while(should_run && MAX_INSTRUCTIONS > 0) {
         if (execution_lock.try_lock()) {
+            LOG(INFO) << "Tick";
             elapsed = clock() - start;
 
-            std::chrono::microseconds wait_time(1000 * 1 / (CLOCK_RATE / clock_cycles) - (elapsed / CLOCKS_PER_SEC));
-            if (wait_time < 0) wait_time = 0;
+            std::chrono::microseconds wait_time(static_cast<long>(1000 * 1 / (kClockRate / clock_cycles) - (elapsed / CLOCKS_PER_SEC)));
+            if (wait_time < kZero) {
+              wait_time = kZero;
+            }
 
             std::this_thread::sleep_for(wait_time);
             start = clock();
@@ -100,7 +108,7 @@ void Clocktroller::ClockLoop() {
 void Clocktroller::HandleLoop() {
     LOG(INFO) << "Handle Loop Spinning Up";
     std::chrono::milliseconds dur(50);
-    while (!start) {
+    while (!start_) {
         std::this_thread::sleep_for(dur);
     }
     while(should_run && MAX_INSTRUCTIONS-- > 0) {
