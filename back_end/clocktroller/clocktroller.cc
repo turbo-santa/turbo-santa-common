@@ -98,8 +98,6 @@ void Clocktroller::ClockLoop() {
 }
 
 void Clocktroller::HandleLoop() {
-    clock_t clock_start;
-    clock_t clock_stop;
     LOG(INFO) << "Handle Loop Spinning Up";
     std::chrono::milliseconds dur(50);
     while (!start) {
