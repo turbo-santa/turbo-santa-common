@@ -11,14 +11,14 @@ class RAMSegment : public ContiguousMemorySegment {
   RAMSegment(unsigned short lower_address_bound, unsigned short upper_address_bound) :
       lower_address_bound_(lower_address_bound), 
       upper_address_bound_(upper_address_bound), 
-      memory_(upper_address_bound - lower_address_bound, 0x00) {}
+      memory_(upper_address_bound - lower_address_bound + 1, 0x00) {}
 
   virtual unsigned char Read(unsigned short address) {
-    return memory_[address];
+    return memory_[address - lower_address_bound_];
   }
 
   virtual void Write(unsigned short address, unsigned char value) {
-    memory_[address] = value;
+    memory_[address - lower_address_bound_] = value;
   }
 
  protected:
