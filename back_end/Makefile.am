@@ -1,4 +1,4 @@
-SUBDIRS = memory opcode_executor
+SUBDIRS = memory opcode_executor graphics
 
 noinst_LIBRARIES = libback_end.a
 

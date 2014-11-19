@@ -44,6 +44,7 @@ AC_CHECK_FUNCS([dup2 fchdir getcwd getpagesize gettimeofday memset mkdir munmap 
 
 AC_CONFIG_FILES([Makefile
                  back_end/Makefile
+                 back_end/graphics/Makefile
                  back_end/memory/Makefile
                  back_end/opcode_executor/Makefile
                  test_harness/Makefile])
