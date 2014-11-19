@@ -80,17 +80,16 @@ void Clocktroller::ClockLoop() {
     LOG(INFO) << "Clock Loop Spinning Up";
     std::chrono::milliseconds dur(50);
     while (!start) {
-        LOG(INFO) << "Clock Loop Waiting";
         std::this_thread::sleep_for(dur);
     }
     while(should_run && MAX_INSTRUCTIONS > 0) {
         if (execution_lock.try_lock()) {
             elapsed = clock() - start;
 
-            int wait_time = 1 / (CLOCK_RATE / clock_cycles) - (elapsed / CLOCKS_PER_SEC);
+            std::chrono::microseconds wait_time(1000 * 1 / (CLOCK_RATE / clock_cycles) - (elapsed / CLOCKS_PER_SEC));
             if (wait_time < 0) wait_time = 0;
 
-            usleep(wait_time); // TODO: not portable, needs replaced
+            std::this_thread::sleep_for(wait_time);
             start = clock();
             execution_lock.unlock();
         }
@@ -104,7 +103,6 @@ void Clocktroller::HandleLoop() {
     LOG(INFO) << "Handle Loop Spinning Up";
     std::chrono::milliseconds dur(50);
     while (!start) {
-        LOG(INFO) << "Handle Loop Waiting";
         std::this_thread::sleep_for(dur);
     }
     while(should_run && MAX_INSTRUCTIONS-- > 0) {
