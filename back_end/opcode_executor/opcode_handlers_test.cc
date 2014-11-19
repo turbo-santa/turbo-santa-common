@@ -326,6 +326,56 @@ TEST_F(OpcodeHandlersTest, Dec8Bit) {
     EXPECT_REGISTER({{Register::A, 0}});
 }
 
+//Start 8-bit load tests
+
+TEST_F(OpcodeHandlersTest, LoadNNB) {
+    SetRegisterState({{Register::B, 0}});
+    ExecuteInstruction(0x06, static_cast<unsigned char>(0x1));
+    EXPECT_REGISTER({{Register::B, 0x1}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadNNC) {
+    SetRegisterState({{Register::C, 0}});
+    ExecuteInstruction(0x0e, static_cast<unsigned char>(0x1));
+    EXPECT_REGISTER({{Register::C, 0x1}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadNND) {
+    SetRegisterState({{Register::D, 0}});
+    ExecuteInstruction(0x16, static_cast<unsigned char>(0x1));
+    EXPECT_REGISTER({{Register::D, 0x1}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadNNE) {
+    SetRegisterState({{Register::E, 0}});
+    ExecuteInstruction(0x1e, static_cast<unsigned char>(0x1));
+    EXPECT_REGISTER({{Register::E, 0x1}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadNNH) {
+    SetRegisterState({{Register::H, 0}});
+    ExecuteInstruction(0x26, static_cast<unsigned char>(0x1));
+    EXPECT_REGISTER({{Register::H, 0x1}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadNNL) {
+    SetRegisterState({{Register::L, 0}});
+    ExecuteInstruction(0x2e, static_cast<unsigned char>(0x1));
+    EXPECT_REGISTER({{Register::L, 0x1}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadRRAA) {
+    SetRegisterState({{Register::A, 0xab}});
+    ExecuteInstruction(0x7f);
+    EXPECT_REGISTER({{Register::A, 0xab}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadRRAB) {
+    SetRegisterState({{Register::A, 0xab}, {Register::B, 0x0}});
+    ExecuteInstruction(0x78);
+    EXPECT_REGISTER({{Register::A, 0xab}, {Register::B, 0xab}});
+}
+
 TEST_F(OpcodeHandlersTest, LoadDecHLA) {
   SetRegisterState({{Register::A, 0xab}, {Register::HL, 0xa001}});
   ExecuteInstruction(0x32);
