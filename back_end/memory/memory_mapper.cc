@@ -27,11 +27,13 @@ unsigned char MemoryMapper::Read(unsigned short address) {
   } else if (sprite_attribute_table_->InRange(address)) {
     return sprite_attribute_table_->Read(address);
   } else if (not_usable_->InRange(address)) {
-    // LOG(ERROR) << "Attempted read in non-usable region, address = " << address;
+    LOG(ERROR) << "Attempted read in non-usable region, address = " << address;
     return 0;
     return not_usable_->Read(address);
   } else if (interrupt_flag_->InRange(address)) {
     return interrupt_flag_->Read(address);
+  } else if (graphics_flags_->InRange(address)) {
+    return graphics_flags_->Read(address);
   } else if (io_ports_->InRange(address)) {
     return io_ports_->Read(address);
   } else if (high_ram_->InRange(address)) {
@@ -57,11 +59,13 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
   } else if (sprite_attribute_table_->InRange(address)) {
     sprite_attribute_table_->Write(address, value);
   } else if (not_usable_->InRange(address)) {
-    // LOG(ERROR) << "Attempted write in non-usable region, address = " << address 
-    //     << " value = " << value;
+    LOG(ERROR) << "Attempted write in non-usable region, address = " << address 
+        << " value = " << value;
     not_usable_->Write(address, value);
   } else if (interrupt_flag_->InRange(address)) {
     interrupt_flag_->Write(address, value);
+  } else if (graphics_flags_->InRange(address)) {
+    graphics_flags_->Write(address, value);
   } else if (io_ports_->InRange(address)) {
     io_ports_->Write(address, value);
   } else if (high_ram_->InRange(address)) {

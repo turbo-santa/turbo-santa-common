@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_FLAGS_H_
 #define TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_FLAGS_H_
 
+#include <glog/logging.h>
+
 #include "back_end/memory/flags.h"
 #include "back_end/memory/memory_segment.h"
 
@@ -62,6 +64,7 @@ class LYCoordinate: public memory::Flag {
  public:
   LYCoordinate() : memory::Flag(0xff44) {}
   // LY is a READ ONLY register.
+  // TODO(Brendan): Writing should reset the counter.
   virtual void Write(unsigned short, unsigned char) {}
 };
 
@@ -124,8 +127,81 @@ class ObjectPalette1 : public ObjectPalette {
   ObjectPalette1() : ObjectPalette(0xff49) {}
 };
 
+// TODO(Brendan): Move this into a .cc.
+// TODO(Brendan): Use a more general way to manipulate these flags, could use a
+// map.
 class GraphicsFlags : public memory::MemorySegment {
  public:
+  virtual bool InRange(unsigned short address) {
+    return lcd_control_.InRange(address) ||
+        lcd_status_.InRange(address) ||
+        scroll_y_.InRange(address) ||
+        scroll_x_.InRange(address) ||
+        ly_coordinate_.InRange(address) ||
+        ly_compare_.InRange(address) ||
+        window_y_position_.InRange(address) ||
+        window_x_position_.InRange(address) ||
+        background_palette_.InRange(address) ||
+        object_palette_0_.InRange(address) ||
+        object_palette_1_.InRange(address);
+  }
+
+  virtual unsigned char Read(unsigned short address) {
+    if (lcd_control_.InRange(address)) {
+      return lcd_control_.Read(address);
+    } else if (lcd_status_.InRange(address)) {
+      return lcd_status_.Read(address);
+    } else if (scroll_y_.InRange(address)) {
+      return scroll_y_.Read(address);
+    } else if (scroll_x_.InRange(address)) {
+      return scroll_x_.Read(address);
+    } else if (ly_coordinate_.InRange(address)) {
+      return ly_coordinate_.Read(address);
+    } else if (ly_compare_.InRange(address)) {
+      return ly_compare_.Read(address);
+    } else if (window_y_position_.InRange(address)) {
+      return window_y_position_.Read(address);
+    } else if (window_x_position_.InRange(address)) {
+      return window_x_position_.Read(address);
+    } else if (background_palette_.InRange(address)) {
+      return background_palette_.Read(address);
+    } else if (object_palette_0_.InRange(address)) {
+      return object_palette_0_.Read(address);
+    } else if (object_palette_1_.InRange(address)) {
+      return object_palette_1_.Read(address);
+    } else {
+      LOG(FATAL) << "Address outside of range: " << address;
+    }
+  }
+
+  virtual void Write(unsigned short address, unsigned char value) {
+    if (lcd_control_.InRange(address)) {
+      lcd_control_.Write(address, value);
+    } else if (lcd_status_.InRange(address)) {
+      lcd_status_.Write(address, value);
+    } else if (scroll_y_.InRange(address)) {
+      scroll_y_.Write(address, value);
+    } else if (scroll_x_.InRange(address)) {
+      scroll_x_.Write(address, value);
+    } else if (ly_coordinate_.InRange(address)) {
+      ly_coordinate_.Write(address, value);
+    } else if (ly_compare_.InRange(address)) {
+      ly_compare_.Write(address, value);
+    } else if (window_y_position_.InRange(address)) {
+      window_y_position_.Write(address, value);
+    } else if (window_x_position_.InRange(address)) {
+      window_x_position_.Write(address, value);
+    } else if (background_palette_.InRange(address)) {
+      background_palette_.Write(address, value);
+    } else if (object_palette_0_.InRange(address)) {
+      object_palette_0_.Write(address, value);
+    } else if (object_palette_1_.InRange(address)) {
+      object_palette_1_.Write(address, value);
+    } else {
+      LOG(FATAL) << "Address outside of range: " << address;
+    }
+  }
+
   LCDControl* lcd_control() { return &lcd_control_; }
   LCDStatus* lcd_status() { return &lcd_status_; }
   ScrollX* scroll_x() { return &scroll_x_; }

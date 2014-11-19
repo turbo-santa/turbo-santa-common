@@ -7,6 +7,7 @@ using std::vector;
 using memory::OAMSegment;
 using memory::SpriteAttribute;
 using memory::Tile;
+using memory::TileData;
 using memory::BackgroundMap;
 
 class TileReflectedX : public Tile {
@@ -92,6 +93,20 @@ void GraphicsController::Draw() {
   RenderBackground();
   RenderWindow();
   RenderHighPrioritySprites();
+  WriteToScreen();
+}
+
+void GraphicsController::WriteToScreen() {
+  ScreenRaster raster;
+  const int y_offset = graphics_flags()->scroll_y()->flag();
+  const int x_offset = graphics_flags()->scroll_x()->flag();
+  for (int y = 0; y < ScreenRaster::kScreenHeight; y++) {
+    for (int x = 0; x < ScreenRaster::kScreenWidth; x++) {
+      raster.Set(y, x, screen_buffer_[(x + x_offset) + (y + y_offset) * kScreenBufferSize]);
+    }
+  }
+
+  screen()->Draw(raster);
 }
 
 void GraphicsController::RenderLowPrioritySprites() {
@@ -113,7 +128,68 @@ void GraphicsController::RenderHighPrioritySprites() {
 }
 
 void GraphicsController::RenderBackground() {
+  LCDControl* lcd_control = graphics_flags()->lcd_control();
+  if (!lcd_control->bg_display()) {
+    // Nothing to do if BG display is unset.
+    return;
+  }
+
   BackgroundMap* background;
+  if (lcd_control->bg_tile_map_display_select()) {
+    background = vram_segment()->upper_background_map();
+  } else {
+    background = vram_segment()->lower_background_map();
+  }
+
+  TileData* tile_data;
+  if (lcd_control->bg_window_tile_data_select()) {
+    tile_data = vram_segment()->upper_tile_data();
+  } else {
+    tile_data = vram_segment()->lower_tile_data();
+  }
+
+  for (int y = 0; y < kScreenBufferSize / Tile::kTileSize; y++) {
+    for (int x = 0; x < kScreenBufferSize / Tile::kTileSize; x++) {
+      Tile* tile = tile_data->tile(background->Get(y, x));
+      RenderTile(tile, y * Tile::kTileSize, x * Tile::kTileSize, graphics_flags()->background_palette());
+    }
+  }
+}
+
+void GraphicsController::RenderWindow() {
+  LCDControl* lcd_control = graphics_flags()->lcd_control();
+  int y_offset = graphics_flags()->window_y_position()->flag();
+  y_offset += graphics_flags()->scroll_y()->flag();
+  int x_offset = graphics_flags()->window_x_position()->flag() + 7;
+  x_offset += graphics_flags()->scroll_x()->flag();
+
+  if (lcd_control->window_display_enable()) {
+    return; // Nothing to do if disabled.
+  }
+
+  BackgroundMap* background;
+  if (lcd_control->window_tile_map_display_select()) {
+    background = vram_segment()->upper_background_map();
+  } else {
+    background = vram_segment()->lower_background_map();
+  }
+
+  TileData* tile_data;
+  if (lcd_control->bg_window_tile_data_select()) {
+    tile_data = vram_segment()->upper_tile_data();
+  } else {
+    tile_data = vram_segment()->lower_tile_data();
+  }
+
+  for (int y = 0; y < (kScreenBufferSize - y_offset) / Tile::kTileSize; y++) {
+    for (int x = 0; x < (kScreenBufferSize - x_offset) / Tile::kTileSize; x++) {
+      Tile* tile = tile_data->tile(background->Get(y, x));
+      RenderTile(tile,
+                 y * Tile::kTileSize + y_offset,
+                 x * Tile::kTileSize + x_offset,
+                 graphics_flags()->background_palette());
+    }
+  }
 }
 
 void GraphicsController::RenderSprite(SpriteAttribute* sprite_attribute) {

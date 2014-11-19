@@ -4,7 +4,9 @@
 #include <vector>
 
 #include "back_end/graphics/graphics_flags.h"
+#include "back_end/graphics/screen.h"
 #include "back_end/memory/interrupt_flag.h"
+#include "back_end/memory/memory_mapper.h"
 #include "back_end/memory/vram_segment.h"
 
 namespace back_end {
@@ -14,6 +16,9 @@ class MonochromePalette;
 
 class GraphicsController {
  public:
+  GraphicsController(memory::MemoryMapper* memory_mapper, Screen* screen) : 
+      memory_mapper_(memory_mapper), screen_(screen) {}
+
   void Tick(unsigned int number_of_cycles);
 
   static const int kSmallPeriod = 456;
@@ -26,12 +31,14 @@ class GraphicsController {
   static const int kScreenBufferSize = 256; // Square.
 
  private:
-  GraphicsFlags* graphics_flags();
-  memory::VRAMSegment* vram_segment();
-  memory::OAMSegment* oam_segment();
-  memory::InterruptFlag* interrupt_flag();
+  GraphicsFlags* graphics_flags() { return memory_mapper_->graphics_flags(); }
+  memory::VRAMSegment* vram_segment() { return memory_mapper_->vram_segment(); }
+  memory::OAMSegment* oam_segment() { return memory_mapper_->oam_segment(); }
+  memory::InterruptFlag* interrupt_flag() { return memory_mapper_->interrupt_flag(); }
+  Screen* screen() { return screen_; }
 
   void Draw();
+  void WriteToScreen();
   void SetLCDSTATInterrupt() { interrupt_flag()->set_lcd_stat(true); }
   void SetVBlankInterrupt() { interrupt_flag()->set_v_blank(true); }
   void RenderLowPrioritySprites();
@@ -48,6 +55,8 @@ class GraphicsController {
 
   unsigned long time_ = 0;
   std::vector<unsigned char> screen_buffer_;
+  memory::MemoryMapper* memory_mapper_;
+  Screen* screen_;
 };
 
 } // namespace graphics
