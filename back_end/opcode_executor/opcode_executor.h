@@ -24,7 +24,7 @@ namespace handlers {
 
 class OpcodeExecutor {
   public: 
-    OpcodeExecutor(unsigned char* rom, unsigned long rom_size);
+    OpcodeExecutor(unsigned char* rom, long rom_size);
     unsigned int ReadInstruction();
 
   private:

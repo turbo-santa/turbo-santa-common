@@ -7,8 +7,10 @@ namespace clocktroller {
 class Clocktroller {
     public:
         Clocktroller(unsigned char* rom, unsigned long length);
-        void Launch();
+        void Start();
+        void Pause();
         void Terminate();
+        void WaitForThreads();
     private:
         void HandleLoop();
         void ClockLoop();

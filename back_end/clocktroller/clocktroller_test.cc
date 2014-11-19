@@ -30,12 +30,36 @@ TEST_F(ClocktrollerTest, ExecuteInstructions) {
     unsigned char rom[4] = {0x85, 0xC6, 0x04, 0x94};
     Clocktroller* clocktroller = new Clocktroller(rom, 3);
     printf("Created new clocktroller\n");
-    clocktroller->Launch();
+    clocktroller->Start();
     printf("Launched\n");
-    //sleep(1);
-    //clocktroller->Terminate();
+    clocktroller->WaitForThreads();
     EXPECT_REGISTER({{Register::A, 7}});
 }
 
+TEST_F(ClocktrollerTest, InstructionRuntime) {
+    SetRegisterState({{Register::A, 1}});
+    SetRegisterState({{Register::B, 1}});
+    // add B to A repeatedly
+    // each add should take 4 clock cycles
+    // 8388000 cycles/sec 
+    int numInstructions = 100000;
+    unsigned char rom[numInstructions];
+    for (int i = 0; i < numInstructions; i++) {
+        rom[i] = 0x80;
+    }
+
+    Clocktroller* clocktroller = new Clocktroller(rom, numInstructions);
+    clock_t start = clock();
+    clocktroller->Start();
+    clocktroller->WaitForThreads();
+    clock_t stop = clock();
+
+    // TODO: fix this value
+    EXPECT_EQ(((float)4 * numInstructions) /  8388000, ((float)stop - start) / CLOCKS_PER_SEC);
+}
+
+
 } // namespace clocktroller
 } // namespace back_end
+
+
