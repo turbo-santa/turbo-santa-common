@@ -9,15 +9,34 @@ namespace memory {
 using std::unique_ptr;
 
 MemoryMapper::MemoryMapper() {
+  internal_rom_ = InternalROM::ConstructInternalROM();
+  internal_rom_flag_->set();
+
+  unsigned char data = 0x00;
+  mbc_ = unique_ptr<MBC>(CreateNoMBC(&data, 1));
+}
+
+MemoryMapper::MemoryMapper(bool use_internal_rom) {
+  internal_rom_ = InternalROM::ConstructInternalROM();
+  if (!use_internal_rom) {
+    internal_rom_flag_->set();
+  }
+
   unsigned char data = 0x00;
   mbc_ = unique_ptr<MBC>(CreateNoMBC(&data, 1));
 }
 
 MemoryMapper::MemoryMapper(unsigned char* rom, long size) {
+  internal_rom_ = InternalROM::ConstructInternalROM();
+  internal_rom_flag_->set();
   mbc_ = ConstructMBC(rom, size);
 }
 
 unsigned char MemoryMapper::Read(unsigned short address) {
+  if (!internal_rom_flag_->is_set() && internal_rom_->InRange(address)) {
+    return internal_rom_->Read(address);
+  }
+
   if (mbc_->InRange(address)) {
     return mbc_->Read(address);
   } else if (video_ram_->InRange(address)) {
@@ -38,6 +57,8 @@ unsigned char MemoryMapper::Read(unsigned short address) {
     return interrupt_flag_->Read(address);
   } else if (graphics_flags_->InRange(address)) {
     return graphics_flags_->Read(address);
+  } else if (internal_rom_flag_->InRange(address)) {
+    return internal_rom_flag_->Read(address);
   } else if (io_ports_->InRange(address)) {
     return io_ports_->Read(address);
   } else if (high_ram_->InRange(address)) {
@@ -70,6 +91,8 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
     interrupt_flag_->Write(address, value);
   } else if (graphics_flags_->InRange(address)) {
     graphics_flags_->Write(address, value);
+  } else if (internal_rom_flag_->InRange(address)) {
+    internal_rom_flag_->Write(address, value);
   } else if (io_ports_->InRange(address)) {
     io_ports_->Write(address, value);
   } else if (high_ram_->InRange(address)) {

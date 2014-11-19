@@ -18,3 +18,4 @@ Makefile
 Makefile.in
 **/.deps
 .deps
+*.bin

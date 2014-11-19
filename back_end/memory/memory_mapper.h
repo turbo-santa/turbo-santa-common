@@ -5,6 +5,7 @@
 
 #include "back_end/graphics/graphics_flags.h"
 #include "back_end/memory/echo_segment.h"
+#include "back_end/memory/internal_rom.h"
 #include "back_end/memory/interrupt_flag.h"
 #include "back_end/memory/mbc.h"
 #include "back_end/memory/memory_segment.h"
@@ -26,7 +27,8 @@ namespace memory {
 
 class MemoryMapper {
  public:
-  MemoryMapper(); 
+  MemoryMapper();
+  MemoryMapper(bool use_internal_rom);
   MemoryMapper(unsigned char* rom, long size);
 
   virtual unsigned char Read(unsigned short address);
@@ -42,6 +44,7 @@ class MemoryMapper {
   static const int kMaxSize = 0x10000;
 
  private:
+  std::unique_ptr<InternalROM> internal_rom_; // 0x0000 - 0x0100
   std::unique_ptr<MBC> mbc_; // rom_bank_0    0x0000 - 0x3fff
                              // rom_bank_n    0x4000 - 0x7fff
                              // cartridge_ram 0xa000 - 0xbfff
@@ -55,6 +58,7 @@ class MemoryMapper {
   std::unique_ptr<NullMemorySegment> not_usable_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xfea0, 0xfeff));
   std::unique_ptr<InterruptFlag> interrupt_flag_ = std::unique_ptr<InterruptFlag>(new InterruptFlag()); // 0xff0f
   std::unique_ptr<graphics::GraphicsFlags> graphics_flags_ = std::unique_ptr<graphics::GraphicsFlags>(new graphics::GraphicsFlags());
+  std::unique_ptr<InternalROMFlag> internal_rom_flag_ = std::unique_ptr<InternalROMFlag>(new InternalROMFlag()); // 0xff50
   std::unique_ptr<NullMemorySegment> io_ports_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xff00, 0xff7f));
   std::unique_ptr<RAMSegment> high_ram_ = std::unique_ptr<RAMSegment>(new RAMSegment(0xff80, 0xfffe));
   std::unique_ptr<InterruptEnable> interrupt_enable_ = std::unique_ptr<InterruptEnable>(new InterruptEnable()); // 0xffff
