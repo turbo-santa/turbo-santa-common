@@ -9,13 +9,12 @@ class Clocktroller {
         Clocktroller(unsigned char* rom, unsigned long length);
         void Start();
         void Pause();
+        void Resume();
         void Terminate();
         void WaitForThreads();
     private:
         void HandleLoop();
         void ClockLoop();
-        void Pause();
-        void Resume();
 
     friend void LaunchHandleLoop(Clocktroller*);
     friend void LaunchClockLoop(Clocktroller*);
