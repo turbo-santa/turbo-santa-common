@@ -35,7 +35,7 @@ TEST_F(ClocktrollerTest, ExecuteInstructions) {
     LOG(INFO) << "Creating rom";
     LoadROM({{0x0000, {
         0x85,       // ADD A, L
-    //     0xC6, 0x04, // ADD A, 0x04
+         0xC6, 0x04, // ADD A, 0x04
         0x94}       // SUB H
     }});
     
@@ -48,7 +48,7 @@ TEST_F(ClocktrollerTest, ExecuteInstructions) {
     clocktroller->Start();
     LOG(INFO) << "Launched";
     clocktroller->WaitForThreads();
-    EXPECT_REGISTER({{Register::A, 3}});
+    EXPECT_REGISTER({{Register::A, 7}});
 }
 
 TEST_F(ClocktrollerTest, DISABLED_InstructionRuntime) {
