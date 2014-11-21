@@ -4,6 +4,7 @@
 *.zip
 *.cache
 *.status
+*.trs
 test
 test_bin
 .DS_Store
