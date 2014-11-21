@@ -13,7 +13,7 @@ CPPFLAGS='-I${top_srcdir} -I${top_srcdir}/third_party/gtest/include'
 CXXFLAGS='-std=c++11'
 CFLAGS=''
 LDFLAGS='-L/usr/local/lib'
-LIBS='-lglog'
+LIBS='-lglog -lncurses'
 
 # Checks for programs.
 AC_PROG_CXX([g++-4.8 g++])

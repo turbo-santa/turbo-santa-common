@@ -24,7 +24,7 @@ class InternalROM : public ContiguousMemorySegment {
   static std::unique_ptr<InternalROM> ConstructInternalROM() {
     InternalROM* rom = new InternalROM();
 
-    FILE* file = fopen("/home/brendan/turbo-santa-common/DMG_ROM.bin", "r");
+    FILE* file = fopen("DMG_ROM.bin", "r");
     if (file == nullptr) {
       LOG(FATAL) << "Could not open file: " << strerror(errno);
     }

@@ -2,6 +2,10 @@
 #define TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_H_
 
 #include <atomic>
+#include <memory>
+
+#include "back_end/graphics/screen.h"
+#include "back_end/graphics/graphics_controller.h"
 
 namespace back_end {
 namespace handlers {
@@ -14,6 +18,7 @@ namespace clocktroller {
 
 class Clocktroller {
     public:
+        Clocktroller(graphics::Screen* screen);
         Clocktroller(unsigned char* rom, long length);
         void Setup();
         void Start();
@@ -21,14 +26,15 @@ class Clocktroller {
         void Resume();
         void Terminate();
         void WaitForThreads();
+        // TODO(Diego): You need to clean this up when you are done. I do not
+        // think there is any good reason not to put this in a unique_ptr.
         handlers::OpcodeExecutor* executor; // TODO: This needs to be private. 
-                                                            // The only other class that references it is ClocktrollerTest.
+                                            // The only other class that references it is ClocktrollerTest.
     private:
         void HandleLoop();
         void ClockLoop();
         bool should_run = 1;
         std::atomic<bool> start_;
-        
 
     friend void LaunchHandleLoop(Clocktroller*);
     friend void LaunchClockLoop(Clocktroller*);

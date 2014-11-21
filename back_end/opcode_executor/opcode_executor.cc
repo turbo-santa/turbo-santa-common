@@ -8,22 +8,37 @@ namespace back_end {
 namespace handlers {
 
 using std::unique_ptr;
+using graphics::Screen;
+using graphics::ScreenRaster;
 using opcodes::CreateOpcodeMap;
 using opcodes::Opcode;
 using memory::MemoryMapper;
 using memory::InterruptEnable;
 using memory::InterruptFlag;
 
-OpcodeExecutor::OpcodeExecutor() {
+class NullScreen : public Screen {
+ public:
+  virtual void Draw(const ScreenRaster&) {}
+}; 
+
+OpcodeExecutor::OpcodeExecutor() :
+    graphics_controller_(&memory_mapper_, new NullScreen()) {
   // TODO(Diego): It acutally starts at something like 0x100.
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
 }
 
-OpcodeExecutor::OpcodeExecutor(unsigned char* rom, long size) {
+OpcodeExecutor::OpcodeExecutor(unsigned char* rom, long size) :
+    graphics_controller_(&memory_mapper_, new NullScreen()) {
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
   memory_mapper_ = MemoryMapper(rom, size);
+}
+
+OpcodeExecutor::OpcodeExecutor(Screen* screen) : 
+    memory_mapper_(true), graphics_controller_(&memory_mapper_, screen) {
+  cpu_.rPC = 0x0000;
+  opcode_map = CreateOpcodeMap(&cpu_);
 }
 
 unsigned int OpcodeExecutor::ReadInstruction() {
@@ -44,6 +59,9 @@ unsigned int OpcodeExecutor::ReadInstruction() {
                           &memory_mapper_,
                           &cpu_);
   cpu_.rPC = opcode_struct.handler(&context);
+
+  graphics_controller_.Tick(opcode_struct.clock_cycles);
+
   return context.opcode->clock_cycles;
 }
 

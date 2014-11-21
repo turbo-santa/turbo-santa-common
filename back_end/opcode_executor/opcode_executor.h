@@ -4,6 +4,8 @@
 #include <map>
 #include <memory>
 
+#include "back_end/graphics/graphics_controller.h"
+#include "back_end/graphics/screen.h"
 #include "back_end/memory/memory_mapper.h"
 #include "back_end/opcode_executor/opcode_handlers.h"
 #include "back_end/opcode_executor/opcodes.h"
@@ -26,6 +28,7 @@ namespace handlers {
 class OpcodeExecutor {
   public: 
     OpcodeExecutor();
+    OpcodeExecutor(graphics::Screen* screen);
     OpcodeExecutor(unsigned char* rom, long rom_size);
     unsigned int ReadInstruction();
 
@@ -34,6 +37,7 @@ class OpcodeExecutor {
     void HandleInterrupts();
     
     memory::MemoryMapper memory_mapper_;
+    graphics::GraphicsController graphics_controller_;
     registers::GB_CPU cpu_;
     std::map<unsigned short, opcodes::Opcode> opcode_map;
     // This is a special flag/register that can only be set or unset and can

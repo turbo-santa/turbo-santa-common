@@ -38,7 +38,8 @@ TEST_F(ClocktrollerTest, ExecuteInstructions) {
     //     0xC6, 0x04, // ADD A, 0x04
         0x94}       // SUB H
     }});
-    
+  
+    // TODO(Diego): Do not do this!!!! This should be wrapped in a unique_ptr!!!
     Clocktroller* clocktroller = new Clocktroller(nullptr, 3);
     LOG(INFO) << "Created new clocktroller";
     clocktroller->executor = parser_;
