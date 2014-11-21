@@ -18,3 +18,5 @@ Makefile
 Makefile.in
 **/.deps
 .deps
+compile
+test-driver
