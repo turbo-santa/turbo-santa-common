@@ -92,7 +92,7 @@ unsigned char NthBit(unsigned int byte, int n) {
 int Ld8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   *reg = *opcode->reg2;
   return instruction_ptr + 2;
 }
@@ -100,7 +100,7 @@ int Ld8Bit(handlers::ExecutorContext* context) {
 int Ld8BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   *reg = GetParameterValue(context->memory_mapper, instruction_ptr);
   return instruction_ptr + 2;
 }
@@ -137,7 +137,7 @@ int LoadToA16BitLiteral(handlers::ExecutorContext* context) {
 int LoadFromA8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   *reg = *opcode->reg2;
   return instruction_ptr + 2;
 }
@@ -145,7 +145,7 @@ int LoadFromA8Bit(handlers::ExecutorContext* context) {
 int LoadFromA16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   *reg = *opcode->reg2;
   return instruction_ptr + 2;
 }
@@ -178,7 +178,7 @@ bool DoesUnderflow(unsigned int left, unsigned int right, int bit) {
 }
 
 bool DoesBorrow8(unsigned char left, unsigned char right) {
-  return !DoesUnderflow(left, right, 7);
+  return DoesUnderflow(left, right, 7);
 }
 
 bool DoesBorrow16(unsigned short left, unsigned short right) {
@@ -233,11 +233,9 @@ int Add8BitLiteral(handlers::ExecutorContext* context) {
 
 void ADC8BitImpl(unsigned char value, GB_CPU* cpu) {
   char carry = cpu->flag_struct.rF.C;
-  cpu->flag_struct.rF.C = DoesCarry8(cpu->flag_struct.rA, value);
-  cpu->flag_struct.rF.H = DoesHalfCarry8(cpu->flag_struct.rA, value);
+  cpu->flag_struct.rF.C = DoesCarry8(cpu->flag_struct.rA, value + carry);
+  cpu->flag_struct.rF.H = DoesHalfCarry8(cpu->flag_struct.rA, value + carry);
   cpu->flag_struct.rA += value;
-  cpu->flag_struct.rF.C |= DoesCarry8(cpu->flag_struct.rA, carry);
-  cpu->flag_struct.rF.H |= DoesHalfCarry8(cpu->flag_struct.rA, carry);
   cpu->flag_struct.rA += carry;
   SetZFlag(cpu->flag_struct.rA, cpu);
   SetNFlag(false, cpu);
@@ -281,8 +279,8 @@ int Sub8BitLiteral(handlers::ExecutorContext* context) {
 
 void SBC8BitImpl(unsigned char value, GB_CPU* cpu) {
     char carry = cpu->flag_struct.rF.C;
-    cpu->flag_struct.rF.C = !DoesBorrow8(cpu->flag_struct.rA, value);
-    cpu->flag_struct.rF.H = !DoesHalfBorrow8(cpu->flag_struct.rA, value);
+    cpu->flag_struct.rF.C = !DoesBorrow8(cpu->flag_struct.rA, value + carry);
+    cpu->flag_struct.rF.H = !DoesHalfBorrow8(cpu->flag_struct.rA, value + carry);
     cpu->flag_struct.rA -= value;
     cpu->flag_struct.rA -= carry;
     SetZFlag(cpu->flag_struct.rA, cpu);
@@ -390,7 +388,7 @@ int Cp8BitLiteral(handlers::ExecutorContext* context) {
 int Inc8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned char* reg = opcode.reg1;
+  unsigned char* reg = (unsigned char*) opcode.reg1;
   unsigned char forth_bit = NthBit(*reg, 3);
   ++(*reg);
   bool borrowed_h = forth_bit != NthBit(*reg, 3);
@@ -403,7 +401,7 @@ int Inc8Bit(handlers::ExecutorContext* context) {
 int Dec8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned char* reg = opcode.reg1;
+  unsigned char* reg = (unsigned char*) opcode.reg1;
   unsigned char fourth_bit = NthBit(*reg, 4);
   --(*reg);
   bool borrowed_h = fourth_bit != NthBit(*reg, 4);
@@ -417,8 +415,8 @@ int Add16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   short value = GetRegisterValue16(context->memory_mapper, instruction_ptr, opcode.opcode_name, context->cpu);
-  context->cpu->flag_struct.rF.H = DoesHalfCarry16(context->cpu->flag_struct.rA, value);
-  context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->flag_struct.rA, value);
+  context->cpu->flag_struct.rF.H = DoesHalfCarry16(context->cpu->rHL, value);
+  context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->rHL, value);
   context->cpu->rHL += value;
   SetNFlag(false, context->cpu);
   return instruction_ptr + 1;
@@ -460,7 +458,7 @@ int Dec16Bit(handlers::ExecutorContext* context) {
 int Swap(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   unsigned char value = *reg;
   *reg = (value << 4) | (value >> 4);
   SetZFlag(*reg, context->cpu);
@@ -609,7 +607,7 @@ int RRA(handlers::ExecutorContext* context) {
 int RLC(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 7);
   *reg = *reg << 1;
   context->cpu->flag_struct.rF.H = 0;
@@ -621,7 +619,7 @@ int RLC(handlers::ExecutorContext* context) {
 int RL(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 7);
   *reg = *reg << 1;
   *reg |= context->cpu->flag_struct.rF.C;
@@ -634,7 +632,7 @@ int RL(handlers::ExecutorContext* context) {
 int RRC(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 0);
   *reg = *reg >> 1;
   context->cpu->flag_struct.rF.H = 0;
@@ -646,7 +644,7 @@ int RRC(handlers::ExecutorContext* context) {
 int RR(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 0);
   *reg = *reg >> 1;
   *reg |= (((unsigned char) context->cpu->flag_struct.rF.C) << 7);
@@ -663,7 +661,7 @@ int SLA(handlers::ExecutorContext* context) {
 int SRA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 0);
   unsigned char msb = NthBit(*reg, 7) << 7;
   *reg = *reg >> 1;
@@ -681,7 +679,7 @@ int SRL(handlers::ExecutorContext* context) {
 int Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   unsigned char bit = NthBit(*reg, GetParameterValue(context->memory_mapper, instruction_ptr));
   context->cpu->flag_struct.rF.H = 1;
   SetZFlag(bit, context->cpu);
@@ -692,7 +690,7 @@ int Bit(handlers::ExecutorContext* context) {
 int Set(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   unsigned char bit = GetParameterValue(context->memory_mapper, instruction_ptr);
   *reg |= (0x1 << bit);
   return instruction_ptr + 2;
@@ -701,7 +699,7 @@ int Set(handlers::ExecutorContext* context) {
 int Res(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char* reg = opcode->reg1;
+  unsigned char* reg = (unsigned char*) opcode->reg1;
   unsigned char bit = GetParameterValue(context->memory_mapper, instruction_ptr);
   *reg &= ~(0x1 << bit);
   return instruction_ptr + 2;
