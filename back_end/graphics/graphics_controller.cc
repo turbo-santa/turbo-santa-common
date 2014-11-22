@@ -221,8 +221,9 @@ void GraphicsController::RenderSprite(SpriteAttribute* sprite_attribute) {
 void GraphicsController::RenderTile(Tile* tile, unsigned char y_offset, unsigned char x_offset, MonochromePalette* palette) {
   for (int y = 0; y < Tile::kTileSize; y++) {
     for (int x = 0; x < Tile::kTileSize; x++) {
-      unsigned char tile_index = tile->Get(y, x);
-      MonochromePalette::Color color = palette->lookup(tile_index);
+      unsigned char color_index = tile->Get(y, x);
+      LOG(INFO) << "Color index is " << 0x00 + color_index;
+      MonochromePalette::Color color = palette->lookup(color_index);
       if (color != MonochromePalette::NONE) {
         LOG(INFO) << "Color is " << std::dec << color;
         unsigned char realized_color = static_cast<unsigned char>(color) * (256 / 4);

@@ -950,6 +950,7 @@ int LoadAN(handlers::ExecutorContext* context) {
     // TODO: figure out what nn refers to.
   } else if (opcode.opcode_name == 0x3E) {
     unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
+    LOG(INFO) << "Loading " << 0x0000 + value << " into A";
     context->cpu->flag_struct.rA = value;
     return instruction_ptr + 2;
   }
@@ -1016,7 +1017,10 @@ int LoadHNA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   MemoryMapper* memory_mapper = context->memory_mapper;
-  memory_mapper->Write(0xFF00 + GetParameterValue(memory_mapper, instruction_ptr), context->cpu->flag_struct.rA);
+  unsigned short address = 0xFF00 + GetParameterValue(memory_mapper, instruction_ptr);
+  unsigned char value = context->cpu->flag_struct.rA;
+  memory_mapper->Write(address, value);
+  LOG(INFO) << std::hex << 0x0000 + value << " was written to " << std::hex << address;
   return instruction_ptr + 2;
 }
 

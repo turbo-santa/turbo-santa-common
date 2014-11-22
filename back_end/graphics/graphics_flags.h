@@ -193,6 +193,7 @@ class GraphicsFlags : public memory::MemorySegment {
       window_x_position_.Write(address, value);
     } else if (background_palette_.InRange(address)) {
       background_palette_.Write(address, value);
+      LOG(INFO) << std::hex << 0x0000 + value << " was written to the background palette";
     } else if (object_palette_0_.InRange(address)) {
       object_palette_0_.Write(address, value);
     } else if (object_palette_1_.InRange(address)) {
