@@ -13,18 +13,18 @@ using namespace handlers;
 
 
 map<unsigned short, Opcode> CreateOpcodeMap(GB_CPU* cpu) {
-  unsigned char* rA = &cpu->flag_struct.rA;
-  unsigned char* rB = &cpu->bc_struct.rB;
-  unsigned char* rC = &cpu->bc_struct.rC;
-  unsigned char* rD = &cpu->de_struct.rD;
-  unsigned char* rE = &cpu->de_struct.rE;
-  unsigned char* rH = &cpu->hl_struct.rH;
-  unsigned char* rL = &cpu->hl_struct.rL;
-  unsigned char* rAF = (unsigned char*) &cpu->rAF;
-  unsigned char* rBC = (unsigned char*) &cpu->rBC;
-  unsigned char* rDE = (unsigned char*) &cpu->rDE;
-  unsigned char* rHL = (unsigned char*) &cpu->rHL;
-  unsigned char* rSP = (unsigned char*) &cpu->rSP;
+  unsigned short* rA = (unsigned short*) &cpu->flag_struct.rA;
+  unsigned short* rB = (unsigned short*) &cpu->bc_struct.rB;
+  unsigned short* rC = (unsigned short*) &cpu->bc_struct.rC;
+  unsigned short* rD = (unsigned short*) &cpu->de_struct.rD;
+  unsigned short* rE = (unsigned short*) &cpu->de_struct.rE;
+  unsigned short* rH = (unsigned short*) &cpu->hl_struct.rH;
+  unsigned short* rL = (unsigned short*) &cpu->hl_struct.rL;
+  unsigned short* rAF = &cpu->rAF;
+  unsigned short* rBC = &cpu->rBC;
+  unsigned short* rDE = &cpu->rDE;
+  unsigned short* rHL = &cpu->rHL;
+  unsigned short* rSP = &cpu->rSP;
 
 const vector<vector<Opcode>> opcodes = {
     ToList1({{0x06, rB, 8},
