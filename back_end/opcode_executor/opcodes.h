@@ -17,11 +17,11 @@ namespace opcodes {
 typedef std::function<int(handlers::ExecutorContext* context)> OpcodeHandler;
 
 struct Opcode {
-    unsigned short opcode_name;
-    unsigned char* reg1;
-    unsigned char* reg2;
-    OpcodeHandler handler;
-    unsigned int clock_cycles;
+  unsigned short opcode_name;
+  unsigned char* reg1;
+  unsigned char* reg2;
+  OpcodeHandler handler;
+  unsigned int clock_cycles;
 };
 
 struct PartialOpcode {

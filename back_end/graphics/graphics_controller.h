@@ -17,7 +17,9 @@ class MonochromePalette;
 class GraphicsController {
  public:
   GraphicsController(memory::MemoryMapper* memory_mapper, Screen* screen) : 
-      memory_mapper_(memory_mapper), screen_(screen) {}
+      screen_buffer_(kScreenBufferSize * kScreenBufferSize, 0x00),
+      memory_mapper_(memory_mapper),
+      screen_(screen) {}
 
   void Tick(unsigned int number_of_cycles);
 

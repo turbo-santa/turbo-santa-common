@@ -44,14 +44,23 @@ OpcodeExecutor::OpcodeExecutor(Screen* screen) :
 unsigned int OpcodeExecutor::ReadInstruction() {
   HandleInterrupts(); // Before a fetch we must check for and handle interrupts.
   unsigned short instruction_ptr = cpu_.rPC;
-  unsigned short opcode = memory_mapper_.Read(instruction_ptr); 
-  if (opcode == 0xCB || opcode == 0x10) {
+  unsigned short opcode = memory_mapper_.Read(instruction_ptr);
+
+  unsigned short opcode_msb = memory_mapper_.Read(instruction_ptr + 1);
+  
+  if (opcode_msb == 0xCB || (opcode_msb == 0x10 && opcode == 0x00)) {
     instruction_ptr++;
-    unsigned char opcode_lb = memory_mapper_.Read(instruction_ptr);
-    opcode = opcode << 8 | opcode_lb;
+    opcode = opcode_msb << 8 | opcode;
   }
   cpu_.rPC = instruction_ptr;
-  Opcode opcode_struct = opcode_map[opcode];
+
+  Opcode opcode_struct;
+  auto opcode_iter = opcode_map.find(opcode);
+  if (opcode_iter == opcode_map.end()) {
+    LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << " does not exist.";
+  } else {
+    opcode_struct = opcode_iter->second;
+  }
 
   ExecutorContext context(&interrupt_master_enable_,
                           &cpu_.rPC,

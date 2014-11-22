@@ -15,13 +15,13 @@ class Tile {
  public:
   virtual unsigned char Get(unsigned int y, unsigned int x) = 0;
   virtual void Set(unsigned int y, unsigned int x, unsigned char value) = 0;
-  static const int kTileSize = 16;
+  static const int kTileSize = 8;
 };
 
 class ConcreteTile : public Tile {
  public:
   virtual unsigned char Get(unsigned int y, unsigned int x) {
-    if (y >= 8 || x >= 8) {
+    if (y >= kTileSize || x >= kTileSize) {
       LOG(FATAL) << "x or y is out of range: x = " << x << " y = " << y;
     }
     y *= 2;
@@ -39,7 +39,7 @@ class ConcreteTile : public Tile {
   }
 
   virtual void Set(unsigned int y, unsigned int x, unsigned char value) {
-    if (y >= 8 || x >= 8) {
+    if (y >= kTileSize || x >= kTileSize) {
       LOG(FATAL) << "x or y is out of range: x = " << x << " y = " << y;
     }
     y *= 2;

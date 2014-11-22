@@ -9,6 +9,8 @@ namespace graphics {
 
 class ScreenRaster {
  public:
+  ScreenRaster() : data_(kScreenWidth * kScreenHeight, 0x00) {}
+
   unsigned char Get(unsigned int y, unsigned int x) const {
     Check(y, x);
     return data_[x + kScreenWidth * y];
