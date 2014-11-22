@@ -624,40 +624,6 @@ TEST_F(OpcodeHandlersTest, LoadDecHLA) {
   EXPECT_REGISTER({{Register::A, 0xab}, {Register::HL, 0xa002}});
 }
 
-TEST_F(OpcodeHandlersTest, Call) {
-  SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1234}});
-  ExecuteInstruction(0xcd, static_cast<unsigned short>(0x2345));
-  EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x2345}});
-  EXPECT_MEMORY({{0xfffe, 0x35}, {0xfffd, 0x12}});
-}
-
-TEST_F(OpcodeHandlersTest, LoadAndRunROM) {
-  SetRegisterState({{Register::PC, 0x0100}, {Register::B, 0x01}});
-  LoadAndRunROM({{0x0100, {
-                0x00, // NOP
-                0x80, // ADD A, B
-                }}});
-  EXPECT_REGISTER({{Register::PC, 0x0102}, {Register::A, 0x01}});
-}
-
-TEST_F(OpcodeHandlersTest, Interrupt) {
-  SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x0100}, {Register::B, 0x01}});
-  // TODO(Brendan): This state should be set directly and not depend on an
-  // instruction.
-  ExecuteInstruction(0xfb); // EI (Set IME).
-  SetMemoryState({{0xffff, 0b00011111}, {0xff0f, 0b00000001}});
-  LoadROM({{0x0101, {
-          0x80,
-          0x80,
-          }}, {0x0040, {
-          0x90,
-          0x90}}});
-  Run(1);
-  EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x0041}, {Register::A, 0xff}});
-  // TODO(Brendan): Should also have assertions for the state of the interrupt
-  // flags.
-}
-
 // Test DEC n
 // Decrement register n
 
@@ -823,6 +789,40 @@ TEST_F(OpcodeHandlersTest, Dec16BitSP) {
 }
 
 // End 16-bit ALU tests
+
+TEST_F(OpcodeHandlersTest, Call) {
+  SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1234}});
+  ExecuteInstruction(0xcd, static_cast<unsigned short>(0x2345));
+  EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x2345}});
+  EXPECT_MEMORY({{0xfffe, 0x35}, {0xfffd, 0x12}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadAndRunROM) {
+  SetRegisterState({{Register::PC, 0x0100}, {Register::B, 0x01}});
+  LoadAndRunROM({{0x0100, {
+                0x00, // NOP
+                0x80, // ADD A, B
+                }}});
+  EXPECT_REGISTER({{Register::PC, 0x0102}, {Register::A, 0x01}});
+}
+
+TEST_F(OpcodeHandlersTest, Interrupt) {
+  SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x0100}, {Register::B, 0x01}});
+  // TODO(Brendan): This state should be set directly and not depend on an
+  // instruction.
+  ExecuteInstruction(0xfb); // EI (Set IME).
+  SetMemoryState({{0xffff, 0b00011111}, {0xff0f, 0b00000001}});
+  LoadROM({{0x0101, {
+          0x80,
+          0x80,
+          }}, {0x0040, {
+          0x90,
+          0x90}}});
+  Run(1);
+  EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x0041}, {Register::A, 0xff}});
+  // TODO(Brendan): Should also have assertions for the state of the interrupt
+  // flags.
+}
 
 } // namespace handlers
 } // namespace back_end
