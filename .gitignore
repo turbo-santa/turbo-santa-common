@@ -4,9 +4,10 @@
 *.zip
 *.cache
 *.status
-*.trs
+*.txt
 test
 test_bin
+back_end/turbo_test
 .DS_Store
 third_party/glog/
 third_party/gtest/samples/
@@ -19,5 +20,4 @@ Makefile
 Makefile.in
 **/.deps
 .deps
-compile
-test-driver
+*.bin
