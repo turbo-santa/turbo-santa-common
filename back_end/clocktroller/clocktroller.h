@@ -1,5 +1,13 @@
-#ifndef TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_H_
-#define TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_H_
+#ifndef TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_
+#define TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_
+
+#include <atomic>
+
+namespace back_end {
+namespace handlers {
+class OpcodeExecutor;
+} // namespace handlers
+} // namespace back_end
 
 namespace back_end {
 namespace clocktroller {
@@ -19,7 +27,7 @@ class Clocktroller {
         void HandleLoop();
         void ClockLoop();
         bool should_run = 1;
-        bool start = 0;
+        std::atomic<bool> start_;
         
 
     friend void LaunchHandleLoop(Clocktroller*);
@@ -28,4 +36,4 @@ class Clocktroller {
 };
 } // namespace clocktroller
 } // namespace back_end
-#endif // TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_H_
+#endif // TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_

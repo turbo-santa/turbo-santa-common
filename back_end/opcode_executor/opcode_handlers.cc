@@ -178,7 +178,7 @@ bool DoesUnderflow(unsigned int left, unsigned int right, int bit) {
 }
 
 bool DoesBorrow8(unsigned char left, unsigned char right) {
-  return !DoesUnderflow(left, right, 7);
+  return DoesUnderflow(left, right, 7);
 }
 
 bool DoesBorrow16(unsigned short left, unsigned short right) {
@@ -233,11 +233,9 @@ int Add8BitLiteral(handlers::ExecutorContext* context) {
 
 void ADC8BitImpl(unsigned char value, GB_CPU* cpu) {
   char carry = cpu->flag_struct.rF.C;
-  cpu->flag_struct.rF.C = DoesCarry8(cpu->flag_struct.rA, value);
-  cpu->flag_struct.rF.H = DoesHalfCarry8(cpu->flag_struct.rA, value);
+  cpu->flag_struct.rF.C = DoesCarry8(cpu->flag_struct.rA, value + carry);
+  cpu->flag_struct.rF.H = DoesHalfCarry8(cpu->flag_struct.rA, value + carry);
   cpu->flag_struct.rA += value;
-  cpu->flag_struct.rF.C |= DoesCarry8(cpu->flag_struct.rA, carry);
-  cpu->flag_struct.rF.H |= DoesHalfCarry8(cpu->flag_struct.rA, carry);
   cpu->flag_struct.rA += carry;
   SetZFlag(cpu->flag_struct.rA, cpu);
   SetNFlag(false, cpu);
@@ -281,8 +279,8 @@ int Sub8BitLiteral(handlers::ExecutorContext* context) {
 
 void SBC8BitImpl(unsigned char value, GB_CPU* cpu) {
     char carry = cpu->flag_struct.rF.C;
-    cpu->flag_struct.rF.C = !DoesBorrow8(cpu->flag_struct.rA, value);
-    cpu->flag_struct.rF.H = !DoesHalfBorrow8(cpu->flag_struct.rA, value);
+    cpu->flag_struct.rF.C = !DoesBorrow8(cpu->flag_struct.rA, value + carry);
+    cpu->flag_struct.rF.H = !DoesHalfBorrow8(cpu->flag_struct.rA, value + carry);
     cpu->flag_struct.rA -= value;
     cpu->flag_struct.rA -= carry;
     SetZFlag(cpu->flag_struct.rA, cpu);
@@ -417,8 +415,8 @@ int Add16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   short value = GetRegisterValue16(context->memory_mapper, instruction_ptr, opcode.opcode_name, context->cpu);
-  context->cpu->flag_struct.rF.H = DoesHalfCarry16(context->cpu->flag_struct.rA, value);
-  context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->flag_struct.rA, value);
+  context->cpu->flag_struct.rF.H = DoesHalfCarry16(context->cpu->rHL, value);
+  context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->rHL, value);
   context->cpu->rHL += value;
   SetNFlag(false, context->cpu);
   return instruction_ptr + 1;
@@ -797,6 +795,7 @@ unsigned char GetMSB(unsigned short value) {
 
 void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
   unsigned short* rSP = &cpu->rSP;
+  // memory_mapper->Write(0xfffe, GetLSB(*reg));
   memory_mapper->Write(*rSP, GetLSB(*reg));
   --*rSP;
   memory_mapper->Write(*rSP, GetMSB(*reg));

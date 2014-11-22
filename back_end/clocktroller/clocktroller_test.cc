@@ -2,7 +2,7 @@
 #include "clocktroller.h"
 #include "back_end/opcode_executor/registers.h"
 #include "third_party/gtest/include/gtest/gtest.h"
-#include <glog/Logging.h>
+#include <glog/logging.h>
 #include <vector>
 
 namespace back_end {
@@ -33,8 +33,10 @@ TEST_F(ClocktrollerTest, ExecuteInstructions) {
     // add 8 bit literal to a
     // sub h from a
     LOG(INFO) << "Creating rom";
-    LoadROM({{0x0000, 
-        {0x85, 0xC6, 0x04, 0x94}
+    LoadROM({{0x0000, {
+        0x85,       // ADD A, L
+         0xC6, 0x04, // ADD A, 0x04
+        0x94}       // SUB H
     }});
     
     Clocktroller* clocktroller = new Clocktroller(nullptr, 3);
