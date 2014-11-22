@@ -244,6 +244,168 @@ TEST_F(OpcodeHandlersTest, LoadDHL) {
     EXPECT_REGISTER({{Register::D, 0xDE}, {Register::HL, 0xDE}});
 }
 
+TEST_F(OpcodeHandlersTest, LoadEB) {
+    SetRegisterState({{Register::E, 0x01}, {Register::B, 0xDE}});
+    ExecuteInstruction(0x58);
+    EXPECT_REGISTER({{Register::E, 0xDE}, {Register::B, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadEC) {
+    SetRegisterState({{Register::E, 0x01}, {Register::C, 0xDE}});
+    ExecuteInstruction(0x59);
+    EXPECT_REGISTER({{Register::E, 0xDE}, {Register::C, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadED) {
+    SetRegisterState({{Register::E, 0x01}, {Register::D, 0xDE}});
+    ExecuteInstruction(0x5A);
+    EXPECT_REGISTER({{Register::E, 0xDE}, {Register::D, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadEE) {
+    SetRegisterState({{Register::E, 0x01}, {Register::E, 0xDE}});
+    ExecuteInstruction(0x5B);
+    EXPECT_REGISTER({{Register::E, 0xDE}, {Register::E, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadEH) {
+    SetRegisterState({{Register::E, 0x01}, {Register::H, 0xDE}});
+    ExecuteInstruction(0x5C);
+    EXPECT_REGISTER({{Register::E, 0xDE}, {Register::H, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadEL) {
+    SetRegisterState({{Register::E, 0x01}, {Register::L, 0xDE}});
+    ExecuteInstruction(0x5D);
+    EXPECT_REGISTER({{Register::E, 0xDE}, {Register::L, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadEHL) {
+    SetRegisterState({{Register::E, 0x01}, {Register::HL, 0xDE}});
+    ExecuteInstruction(0x5E);
+    EXPECT_REGISTER({{Register::E, 0xDE}, {Register::HL, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHB) {
+    SetRegisterState({{Register::H, 0x01}, {Register::B, 0xDE}});
+    ExecuteInstruction(0x60);
+    EXPECT_REGISTER({{Register::H, 0xDE}, {Register::B, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHC) {
+    SetRegisterState({{Register::H, 0x01}, {Register::C, 0xDE}});
+    ExecuteInstruction(0x61);
+    EXPECT_REGISTER({{Register::H, 0xDE}, {Register::C, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHD) {
+    SetRegisterState({{Register::H, 0x01}, {Register::D, 0xDE}});
+    ExecuteInstruction(0x62);
+    EXPECT_REGISTER({{Register::H, 0xDE}, {Register::D, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHE) {
+    SetRegisterState({{Register::H, 0x01}, {Register::E, 0xDE}});
+    ExecuteInstruction(0x63);
+    EXPECT_REGISTER({{Register::H, 0xDE}, {Register::E, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHH) {
+    SetRegisterState({{Register::H, 0x01}, {Register::H, 0xDE}});
+    ExecuteInstruction(0x64);
+    EXPECT_REGISTER({{Register::H, 0xDE}, {Register::H, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHL) {
+    SetRegisterState({{Register::H, 0x01}, {Register::L, 0xDE}});
+    ExecuteInstruction(0x65);
+    EXPECT_REGISTER({{Register::H, 0xDE}, {Register::L, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHHL) {
+    SetRegisterState({{Register::H, 0x01}, {Register::HL, 0xDE}});
+    ExecuteInstruction(0x66);
+    EXPECT_REGISTER({{Register::H, 0xDE}, {Register::HL, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadLB) {
+    SetRegisterState({{Register::L, 0x01}, {Register::B, 0xDE}});
+    ExecuteInstruction(0x68);
+    EXPECT_REGISTER({{Register::L, 0xDE}, {Register::B, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadLC) {
+    SetRegisterState({{Register::L, 0x01}, {Register::C, 0xDE}});
+    ExecuteInstruction(0x69);
+    EXPECT_REGISTER({{Register::L, 0xDE}, {Register::C, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadLD) {
+    SetRegisterState({{Register::L, 0x01}, {Register::D, 0xDE}});
+    ExecuteInstruction(0x6A);
+    EXPECT_REGISTER({{Register::L, 0xDE}, {Register::D, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadLE) {
+    SetRegisterState({{Register::L, 0x01}, {Register::E, 0xDE}});
+    ExecuteInstruction(0x6B);
+    EXPECT_REGISTER({{Register::L, 0xDE}, {Register::E, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadLH) {
+    SetRegisterState({{Register::L, 0x01}, {Register::H, 0xDE}});
+    ExecuteInstruction(0x6C);
+    EXPECT_REGISTER({{Register::L, 0xDE}, {Register::H, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadLL) {
+    SetRegisterState({{Register::L, 0x01}, {Register::L, 0xDE}});
+    ExecuteInstruction(0x6D);
+    EXPECT_REGISTER({{Register::L, 0xDE}, {Register::L, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadLHL) {
+    SetRegisterState({{Register::L, 0x01}, {Register::HL, 0xDE}});
+    ExecuteInstruction(0x6E);
+    EXPECT_REGISTER({{Register::L, 0xDE}, {Register::HL, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHLB) {
+    SetRegisterState({{Register::HL, 0x01}, {Register::B, 0xDE}});
+    ExecuteInstruction(0x70);
+    EXPECT_REGISTER({{Register::HL, 0xDE}, {Register::B, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHLC) {
+    SetRegisterState({{Register::HL, 0x01}, {Register::C, 0xDE}});
+    ExecuteInstruction(0x71);
+    EXPECT_REGISTER({{Register::HL, 0xDE}, {Register::C, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHLD) {
+    SetRegisterState({{Register::HL, 0x01}, {Register::D, 0xDE}});
+    ExecuteInstruction(0x72);
+    EXPECT_REGISTER({{Register::HL, 0xDE}, {Register::D, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHLE) {
+    SetRegisterState({{Register::HL, 0x01}, {Register::E, 0xDE}});
+    ExecuteInstruction(0x73);
+    EXPECT_REGISTER({{Register::HL, 0xDE}, {Register::E, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHLH) {
+    SetRegisterState({{Register::HL, 0x01}, {Register::H, 0xDE}});
+    ExecuteInstruction(0x74);
+    EXPECT_REGISTER({{Register::HL, 0xDE}, {Register::H, 0xDE}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHLL) {
+    SetRegisterState({{Register::HL, 0x01}, {Register::L, 0xDE}});
+    EXPECT_EQ(8, ExecuteInstruction(0x75));
+    EXPECT_REGISTER({{Register::HL, 0xDE}, {Register::L, 0xDE}});
+}
+
 // LDD tests
 
 TEST_F(OpcodeHandlersTest, LoadDecHLA) {

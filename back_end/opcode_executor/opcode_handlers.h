@@ -91,7 +91,8 @@ int ReturnInterrupt(handlers::ExecutorContext* context);
 
 // 8-Bit Loads
 int LoadN(handlers::ExecutorContext* context);
-int LoadRR(handlers::ExecutorContext* context);
+int LoadRR8Bit(handlers::ExecutorContext* context);
+int LoadRR16Bit(handlers::ExecutorContext* context);
 int LoadAN(handlers::ExecutorContext* context);
 int LoadNA(handlers::ExecutorContext* context);
 int LoadAC(handlers::ExecutorContext* context);

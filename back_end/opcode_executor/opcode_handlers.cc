@@ -926,17 +926,20 @@ int LoadN(handlers::ExecutorContext* context) {
   return instruction_ptr + 2;
 }
 
-int LoadRR(handlers::ExecutorContext* context) {
+int LoadRR8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  if (opcode.opcode_name == 0x36) {
-    unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
-    *opcode.reg1 = value;
-    return instruction_ptr + 2;
-  } else {
-    *opcode.reg1 = *opcode.reg2;
-    return instruction_ptr + 1;
-  }
+  unsigned char* reg1 = (unsigned char*)opcode.reg1;
+  unsigned char* reg2 = (unsigned char*)opcode.reg2;
+  *reg1 = *reg2;
+  return instruction_ptr + 1;
+}
+
+int LoadRR16Bit(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  Opcode opcode = *context->opcode;
+  *opcode.reg1 = *opcode.reg2;
+  return instruction_ptr + 1;
 }
 
 int LoadAN(handlers::ExecutorContext* context) {
