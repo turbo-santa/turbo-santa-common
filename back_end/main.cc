@@ -28,6 +28,7 @@ class TerminalScreen : public Screen {
         addch(real_pixel);
       }
     }
+    refresh();
   }
 };
 

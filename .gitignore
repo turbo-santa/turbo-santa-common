@@ -4,6 +4,7 @@
 *.zip
 *.cache
 *.status
+*.txt
 test
 test_bin
 back_end/turbo_test
