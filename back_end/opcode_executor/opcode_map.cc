@@ -32,7 +32,7 @@ const vector<vector<Opcode>> opcodes = {
             {0x16, rD, 8},
             {0x1e, rE, 8},
             {0x26, rH, 8},
-            {0x2e, rL, 8}}, LoadNN),
+            {0x2e, rL, 8}}, LoadN),
     ToList2({{0x7f, rA, rA, 4},
             {0x78, rA, rB, 4},
             {0x79, rA, rC, 4},
