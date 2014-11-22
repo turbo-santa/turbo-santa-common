@@ -55,15 +55,16 @@ TEST_F(ClocktrollerTest, DISABLED_InstructionRuntime) {
     SetRegisterState({{Register::A, 1}, {Register::B, 1}});
     // add B to A repeatedly
     // each add should take 4 clock cycles
-    // 8388000 cycles/sec 
+    // 8388000 cycles/sec
+    float clock_cycles = 4;
     int numInstructions = 30000;
     std::vector<unsigned char> instructions;
     for (int i = 0; i < numInstructions; i++) {
-        instructions.push_back(0x80);
+        instructions.push_back(0x80); // add b to a takes 4 clockcycles
     }
     LOG(INFO) << "Creating rom";
     LoadROM({{0x0000, instructions}});
-
+    
     Clocktroller* clocktroller = new Clocktroller(nullptr, numInstructions);
     LOG(INFO) << "Created new clocktroller";
     clocktroller->executor = parser_;
@@ -76,7 +77,7 @@ TEST_F(ClocktrollerTest, DISABLED_InstructionRuntime) {
     clocktroller->WaitForThreads();
     clock_t stop = clock();
 
-    EXPECT_EQ(((float)4 * numInstructions) /  8388000, ((float)stop - start) / CLOCKS_PER_SEC);
+    EXPECT_EQ(((float)clock_cycles * numInstructions) /  8388000, ((float)stop - start) / CLOCKS_PER_SEC);
 }
 
 
