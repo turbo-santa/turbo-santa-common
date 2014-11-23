@@ -1036,8 +1036,7 @@ int LoadRR8BitAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   unsigned char* reg1 = (unsigned char*)opcode.reg1;
-  unsigned short* reg2 = opcode.reg2;
-  *reg1 = context->memory_mapper->Read(*reg2);
+  *reg1 = context->memory_mapper->Read(*opcode.reg2);
   return instruction_ptr + 1;
 }
 
