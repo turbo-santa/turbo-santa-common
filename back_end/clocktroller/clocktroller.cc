@@ -1,4 +1,3 @@
-#include <thread>
 #include <chrono>
 #include <mutex>
 #include <time.h>
@@ -16,12 +15,6 @@ static const double kClockRate = 8388000; // 8.388 MHz
 static const microseconds kZero(0);
 
 int MAX_INSTRUCTIONS; // TODO(Diego): get rid of this hack
-
-unsigned char* raw_rom;
-std::mutex execution_lock;
-std::thread handler_thread;
-std::thread clock_thread;
-unsigned int clock_cycles;
 
 void LaunchHandleLoop(Clocktroller* member) {
     member->HandleLoop();
