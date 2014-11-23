@@ -1168,9 +1168,12 @@ int LoadHLSP(handlers::ExecutorContext* context) {
 
 int LoadNNSP(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   MemoryMapper* memory_mapper = context->memory_mapper;
-  memory_mapper->Write(GetParameterValue(memory_mapper, instruction_ptr), context->cpu->rSP);
+  unsigned short address = GetParameterValue16(memory_mapper, instruction_ptr);
+  unsigned char lsb = (unsigned char)(0x00FF & context->cpu->rSP);
+  unsigned char msb = (unsigned char)((0xFF00 & context->cpu->rSP) >> 8);
+  memory_mapper->Write(address++, lsb);
+  memory_mapper->Write(address, msb);
   return instruction_ptr + 2;
 }
 
