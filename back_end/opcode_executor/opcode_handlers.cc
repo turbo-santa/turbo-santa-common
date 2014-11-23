@@ -10,18 +10,6 @@ using opcodes::Opcode;
 using registers::GB_CPU;
 using memory::MemoryMapper;
 
-MemoryMapper* mem_map;
-
-// unsigned char* registers[] = { &cpu.bc_struct.rB, &cpu.bc_struct.rC, &cpu.de_struct.rD,
-//   &cpu.de_struct.rE, &cpu.hl_struct.rH, &cpu.hl_struct.rL, (unsigned char*) &cpu.rHL, &cpu.flag_struct.rA };
-// unsigned short shortRegs[] = { cpu.rBC, cpu.rDE, cpu.rHL, cpu.rSP, cpu.rAF };
-
-// unsigned char* GetRegister(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
-//   unsigned char opcode = rom[instruction_ptr];
-//   unsigned char register_index = opcode - opcode_name;
-//   return registers[register_index];
-// }
-
 unsigned short* GetRegister16(MemoryMapper* memory_mapper, int instruction_ptr, unsigned char, GB_CPU* cpu) {
   unsigned char opcode = memory_mapper->Read(instruction_ptr);
   unsigned char register_index = (opcode >> 4);
@@ -40,12 +28,6 @@ unsigned short* GetRegister16(MemoryMapper* memory_mapper, int instruction_ptr, 
       return &cpu->rBC;
   }
 }
-
-// unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned char opcode_name) {
-//   unsigned char opcode = rom[instruction_ptr];
-//   unsigned char register_index = opcode - opcode_name;
-//   return *registers[register_index];
-// }
 
 unsigned short GetRegisterValue16(MemoryMapper* memory_mapper, int instruction_ptr, unsigned char, GB_CPU* cpu) {
   unsigned short shortRegs[] = { cpu->rBC, cpu->rDE, cpu->rHL, cpu->rSP, cpu->rAF };
@@ -148,13 +130,6 @@ int LoadFromA16Bit(handlers::ExecutorContext* context) {
   unsigned char* reg = (unsigned char*) opcode->reg1;
   *reg = *opcode->reg2;
   return instruction_ptr + 2;
-}
-
-// TODO(Brendan): I am pretty sure I am missing something here. It does not
-// make any sense to load a value from A to an immediate.
-int LoadImediateFromA16Bit(handlers::ExecutorContext* context) {
-  Opcode opcode = *context->opcode;
-  return -1;
 }
 
 // ALU.
