@@ -1538,6 +1538,12 @@ TEST_F(OpcodeHandlersTest, SCF) {
   EXPECT_REGISTER({{Register::FC, 1}, {Register::FN, 0}, {Register::FZ, 1}, {Register::FH, 0}});
 }
   
+TEST_F(OpcodeHandlersTest, NOP) {
+  SetRegisterState({{Register::FC, 0}, {Register::FN, 1}, {Register::FZ, 1}, {Register::FH, 1}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x00)));
+  EXPECT_REGISTER({{Register::FC, 0}, {Register::FN, 1}, {Register::FZ, 1}, {Register::FH, 1}});
+}
+  
 // End Miscellaneous
   
 TEST_F(OpcodeHandlersTest, Call) {
