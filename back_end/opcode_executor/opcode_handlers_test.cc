@@ -661,6 +661,38 @@ TEST_F(OpcodeHandlersTest, PushHL) {
   EXPECT_REGISTER({{Register::SP, 0xDFFE}, {Register::HL, 0x1234}});
 }
   
+TEST_F(OpcodeHandlersTest, PopAF) {
+  SetRegisterState({{Register::AF, 0x1111}, {Register::SP, 0xDFEE}});
+  SetMemoryState({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
+  EXPECT_EQ(12, ExecuteInstruction(0xF1));
+  EXPECT_MEMORY({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
+  EXPECT_REGISTER({{Register::AF, 0x5530}, {Register::SP, 0xDFF0}});
+}
+
+TEST_F(OpcodeHandlersTest, PopBC) {
+  SetRegisterState({{Register::BC, 0x1111}, {Register::SP, 0xDFEE}});
+  SetMemoryState({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
+  EXPECT_EQ(12, ExecuteInstruction(0xC1));
+  EXPECT_MEMORY({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
+  EXPECT_REGISTER({{Register::BC, 0x5530}, {Register::SP, 0xDFF0}});
+}
+
+TEST_F(OpcodeHandlersTest, PopDE) {
+  SetRegisterState({{Register::DE, 0x1111}, {Register::SP, 0xDFEE}});
+  SetMemoryState({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
+  EXPECT_EQ(12, ExecuteInstruction(0xD1));
+  EXPECT_MEMORY({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
+  EXPECT_REGISTER({{Register::DE, 0x5530}, {Register::SP, 0xDFF0}});
+}
+
+TEST_F(OpcodeHandlersTest, PopHL) {
+  SetRegisterState({{Register::HL, 0x1111}, {Register::SP, 0xDFEE}});
+  SetMemoryState({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
+  EXPECT_EQ(12, ExecuteInstruction(0xE1));
+  EXPECT_MEMORY({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
+  EXPECT_REGISTER({{Register::HL, 0x5530}, {Register::SP, 0xDFF0}});
+}
+  
 // End 16-bit load tests
 
 // Begin tests for 8-bit ALU
