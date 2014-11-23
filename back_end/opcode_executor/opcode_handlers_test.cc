@@ -1,3 +1,5 @@
+#include "back_end/config.h"
+
 #include <vector>
 #include "back_end/opcode_executor/opcode_handlers.h"
 #include "back_end/opcode_executor/opcode_executor.h"
@@ -538,7 +540,6 @@ TEST_F(OpcodeHandlersTest, LDMemCA) {
   EXPECT_MEMORY({{0xFF0F, 0x02}});
 }
  
-// LDD tests
 
 TEST_F(OpcodeHandlersTest, LoadDecAHL) {
   SetRegisterState({{Register::A, 0x03}, {Register::HL, 0xC015}});
@@ -1672,6 +1673,6 @@ TEST_F(OpcodeHandlersTest, Interrupt) {
   // TODO(Brendan): Should also have assertions for the state of the interrupt
   // flags.
 }
-  
+
 } // namespace handlers
 } // namespace back_end

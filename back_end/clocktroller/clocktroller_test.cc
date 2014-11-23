@@ -1,3 +1,5 @@
+#include "back_end/config.h"
+
 #include "clocktroller_test.h"
 #include "clocktroller.h"
 #include "back_end/opcode_executor/registers.h"
@@ -38,7 +40,8 @@ TEST_F(ClocktrollerTest, ExecuteInstructions) {
          0xC6, 0x04, // ADD A, 0x04
         0x94}       // SUB H
     }});
-    
+  
+    // TODO(Diego): Do not do this!!!! This should be wrapped in a unique_ptr!!!
     Clocktroller* clocktroller = new Clocktroller(nullptr, 3);
     LOG(INFO) << "Created new clocktroller";
     clocktroller->executor = parser_;

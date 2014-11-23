@@ -10,10 +10,10 @@ AC_LANG([C++])
 
 # CXX='g++-4.8'
 CPPFLAGS='-I${top_srcdir} -I${top_srcdir}/third_party/gtest/include'
-CXXFLAGS='-std=c++11'
+CXXFLAGS='-std=c++11 -O2' # -pg for profiling.
 CFLAGS=''
 LDFLAGS='-L/usr/local/lib'
-LIBS='-lglog'
+LIBS='-lglog -lncurses'
 
 # Checks for programs.
 AC_PROG_CXX([g++-4.8 g++])
@@ -44,6 +44,7 @@ AC_CHECK_FUNCS([dup2 fchdir getcwd getpagesize gettimeofday memset mkdir munmap 
 
 AC_CONFIG_FILES([Makefile
                  back_end/Makefile
+                 back_end/graphics/Makefile
                  back_end/memory/Makefile
                  back_end/opcode_executor/Makefile
                  back_end/clocktroller/Makefile
