@@ -1151,11 +1151,19 @@ int LoadSPHL(handlers::ExecutorContext* context) {
 int LoadHLSP(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  context->cpu->rHL = context->cpu->rSP + (signed) GetParameterValue(context->memory_mapper, instruction_ptr);
+  signed char val = (signed) GetParameterValue(context->memory_mapper, instruction_ptr);
+  if (val < 0) {
+    context->cpu->flag_struct.rF.H = DoesHalfBorrow8(context->cpu->rSP, val);
+    context->cpu->flag_struct.rF.C = DoesBorrow8(context->cpu->rSP, val);
+  } else {
+    context->cpu->flag_struct.rF.H = DoesHalfCarry8(context->cpu->rSP, val);
+    context->cpu->flag_struct.rF.C = DoesCarry8(context->cpu->rSP, val);
+  }
+  context->cpu->rHL = context->cpu->rSP + val;
   context->cpu->flag_struct.rF.Z = 0;
   SetNFlag(false, context->cpu);
 
-  return instruction_ptr + 2;
+  return instruction_ptr + 1;
 }
 
 int LoadNNSP(handlers::ExecutorContext* context) {

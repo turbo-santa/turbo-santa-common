@@ -565,7 +565,11 @@ TEST_F(OpcodeHandlersTest, LoadSPHL) {
   EXPECT_REGISTER({{Register::SP, 0x1234}, {Register::HL, 0x1234}});
 }
   
-  
+TEST_F(OpcodeHandlersTest, LoadSPN) {
+  SetRegisterState({{Register::SP, 0x334C}, {Register::HL, 0x1234}});
+  EXPECT_EQ(12, ExecuteInstruction(0xF8, static_cast<unsigned char>(0x48)));
+  EXPECT_REGISTER({{Register::SP, 0x334C}, {Register::HL, 0x3394}, {Register::FZ, 0}, {Register::FN, 0}, {Register::FH, 1}, {Register::FC, 0}});
+}
 // End 16-bit load tests
 
 // Begin tests for 8-bit ALU
