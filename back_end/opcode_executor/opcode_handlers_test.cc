@@ -467,6 +467,35 @@ TEST_F(OpcodeHandlersTest, LoadDecHLA) {
 
 // End 8-bit load tests
 
+// Begin 16-bit load tests
+  
+TEST_F(OpcodeHandlersTest, LoadBCNN) {
+  SetRegisterState({{Register::BC, 0x1040}});
+  EXPECT_EQ(12, ExecuteInstruction(0x01, static_cast<unsigned short>(0x3412)));
+  EXPECT_REGISTER({{Register::BC, 0x1234}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadDENN) {
+  SetRegisterState({{Register::DE, 0x1040}});
+  EXPECT_EQ(12, ExecuteInstruction(0x11, static_cast<unsigned short>(0x3412)));
+  EXPECT_REGISTER({{Register::DE, 0x1234}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHLNN) {
+  SetRegisterState({{Register::HL, 0x1040}});
+  EXPECT_EQ(12, ExecuteInstruction(0x21, static_cast<unsigned short>(0x3412)));
+  EXPECT_REGISTER({{Register::HL, 0x1234}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadSPNN) {
+  SetRegisterState({{Register::SP, 0x1040}});
+  EXPECT_EQ(12, ExecuteInstruction(0x31, static_cast<unsigned short>(0x3412)));
+  EXPECT_REGISTER({{Register::SP, 0x1234}});
+}
+  
+  
+  
+// End 16-bit load tests
 
 // Begin tests for 8-bit ALU
 
