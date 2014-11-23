@@ -81,6 +81,7 @@ int SRL(handlers::ExecutorContext* context);
 
 // Bit operators
 int Bit(handlers::ExecutorContext* context);
+int BitAddress(handlers::ExecutorContext* context);
 int Set(handlers::ExecutorContext* context);
 int Res(handlers::ExecutorContext* context);
 

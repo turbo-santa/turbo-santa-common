@@ -12,32 +12,6 @@ using opcodes::Opcode;
 using registers::GB_CPU;
 using memory::MemoryMapper;
 
-unsigned short* GetRegister16(MemoryMapper* memory_mapper, int instruction_ptr, unsigned char, GB_CPU* cpu) {
-  unsigned char opcode = memory_mapper->Read(instruction_ptr);
-  unsigned char register_index = (opcode >> 4);
-  switch (register_index) {
-    case 0:
-      return &cpu->rBC;
-    case 1:
-      return &cpu->rDE;
-    case 2:
-      return &cpu->rHL;
-    case 3:
-      return &cpu->rSP;
-    case 4:
-      return &cpu->rAF;
-    default:
-      return &cpu->rBC;
-  }
-}
-
-unsigned short GetRegisterValue16(MemoryMapper* memory_mapper, int instruction_ptr, unsigned char, GB_CPU* cpu) {
-  unsigned short shortRegs[] = { cpu->rBC, cpu->rDE, cpu->rHL, cpu->rSP, cpu->rAF };
-  unsigned char opcode = memory_mapper->Read(instruction_ptr);
-  unsigned char register_index = (opcode >> 4);
-  return shortRegs[register_index];
-}
-
 unsigned char GetParameterValue(MemoryMapper* memory_mapper, int instruction_ptr) {
   return memory_mapper->Read(instruction_ptr);
 }
@@ -98,14 +72,6 @@ int LoadToA8BitLiteral(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = GetParameterValue(context->memory_mapper, instruction_ptr);
   return instruction_ptr + 1;
-}
-
-// See comment below about loading to an immediate.
-int LoadToA16Bit(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rA = GetRegisterValue16(context->memory_mapper, instruction_ptr, opcode.opcode_name, context->cpu);
-  return instruction_ptr;
 }
 
 int LoadToA16BitLiteral(handlers::ExecutorContext* context) {
@@ -489,10 +455,9 @@ int Dec8BitAddress(handlers::ExecutorContext* context) {
 int Add16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  short value = GetRegisterValue16(context->memory_mapper, instruction_ptr, opcode.opcode_name, context->cpu);
-  context->cpu->flag_struct.rF.H = DoesHalfCarry16(context->cpu->rHL, value);
-  context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->rHL, value);
-  context->cpu->rHL += value;
+  context->cpu->flag_struct.rF.H = DoesHalfCarry16(context->cpu->rHL, *opcode.reg1);
+  context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->rHL, *opcode.reg1);
+  context->cpu->rHL += *opcode.reg1;
   SetNFlag(false, context->cpu);
   return instruction_ptr;
 }
@@ -530,8 +495,7 @@ int Inc16Bit(handlers::ExecutorContext* context) {
 int Dec16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned short* reg = GetRegister16(context->memory_mapper, instruction_ptr, opcode.opcode_name, context->cpu);
-  *reg -= 1;
+  *opcode.reg1 -= 1;
   return instruction_ptr;
 }
 
@@ -783,6 +747,16 @@ int Bit(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
+  int BitAddress(handlers::ExecutorContext* context) {
+    int instruction_ptr = *context->instruction_ptr;
+    unsigned char val = context->memory_mapper->Read(context->cpu->rHL);
+    unsigned char bit = NthBit(val, context->magic);
+    context->cpu->flag_struct.rF.H = 1;
+    SetZFlag(bit, context->cpu);
+    SetNFlag(false, context->cpu);
+    return instruction_ptr;
+  }
+  
 int Set(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
