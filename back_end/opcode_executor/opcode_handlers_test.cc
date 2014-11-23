@@ -1520,6 +1520,12 @@ TEST_F(OpcodeHandlersTest, DAA) {
   EXPECT_REGISTER({{Register::A, 0x50}});
 }
   
+TEST_F(OpcodeHandlersTest, CPL) {
+  SetRegisterState({{Register::A, 0x44}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x2F)));
+  EXPECT_REGISTER({{Register::A, 0xBB}, {Register::FN, 1}, {Register::FH, 1}});
+}
+  
 // End Miscellaneous
   
 TEST_F(OpcodeHandlersTest, Call) {
