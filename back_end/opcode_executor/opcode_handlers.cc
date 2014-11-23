@@ -41,10 +41,6 @@ unsigned char GetParameterValue(MemoryMapper* memory_mapper, int instruction_ptr
 }
 
 unsigned short GetParameterValue16(MemoryMapper* memory_mapper, int instruction_ptr) {
-  return (((short) memory_mapper->Read(instruction_ptr + 1)) << 8) | (short) memory_mapper->Read(instruction_ptr + 2);
-}
-
-unsigned short GetParameterValue16LS(MemoryMapper* memory_mapper, int instruction_ptr) {
   return (((short) memory_mapper->Read(instruction_ptr + 2)) << 8) | (short) memory_mapper->Read(instruction_ptr + 1);
 }
 
@@ -1047,7 +1043,7 @@ int LoadAN(handlers::ExecutorContext* context) {
 int LoadAN16BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned short address = GetParameterValue16LS(context->memory_mapper, instruction_ptr);
+  unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
   context->cpu->flag_struct.rA = context->memory_mapper->Read(address);
   return instruction_ptr + 3;
 }
@@ -1075,7 +1071,7 @@ int LoadNAAddress(handlers::ExecutorContext* context) {
   
 int LoadNA16BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  unsigned short address = GetParameterValue16LS(context->memory_mapper, instruction_ptr);
+  unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
   context->memory_mapper->Write(address, context->cpu->flag_struct.rA);
   return instruction_ptr + 3;
 }
