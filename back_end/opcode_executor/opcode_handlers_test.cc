@@ -1545,6 +1545,24 @@ TEST_F(OpcodeHandlersTest, NOP) {
 }
   
 // End Miscellaneous
+
+// Begin rotates and shift tests
+
+TEST_F(OpcodeHandlersTest, RLCA) {
+  SetRegisterState({{Register::A, 0b10010101}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x07)));
+  EXPECT_REGISTER({{Register::A, 0b00101010}, {Register::FC, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, RLA) {
+  SetRegisterState({{Register::A, 0b00110010}, {Register::FC, 1}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x17)));
+  EXPECT_REGISTER({{Register::A, 0b01100101}, {Register::FC, 0}});
+}
+
+
+
+// End rotate tests
   
 TEST_F(OpcodeHandlersTest, Call) {
   SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1234}});

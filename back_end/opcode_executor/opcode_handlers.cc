@@ -642,9 +642,10 @@ int RLCA(handlers::ExecutorContext* context) {
 int RLA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
+  unsigned char carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7);
   context->cpu->flag_struct.rA = context->cpu->flag_struct.rA << 1;
-  context->cpu->flag_struct.rA |= context->cpu->flag_struct.rF.C;
+  context->cpu->flag_struct.rA |= carry;
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
