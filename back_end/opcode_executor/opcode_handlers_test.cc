@@ -1635,6 +1635,47 @@ TEST_F(OpcodeHandlersTest, RLCnHL) {
   EXPECT_MEMORY({{0xC015, 0b00101010}});
 }
 
+TEST_F(OpcodeHandlersTest, RLnA) {
+  SetRegisterState({{Register::A, 0b00010101}, {Register::FC, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB17)));
+  EXPECT_REGISTER({{Register::A, 0b00101011}, {Register::FC, 0}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLnB) {
+  SetRegisterState({{Register::B, 0b00010101}, {Register::FC, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB10)));
+  EXPECT_REGISTER({{Register::B, 0b00101011}, {Register::FC, 0}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLnC) {
+  SetRegisterState({{Register::C, 0b00010101}, {Register::FC, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB11)));
+  EXPECT_REGISTER({{Register::C, 0b00101011}, {Register::FC, 0}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLnD) {
+  SetRegisterState({{Register::D, 0b00010101}, {Register::FC, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB12)));
+  EXPECT_REGISTER({{Register::D, 0b00101011}, {Register::FC, 0}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLnE) {
+  SetRegisterState({{Register::E, 0b00010101}, {Register::FC, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB13)));
+  EXPECT_REGISTER({{Register::E, 0b00101011}, {Register::FC, 0}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLnH) {
+  SetRegisterState({{Register::H, 0b00010101}, {Register::FC, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB14)));
+  EXPECT_REGISTER({{Register::H, 0b00101011}, {Register::FC, 0}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLnL) {
+  SetRegisterState({{Register::L, 0b00010101}, {Register::FC, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB15)));
+  EXPECT_REGISTER({{Register::L, 0b00101011}, {Register::FC, 0}, {Register::FZ, 0}});
+}
 
 TEST_F(OpcodeHandlersTest, RLnHL) {
   SetRegisterState({{Register::HL, 0xC015}, {Register::FC, 1}});
@@ -1642,6 +1683,48 @@ TEST_F(OpcodeHandlersTest, RLnHL) {
   EXPECT_EQ(16, ExecuteInstruction(static_cast<unsigned short>(0xCB16)));
   EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FC, 1}, {Register::FZ, 0}});
   EXPECT_MEMORY({{0xC015, 0b00101011}});
+}
+
+TEST_F(OpcodeHandlersTest, RRCnA) {
+  SetRegisterState({{Register::A, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xCB0F)));
+  EXPECT_REGISTER({{Register::A, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RRCnB) {
+  SetRegisterState({{Register::B, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xCB08)));
+  EXPECT_REGISTER({{Register::B, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RRCnC) {
+  SetRegisterState({{Register::C, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xCB09)));
+  EXPECT_REGISTER({{Register::C, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RRCnD) {
+  SetRegisterState({{Register::D, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xCB0A)));
+  EXPECT_REGISTER({{Register::D, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RRCnE) {
+  SetRegisterState({{Register::E, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xCB0B)));
+  EXPECT_REGISTER({{Register::E, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RRCnH) {
+  SetRegisterState({{Register::H, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xCB0C)));
+  EXPECT_REGISTER({{Register::H, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RRCnL) {
+  SetRegisterState({{Register::L, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xCB0D)));
+  EXPECT_REGISTER({{Register::L, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 

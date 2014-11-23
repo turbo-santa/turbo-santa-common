@@ -678,9 +678,10 @@ int RRCA(handlers::ExecutorContext* context) {
 int RRA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
+  unsigned char carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 0);
   context->cpu->flag_struct.rA = context->cpu->flag_struct.rA >> 1;
-  context->cpu->flag_struct.rA |= (((unsigned char) context->cpu->flag_struct.rF.C) << 7);
+  context->cpu->flag_struct.rA |= (carry << 7);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
@@ -716,9 +717,10 @@ int RL(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char* reg = (unsigned char*) opcode->reg1;
+  unsigned char carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 7);
   *reg = *reg << 1;
-  *reg |= context->cpu->flag_struct.rF.C;
+  *reg |= carry;
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
@@ -728,12 +730,11 @@ int RL(handlers::ExecutorContext* context) {
 int RLAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-
-
   unsigned char value = context->memory_mapper->Read(*opcode->reg1);
+  unsigned char carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(value, 7);
   value = value << 1;
-  value |= context->cpu->flag_struct.rF.C;
+  value |= carry;
   context->memory_mapper->Write(*opcode->reg1, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
@@ -757,9 +758,10 @@ int RR(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char* reg = (unsigned char*) opcode->reg1;
+  unsigned char carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 0);
   *reg = *reg >> 1;
-  *reg |= (((unsigned char) context->cpu->flag_struct.rF.C) << 7);
+  *reg |= (carry << 7);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
