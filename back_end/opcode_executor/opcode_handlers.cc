@@ -59,7 +59,7 @@ unsigned char GetParameterValue(MemoryMapper* memory_mapper, int instruction_ptr
 }
 
 unsigned short GetParameterValue16(MemoryMapper* memory_mapper, int instruction_ptr) {
-  return (((short) memory_mapper->Read(instruction_ptr + 1)) << 8) | (short) memory_mapper->Read(instruction_ptr + 2);
+  return (((short) memory_mapper->Read(instruction_ptr + 2)) << 8) | (short) memory_mapper->Read(instruction_ptr + 1);
 }
 
 unsigned short GetParameterValue16LS(MemoryMapper* memory_mapper, int instruction_ptr, unsigned char) {
@@ -680,7 +680,7 @@ int Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char bit = NthBit(*reg, GetParameterValue(context->memory_mapper, instruction_ptr));
+  unsigned char bit = NthBit(*reg, context->magic);
   context->cpu->flag_struct.rF.H = 1;
   SetZFlag(bit, context->cpu);
   SetNFlag(false, context->cpu);

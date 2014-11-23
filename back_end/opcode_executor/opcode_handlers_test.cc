@@ -797,6 +797,7 @@ TEST_F(OpcodeHandlersTest, Call) {
   EXPECT_MEMORY({{0xfffe, 0x35}, {0xfffd, 0x12}});
 }
 
+<<<<<<< Updated upstream
 TEST_F(OpcodeHandlersTest, LoadAndRunROM) {
   SetRegisterState({{Register::PC, 0x0100}, {Register::B, 0x01}});
   LoadAndRunROM({{0x0100, {
@@ -823,6 +824,13 @@ TEST_F(OpcodeHandlersTest, Interrupt) {
   // TODO(Brendan): Should also have assertions for the state of the interrupt
   // flags.
 }
+=======
+// TEST_F(OpcodeHandlersTest, Interrupt) {
+//   SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x0100}, {Register::B, 0x01}});
+//   ExecuteInstruction(0xfb); // EI (Set IME).
+//   SetMemoryState({{0xffff, 0b00011111}, {0xff0f, 0b00000001}});
+// }
+>>>>>>> Stashed changes
 
 } // namespace handlers
 } // namespace back_end

@@ -45,19 +45,27 @@ unsigned int OpcodeExecutor::ReadInstruction() {
   HandleInterrupts(); // Before a fetch we must check for and handle interrupts.
   unsigned short instruction_ptr = cpu_.rPC;
   unsigned short opcode = memory_mapper_.Read(instruction_ptr);
+  instruction_ptr++;
+  unsigned short next_byte = memory_mapper_.Read(instruction_ptr);
 
-  unsigned short opcode_msb = memory_mapper_.Read(instruction_ptr + 1);
-  
-  if (opcode_msb == 0xCB || (opcode_msb == 0x10 && opcode == 0x00)) {
+  // This is jank.
+  unsigned char magic = 0;
+  if (opcode == 0xCB && (next_byte & 0b11000000) > 0) {
     instruction_ptr++;
-    opcode = opcode_msb << 8 | opcode;
+    magic = (0b00111000 & next_byte) >> 3;
+    opcode = (opcode << 8) | (next_byte & 0b11000111);
+  } else if (opcode == 0xCB) {
+    opcode = (opcode << 8) | next_byte;
+  } else if (next_byte == 0x10 && opcode == 0x00) {
+    instruction_ptr++;
+    opcode = next_byte << 8 | opcode;
   }
   cpu_.rPC = instruction_ptr;
 
   Opcode opcode_struct;
   auto opcode_iter = opcode_map.find(opcode);
   if (opcode_iter == opcode_map.end()) {
-    LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << " does not exist.";
+    LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
   } else {
     opcode_struct = opcode_iter->second;
   }
@@ -66,7 +74,8 @@ unsigned int OpcodeExecutor::ReadInstruction() {
                           &cpu_.rPC,
                           &opcode_struct,
                           &memory_mapper_,
-                          &cpu_);
+                          &cpu_,
+                          magic);
   cpu_.rPC = opcode_struct.handler(&context);
 
   graphics_controller_.Tick(opcode_struct.clock_cycles);

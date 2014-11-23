@@ -53,25 +53,29 @@ struct ExecutorContext {
                   unsigned short* instruction_ptr_, 
                   opcodes::Opcode* opcode_, 
                   memory::MemoryMapper* memory_mapper_, 
-                  registers::GB_CPU* cpu_) : 
+                  registers::GB_CPU* cpu_,
+                  unsigned char magic_) : 
       interrupt_master_enable(interrupt_master_enable_),
       instruction_ptr(instruction_ptr_),
       opcode(opcode_),
       memory_mapper(memory_mapper_), 
-      cpu(cpu_) {}
+      cpu(cpu_),
+      magic(magic_) {}
 
   ExecutorContext(ExecutorContext* context) : 
       interrupt_master_enable(context->interrupt_master_enable),
       instruction_ptr(context->instruction_ptr),
       opcode(context->opcode),
       memory_mapper(context->memory_mapper),
-      cpu(context->cpu) {}
+      cpu(context->cpu),
+      magic(context->magic) {}
 
   bool* interrupt_master_enable;
   unsigned short* instruction_ptr;
   opcodes::Opcode* opcode;
   memory::MemoryMapper* memory_mapper;
   registers::GB_CPU* cpu;
+  unsigned char magic;
 };
 
 
