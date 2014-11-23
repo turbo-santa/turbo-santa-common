@@ -4,6 +4,7 @@
 *.zip
 *.cache
 *.status
+*.trs
 *.txt
 test
 test_bin
@@ -21,3 +22,5 @@ Makefile.in
 **/.deps
 .deps
 *.bin
+compile
+test-driver
