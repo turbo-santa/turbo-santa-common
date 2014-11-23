@@ -2,6 +2,7 @@
 #define TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_
 
 #include <atomic>
+#include <thread>
 
 namespace back_end {
 namespace handlers {
@@ -28,7 +29,11 @@ class Clocktroller {
         void ClockLoop();
         bool should_run = 1;
         std::atomic<bool> start_;
-        
+        unsigned char* raw_rom;
+        std::mutex execution_lock;
+        std::thread handler_thread;
+        std::thread clock_thread;
+        unsigned int clock_cycles;
 
     friend void LaunchHandleLoop(Clocktroller*);
     friend void LaunchClockLoop(Clocktroller*);
