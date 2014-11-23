@@ -493,6 +493,11 @@ TEST_F(OpcodeHandlersTest, LoadSPNN) {
   EXPECT_REGISTER({{Register::SP, 0x1234}});
 }
   
+TEST_F(OpcodeHandlersTest, LoadSPHL) {
+  SetRegisterState({{Register::SP, 0x3344}, {Register::HL, 0x1234}});
+  EXPECT_EQ(8, ExecuteInstruction(0xF9));
+  EXPECT_REGISTER({{Register::SP, 0x1234}, {Register::HL, 0x1234}});
+}
   
   
 // End 16-bit load tests
