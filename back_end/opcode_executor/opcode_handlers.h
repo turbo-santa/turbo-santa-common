@@ -16,24 +16,34 @@ void PushRegister(memory::MemoryMapper* memory_mapper,
 
 // 8 Bit ALU
 int Add8Bit(handlers::ExecutorContext* context);
+int Add8BitAddress(handlers::ExecutorContext* context);
 int Add8BitLiteral(handlers::ExecutorContext* context);
 int ADC8Bit(handlers::ExecutorContext* context);
+int ADC8BitAddress(handlers::ExecutorContext* context);
 int ADC8BitLiteral(handlers::ExecutorContext* context);
 int Sub8Bit(handlers::ExecutorContext* context);
+int Sub8BitAddress(handlers::ExecutorContext* context);
 int Sub8BitLiteral(handlers::ExecutorContext* context);
 int SBC8Bit(handlers::ExecutorContext* context);
+int SBC8BitAddress(handlers::ExecutorContext* context);
 int SBC8BitLiteral(handlers::ExecutorContext* context);
 int And8Bit(handlers::ExecutorContext* context);
+int And8BitAddress(handlers::ExecutorContext* context);
 int And8BitLiteral(handlers::ExecutorContext* context);
 int Or8Bit(handlers::ExecutorContext* context);
+int Or8BitAddress(handlers::ExecutorContext* context);
 int Or8BitLiteral(handlers::ExecutorContext* context);
 int Xor8Bit(handlers::ExecutorContext* context);
+int Xor8BitAddress(handlers::ExecutorContext* context);
 int Xor8BitLiteral(handlers::ExecutorContext* context);
 int Cp8Bit(handlers::ExecutorContext* context);
+int Cp8BitAddress(handlers::ExecutorContext* context);
 int Cp8BitLiteral(handlers::ExecutorContext* context);
 int Inc8Bit(handlers::ExecutorContext* context);
+int Inc8BitAddress(handlers::ExecutorContext* context);
 int Dec8Bit(handlers::ExecutorContext* context);
-
+int Dec8BitAddress(handlers::ExecutorContext* context);
+  
 // 16 Bit ALU
 int Add16Bit(handlers::ExecutorContext* context);
 int AddSPLiteral(handlers::ExecutorContext* context);
@@ -92,9 +102,12 @@ int ReturnInterrupt(handlers::ExecutorContext* context);
 // 8-Bit Loads
 int LoadN(handlers::ExecutorContext* context);
 int LoadRR8Bit(handlers::ExecutorContext* context);
+int LoadRR8BitAddress(handlers::ExecutorContext* context);
+int LoadRR8BitIntoAddress(handlers::ExecutorContext* context);
 int LoadRR16Bit(handlers::ExecutorContext* context);
 int LoadAN(handlers::ExecutorContext* context);
 int LoadNA(handlers::ExecutorContext* context);
+int LoadNAAddress(handlers::ExecutorContext* context);
 int LoadAC(handlers::ExecutorContext* context);
 int LoadCA(handlers::ExecutorContext* context);
 int LoadDecAHL(handlers::ExecutorContext* context);
