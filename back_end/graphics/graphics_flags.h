@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_FLAGS_H_
 #define TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_FLAGS_H_
 
+#include "back_end/config.h"
+
 #include <glog/logging.h>
 
 #include "back_end/memory/flags.h"

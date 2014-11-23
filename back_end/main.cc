@@ -1,3 +1,4 @@
+#include "back_end/config.h"
 #include <curses.h>
 
 #include <vector>

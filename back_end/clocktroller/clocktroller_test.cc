@@ -1,3 +1,5 @@
+#include "back_end/config.h"
+
 #include "clocktroller_test.h"
 #include "clocktroller.h"
 #include "back_end/opcode_executor/registers.h"

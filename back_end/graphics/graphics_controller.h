@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_CONTROLLER_H_
 #define TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_CONTROLLER_H_
 
+#include "back_end/config.h"
+
 #include <vector>
 
 #include "back_end/graphics/graphics_flags.h"

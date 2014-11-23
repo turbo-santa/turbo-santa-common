@@ -1,5 +1,7 @@
 #include "back_end/graphics/graphics_controller.h"
 
+#include "back_end/config.h"
+
 namespace back_end {
 namespace graphics {
 

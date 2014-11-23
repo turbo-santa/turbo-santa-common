@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_GRAPHICS_SCREEN_H_
 #define TURBO_SANTA_COMMON_BACK_END_GRAPHICS_SCREEN_H_
 
+#include "back_end/config.h"
+
 #include <vector>
 #include <glog/logging.h>
 

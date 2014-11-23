@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_MAPPER_H_
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_MAPPER_H_
 
+#include "back_end/config.h"
+
 #include <memory>
 
 #include "back_end/graphics/graphics_flags.h"
