@@ -547,30 +547,32 @@ int Swap(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.C = 0;
   return instruction_ptr;
 }
+  
+int SwapAddress(handlers::ExecutorContext* context) {
+  unsigned char val = context->memory_mapper->Read(*context->opcode->reg1);
+  unsigned char swapVal = (val << 4) | (val >> 4);
+  context->memory_mapper->Write(*context->opcode->reg1, swapVal);
+  SetZFlag(swapVal, context->cpu);
+  SetNFlag(false, context->cpu);
+  context->cpu->flag_struct.rF.H = 0;
+  context->cpu->flag_struct.rF.C = 0;
+  return *context->instruction_ptr;
+}
 
 int DAA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned char upper = context->cpu->flag_struct.rA >> 4;
-  unsigned char lower = context->cpu->flag_struct.rA & 0x0F;
-  unsigned char c = context->cpu->flag_struct.rF.C;
-  unsigned char h = context->cpu->flag_struct.rF.H;
-  if ((!c && upper < 0x9  && lower > 0x9 && !h) || (!c && upper < 0xA && lower < 0x4 && h)) {
-    context->cpu->flag_struct.rA += 0x06;
-  } else if ((!c && upper > 0x9 && lower < 0xA && !h) || (c && upper < 0x3 && lower < 0xA && !h)) {
-    context->cpu->flag_struct.rA += 0x60;
-    context->cpu->flag_struct.rF.C = 1;
-  } else if ((!c && upper > 0x8 && lower > 0x9 && !h) || (!c && upper > 0x9 && lower < 0x4 && h)
-             || (c && upper < 0x3 && lower > 0x9 && !h) || (c && upper < 0x4 && lower < 0x4 && h)) {
-    context->cpu->flag_struct.rA += 0x66;
-    context->cpu->flag_struct.rF.C = 1;
-  } else if (!c && upper < 0x9 && lower > 0x5 && h) {
-    context->cpu->flag_struct.rA += 0xFA;
-  } else if (c && upper > 0x6 && lower < 0xA && !h) {
-    context->cpu->flag_struct.rA += 0xA0;
-  } else if (c && upper > 0x5 && lower > 0x5 && h) {
-    context->cpu->flag_struct.rA += 0x9A;
+
+  unsigned char mul = 0x6;
+  unsigned char sum = context->cpu->flag_struct.rA;
+  unsigned char n = sum / 10;
+  while (n > 0) {
+    sum += n * mul;
+    n /= 10;
+    mul *= 0x0F;
   }
+  context->cpu->flag_struct.rF.C = context->cpu->flag_struct.rA > 0x64;
+  context->cpu->flag_struct.rA = sum;
   context->cpu->flag_struct.rF.H = 0;
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   return instruction_ptr;
@@ -652,9 +654,10 @@ int RLCA(handlers::ExecutorContext* context) {
 int RLA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
+  unsigned char carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7);
   context->cpu->flag_struct.rA = context->cpu->flag_struct.rA << 1;
-  context->cpu->flag_struct.rA |= context->cpu->flag_struct.rF.C;
+  context->cpu->flag_struct.rA |= carry;
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);

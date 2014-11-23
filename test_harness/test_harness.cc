@@ -80,6 +80,14 @@ unsigned int TestHarness::ExecuteInstruction(unsigned char instruction) {
   return parser_->ReadInstruction();
 }
 
+unsigned int TestHarness::ExecuteInstruction(unsigned short instruction) {
+  unsigned char lsb = (unsigned char)(0x00FF & instruction);
+  unsigned char msb = (unsigned char)((0xFF00 & instruction) >> 8);
+  parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), msb);
+  parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 1, lsb);
+  return parser_->ReadInstruction();
+}
+
 unsigned int TestHarness::ExecuteInstruction(unsigned char instruction, unsigned short value) {
     parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
     // TODO(Deigo): Make sure that we are actually MSB.

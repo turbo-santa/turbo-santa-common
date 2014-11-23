@@ -54,6 +54,7 @@ int Dec16Bit(handlers::ExecutorContext* context);
 
 // Miscelaneous
 int Swap(handlers::ExecutorContext* context);
+int SwapAddress(handlers::ExecutorContext* context);
 int DAA(handlers::ExecutorContext* context);
 int CPL(handlers::ExecutorContext* context);
 int CCF(handlers::ExecutorContext* context);
