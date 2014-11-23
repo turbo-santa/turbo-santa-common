@@ -1044,7 +1044,7 @@ int LoadAN(handlers::ExecutorContext* context) {
   return instruction_ptr + 1;
 }
 
-int LoadANAddress(handlers::ExecutorContext* context) {
+int LoadAN16BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   unsigned short address = GetParameterValue16LS(context->memory_mapper, instruction_ptr);
@@ -1052,7 +1052,7 @@ int LoadANAddress(handlers::ExecutorContext* context) {
   return instruction_ptr + 3;
 }
   
-int LoadANLiteral(handlers::ExecutorContext* context) {
+int LoadAN8BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = GetParameterValue(context->memory_mapper, instruction_ptr);
@@ -1062,11 +1062,7 @@ int LoadANLiteral(handlers::ExecutorContext* context) {
 int LoadNA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  if (opcode.opcode_name == 0xEA) {
-    // TODO: figure out what nn refers to.
-  } else {
-    *opcode.reg1 = context->cpu->flag_struct.rA;
-  }
+  *opcode.reg1 = (unsigned char)context->cpu->flag_struct.rA;
   return instruction_ptr + 1;
 }
 
@@ -1075,6 +1071,13 @@ int LoadNAAddress(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   context->memory_mapper->Write(*opcode.reg1, context->cpu->flag_struct.rA);
   return instruction_ptr + 1;
+}
+  
+int LoadNA16BitLiteral(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  unsigned short address = GetParameterValue16LS(context->memory_mapper, instruction_ptr);
+  context->memory_mapper->Write(address, context->cpu->flag_struct.rA);
+  return instruction_ptr + 3;
 }
 
 int LoadAC(handlers::ExecutorContext* context) {
