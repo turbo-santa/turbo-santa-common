@@ -17,17 +17,26 @@ class TerminalScreen : public Screen {
       for (int x = 0; x < ScreenRaster::kScreenWidth; x++) {
         unsigned char pixel_shade = raster.Get(y, x);
         char real_pixel;
-        if (pixel_shade < 64) {
+        if (pixel_shade <= 64) {
           real_pixel = ' ';
-        } else if (pixel_shade < 128) {
+        } else if (pixel_shade <= 128) {
           real_pixel = '.';
-        } else if (pixel_shade < 192) {
+        } else if (pixel_shade <= 192) {
           real_pixel = 'O';
         } else {
           real_pixel = '#';
         }
 
-        move(y, x);
+        // int actual_y = y * 2 * LINES / ScreenRaster::kScreenHeight - 20;
+        // if (actual_y < 0) {
+        //   actual_y = 0;
+        // }
+        // int actual_x = x * 2 * COLS / ScreenRaster::kScreenWidth - 170;
+        // if (actual_x < 0) {
+        //   actual_x = 0;
+        // }
+
+        move(y * LINES / ScreenRaster::kScreenHeight, x * COLS / ScreenRaster::kScreenWidth);
         addch(real_pixel);
       }
     }
@@ -36,7 +45,7 @@ class TerminalScreen : public Screen {
 };
 
 int main() {
-  // initscr();
+  initscr();
   TerminalScreen terminal_screen;
   std::vector<unsigned char> nintendo_logo = {
     0xce, 0xed, 0x66, 0x66, 0xcc, 0x0d, 0x00, 0x0b, 

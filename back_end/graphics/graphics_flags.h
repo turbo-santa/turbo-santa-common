@@ -100,7 +100,7 @@ class MonochromePalette : public memory::Flag {
 
   MonochromePalette(unsigned short address) : memory::Flag(address) {}
 
-  virtual Color lookup(unsigned char index) { return static_cast<Color>((0b00000011 << (index * 2)) & flag()); }
+  virtual Color lookup(unsigned char index) { return static_cast<Color>((flag() >> (index * 2)) & 0b00000011); }
 };
 
 class ObjectPalette : public MonochromePalette {

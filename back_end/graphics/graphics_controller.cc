@@ -1,6 +1,8 @@
+#include "back_end/config.h"
+
 #include "back_end/graphics/graphics_controller.h"
 
-#include "back_end/config.h"
+#include <ncurses.h>
 
 namespace back_end {
 namespace graphics {
@@ -93,6 +95,21 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
 void GraphicsController::Draw() {
   RenderLowPrioritySprites();
   RenderBackground();
+  // for (int y = 0; y < kScreenBufferSize; y++) {
+  //   for (int x = 0; x < kScreenBufferSize; x++) {
+  //     unsigned char pixel_shade = screen_buffer_[x + y * kScreenBufferSize];
+  //     char real_pixel;
+  //     if (pixel_shade != 0) {
+  //       real_pixel = '#';
+  //     } else {
+  //       real_pixel = ' ';
+  //     }
+
+  //     move(y * 3 * LINES / kScreenBufferSize - 10, x * 3 * COLS / kScreenBufferSize - 40);
+  //     addch(real_pixel);
+  //   }
+  // }
+  // refresh();
   RenderWindow();
   RenderHighPrioritySprites();
   WriteToScreen();
@@ -227,12 +244,25 @@ void GraphicsController::RenderTile(Tile* tile, unsigned char y_offset, unsigned
   for (int y = 0; y < Tile::kTileSize; y++) {
     for (int x = 0; x < Tile::kTileSize; x++) {
       unsigned char color_index = tile->Get(y, x);
-      // LOG(INFO) << "Color index is " << 0x00 + color_index;
+      if (color_index != 0) {
+        LOG(INFO) << "Color index is " << 0x00 + color_index;
+      }
       MonochromePalette::Color color = palette->lookup(color_index);
       if (color != MonochromePalette::NONE) {
-        // LOG(INFO) << "Color is " << std::dec << color;
+        if (color != 0) {
+          LOG(INFO) << "Color 0 is " << std::hex << palette->lookup(0);
+          LOG(INFO) << "Color 1 is " << std::hex << palette->lookup(1);
+          LOG(INFO) << "Color 2 is " << std::hex << palette->lookup(2);
+          LOG(INFO) << "Color 3 is " << std::hex << palette->lookup(3);
+          LOG(INFO) << "Color is " << std::dec << color;
+        }
         unsigned char realized_color = static_cast<unsigned char>(color) * (256 / 4);
-        // LOG(INFO) << "realized_color is " << std::dec << realized_color;
+        if (color != 0) {
+          LOG(INFO) << "realized_color is " << std::dec << 0x0000 + realized_color 
+                    << " being written to x: " << std::dec << x + x_offset << " y: " << std::dec << y + y_offset;
+//           move((y + y_offset) * 2 * LINES / kScreenBufferSize, (x + x_offset) * 2 * COLS / kScreenBufferSize);
+//           addch('#');
+        }
         screen_buffer_[(x + x_offset) + (y + y_offset) * kScreenBufferSize] = realized_color;
       }
     }
