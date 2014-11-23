@@ -68,6 +68,8 @@ class LYCoordinate: public memory::Flag {
   // LY is a READ ONLY register.
   // TODO(Brendan): Writing should reset the counter.
   virtual void Write(unsigned short, unsigned char) {}
+
+  virtual void set_flag(unsigned char value) { Flag::set_flag(value); }
 };
 
 // Specifies the Y coordinate to for which to set the cooincident bit in LCD STAT.

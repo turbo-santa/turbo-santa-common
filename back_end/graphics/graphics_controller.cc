@@ -103,6 +103,9 @@ void GraphicsController::WriteToScreen() {
   const int y_offset = graphics_flags()->scroll_y()->flag();
   const int x_offset = graphics_flags()->scroll_x()->flag();
   for (int y = 0; y < ScreenRaster::kScreenHeight; y++) {
+    // TODO(Brendan): This is a hack to get the boot ROM working. Graphics
+    // should probably have portions of code executed ever clock cycle.
+    graphics_flags()->ly_coordinate()->set_flag(0x90);
     for (int x = 0; x < ScreenRaster::kScreenWidth; x++) {
       raster.Set(y, x, screen_buffer_[(x + x_offset) + (y + y_offset) * kScreenBufferSize]);
     }

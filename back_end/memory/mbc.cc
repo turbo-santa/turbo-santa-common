@@ -116,9 +116,9 @@ unsigned char NoMBC::Read(unsigned short address) {
 
 void NoMBC::Write(unsigned short address, unsigned char value) {
   if (0x0000 <= address && address <= 0x3fff) {
-    LOG(WARNING) << "Write attempted in ROM_0: " << value;
+    LOG(WARNING) << "Write attempted in ROM_0, address: " << std::hex << address << " value: " << std::hex << 0x0000 + value;
   } else if (0x4000 <= address && address <= 0x7fff) {
-    LOG(WARNING) << "Write attempted in ROM_1: " << value;
+    LOG(WARNING) << "Write attempted in ROM_1, address: " << std::hex << address << " value: " << std::hex << 0x0000 + value;
   } else if (0xa000 <= address && address <= 0xbfff) {
     ram_bank_0_.Write(address - 0xa000, value);
   } else {

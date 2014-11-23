@@ -5,6 +5,8 @@
 
 #include <atomic>
 #include <memory>
+#include <mutex>
+#include <thread>
 
 #include "back_end/graphics/screen.h"
 #include "back_end/graphics/graphics_controller.h"
@@ -37,6 +39,11 @@ class Clocktroller {
         void ClockLoop();
         bool should_run = 1;
         std::atomic<bool> start_;
+        unsigned char* raw_rom;
+        std::mutex execution_lock;
+        std::thread handler_thread;
+        std::thread clock_thread;
+        unsigned int clock_cycles;
 
     friend void LaunchHandleLoop(Clocktroller*);
     friend void LaunchClockLoop(Clocktroller*);

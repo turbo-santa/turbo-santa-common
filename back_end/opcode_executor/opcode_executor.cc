@@ -76,6 +76,7 @@ unsigned int OpcodeExecutor::ReadInstruction() {
   } else {
     LOG(INFO) << "Fetched opcode: " << std::hex << opcode << " address: " << std::hex << opcode_address;
     LOG(INFO) << "B is " << std::hex << std::hex << 0x0000 + cpu_.bc_struct.rB;
+    LOG(INFO) << "HL is " << std::hex << std::hex << 0x0000 + cpu_.rHL;
     opcode_struct = opcode_iter->second;
   }
 
