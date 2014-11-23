@@ -104,6 +104,7 @@ int LoadN(handlers::ExecutorContext* context);
 int LoadRR8Bit(handlers::ExecutorContext* context);
 int LoadRR8BitAddress(handlers::ExecutorContext* context);
 int LoadRR8BitIntoAddress(handlers::ExecutorContext* context);
+int Load8BitLiteral(handlers::ExecutorContext* context);
 int LoadRR16Bit(handlers::ExecutorContext* context);
 int LoadAN(handlers::ExecutorContext* context);
 int LoadNA(handlers::ExecutorContext* context);

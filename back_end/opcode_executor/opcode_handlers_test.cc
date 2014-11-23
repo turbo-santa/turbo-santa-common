@@ -24,8 +24,8 @@ using Memory = test_harness::MemoryAddressValuePair;
 OpcodeExecutor* parser = new OpcodeExecutor();
 
 class OpcodeHandlersTest : public test_harness::TestHarness {
-protected:
-  OpcodeHandlersTest() : test_harness::TestHarness(parser) {}
+  protected:
+    OpcodeHandlersTest() : test_harness::TestHarness(parser) {}
 };
 
 // Start 8-bit load tests
@@ -425,6 +425,13 @@ TEST_F(OpcodeHandlersTest, LoadHLL) {
   EXPECT_EQ(8, ExecuteInstruction(0x75));
   EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::L, 0x15}});
   EXPECT_MEMORY({{0xC015, 0x15}});
+}
+  
+TEST_F(OpcodeHandlersTest, LoadHLN) {
+  SetRegisterState({{Register::HL, 0xC015}});
+  EXPECT_EQ(12, ExecuteInstruction(0x36, static_cast<unsigned char>(0x10)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}});
+  EXPECT_MEMORY({{0xC015, 0x10}});
 }
 
 // LDD tests

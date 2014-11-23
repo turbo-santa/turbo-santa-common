@@ -1046,6 +1046,15 @@ int LoadRR8BitIntoAddress(handlers::ExecutorContext* context) {
   return *context->instruction_ptr + 1;
 }
   
+int Load8BitLiteral(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  Opcode opcode = *context->opcode;
+  unsigned short val = (unsigned short)GetParameterValue(context->memory_mapper, instruction_ptr);
+  context->memory_mapper->Write(*opcode.reg1, val);
+  return instruction_ptr + 2;
+
+}
+  
 int LoadRR16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
