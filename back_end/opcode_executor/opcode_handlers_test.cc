@@ -1636,6 +1636,15 @@ TEST_F(OpcodeHandlersTest, RLCnHL) {
 }
 
 
+TEST_F(OpcodeHandlersTest, RLnHL) {
+  SetRegisterState({{Register::HL, 0xC015}, {Register::FC, 1}});
+  SetMemoryState({{0xC015, 0b10010101}});
+  EXPECT_EQ(16, ExecuteInstruction(static_cast<unsigned short>(0xCB16)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_MEMORY({{0xC015, 0b00101011}});
+}
+
+
 
 
 // End rotate tests
