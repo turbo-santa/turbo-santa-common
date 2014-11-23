@@ -75,6 +75,7 @@ int RLCAddress(handlers::ExecutorContext* context);
 int RL(handlers::ExecutorContext* context);
 int RLAddress(handlers::ExecutorContext* context);
 int RRC(handlers::ExecutorContext* context);
+int RRCAddress(handlers::ExecutorContext* context);
 int RR(handlers::ExecutorContext* context);
 int SLA(handlers::ExecutorContext* context);
 int SRA(handlers::ExecutorContext* context);

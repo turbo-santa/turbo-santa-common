@@ -718,6 +718,19 @@ int RRC(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
+int RRCAddress(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  Opcode* opcode = context->opcode;
+  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
+  context->cpu->flag_struct.rF.C = NthBit(value, 0);
+  value = value >> 1;
+  context->memory_mapper->Write(*opcode->reg1, value);
+  context->cpu->flag_struct.rF.H = 0;
+  SetNFlag(false, context->cpu);
+  SetZFlag(value, context->cpu);
+  return instruction_ptr;
+}
+
 int RR(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
