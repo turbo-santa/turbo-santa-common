@@ -1,3 +1,5 @@
+#include "back_end/config.h"
+
 #include "back_end/opcode_executor/opcode_map.h"
 
 #include <map>
@@ -257,6 +259,7 @@ const vector<vector<Opcode>> opcodes = {
             {0xCB04, rH, 8},
             {0xCB05, rL, 8},
             {0xCB06, rHL, 16}}, RLC),
+    ToList1({{0xCB06, rHL, 16}}, RLCAddress),
     ToList1({{0xCB17, rA, 8},
             {0xCB10, rB, 8},
             {0xCB11, rC, 8},

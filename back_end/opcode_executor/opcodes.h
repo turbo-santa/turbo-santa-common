@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODES_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODES_H_
 
+#include "back_end/config.h"
+
 #include <functional>
 #include <map>
 #include <vector>

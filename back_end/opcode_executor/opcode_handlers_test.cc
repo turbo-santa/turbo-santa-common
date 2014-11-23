@@ -1,3 +1,5 @@
+#include "back_end/config.h"
+
 #include <vector>
 #include "back_end/opcode_executor/opcode_handlers.h"
 #include "back_end/opcode_executor/opcode_executor.h"
@@ -538,7 +540,6 @@ TEST_F(OpcodeHandlersTest, LDMemCA) {
   EXPECT_MEMORY({{0xFF0F, 0x02}});
 }
  
-// LDD tests
 
 TEST_F(OpcodeHandlersTest, LoadDecAHL) {
   SetRegisterState({{Register::A, 0x03}, {Register::HL, 0xC015}});
@@ -1545,6 +1546,99 @@ TEST_F(OpcodeHandlersTest, NOP) {
 }
   
 // End Miscellaneous
+
+// Begin rotates and shift tests
+
+TEST_F(OpcodeHandlersTest, RLCA) {
+  SetRegisterState({{Register::A, 0b10010101}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x07)));
+  EXPECT_REGISTER({{Register::A, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+
+  SetRegisterState({{Register::A, 0b10000000}});
+  ExecuteInstruction(static_cast<unsigned char>(0x07));
+  EXPECT_REGISTER({{Register::A, 0}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, RLA) {
+  SetRegisterState({{Register::A, 0b00110010}, {Register::FC, 1}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x17)));
+  EXPECT_REGISTER({{Register::A, 0b01100101}, {Register::FC, 0}});
+
+  SetRegisterState({{Register::A, 0b10000000}});
+  ExecuteInstruction(static_cast<unsigned char>(0x17));
+  EXPECT_REGISTER({{Register::A, 0}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, RRCA) {
+  SetRegisterState({{Register::A, 0b10010101}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x0F)));
+  EXPECT_REGISTER({{Register::A, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RRA) {
+  SetRegisterState({{Register::A, 0b10010101}, {Register::FC, 1}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x1F)));
+  EXPECT_REGISTER({{Register::A, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLCnA) {
+  SetRegisterState({{Register::A, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB07)));
+  EXPECT_REGISTER({{Register::A, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLCnB) {
+  SetRegisterState({{Register::B, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB00)));
+  EXPECT_REGISTER({{Register::B, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+
+  SetRegisterState({{Register::B, 0b10000000}});
+  ExecuteInstruction(static_cast<unsigned short>(0xCB00));
+  EXPECT_REGISTER({{Register::B, 0}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, RLCnC) {
+  SetRegisterState({{Register::C, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB01)));
+  EXPECT_REGISTER({{Register::C, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLCnD) {
+  SetRegisterState({{Register::D, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB02)));
+  EXPECT_REGISTER({{Register::D, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLCnE) {
+  SetRegisterState({{Register::E, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB03)));
+  EXPECT_REGISTER({{Register::E, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLCnH) {
+  SetRegisterState({{Register::H, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB04)));
+  EXPECT_REGISTER({{Register::H, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLCnL) {
+  SetRegisterState({{Register::L, 0b10010101}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB05)));
+  EXPECT_REGISTER({{Register::L, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+}
+
+TEST_F(OpcodeHandlersTest, RLCnHL) {
+  SetRegisterState({{Register::HL, 0xC015}});
+  SetMemoryState({{0xC015, 0b10010101}});
+  EXPECT_EQ(16, ExecuteInstruction(static_cast<unsigned short>(0xCB06)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_MEMORY({{0xC015, 0b00101010}});
+}
+
+
+
+
+// End rotate tests
   
   
 // Bit Opcodes
@@ -1754,6 +1848,6 @@ TEST_F(OpcodeHandlersTest, Interrupt) {
   // TODO(Brendan): Should also have assertions for the state of the interrupt
   // flags.
 }
-  
+
 } // namespace handlers
 } // namespace back_end

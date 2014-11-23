@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
 
+#include "back_end/config.h"
+
 #include <memory>
 
 #include "back_end/memory/memory_mapper.h"
@@ -69,6 +71,7 @@ int RLA(handlers::ExecutorContext* context);
 int RRCA(handlers::ExecutorContext* context);
 int RRA(handlers::ExecutorContext* context);
 int RLC(handlers::ExecutorContext* context);
+int RLCAddress(handlers::ExecutorContext* context);
 int RL(handlers::ExecutorContext* context);
 int RRC(handlers::ExecutorContext* context);
 int RR(handlers::ExecutorContext* context);

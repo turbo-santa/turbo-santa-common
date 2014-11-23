@@ -1,3 +1,5 @@
+#include "back_end/config.h"
+
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "back_end/memory/interrupt_flag.h"
 #include "back_end/opcode_executor/opcode_handlers.h"
@@ -8,42 +10,86 @@ namespace back_end {
 namespace handlers {
 
 using std::unique_ptr;
+using graphics::Screen;
+using graphics::ScreenRaster;
 using opcodes::CreateOpcodeMap;
 using opcodes::Opcode;
 using memory::MemoryMapper;
 using memory::InterruptEnable;
 using memory::InterruptFlag;
 
-OpcodeExecutor::OpcodeExecutor() {
+class NullScreen : public Screen {
+ public:
+  virtual void Draw(const ScreenRaster&) {}
+}; 
+
+OpcodeExecutor::OpcodeExecutor() :
+    graphics_controller_(&memory_mapper_, new NullScreen()) {
   // TODO(Diego): It acutally starts at something like 0x100.
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
 }
 
-OpcodeExecutor::OpcodeExecutor(unsigned char* rom, long size) {
+OpcodeExecutor::OpcodeExecutor(unsigned char* rom, long size) :
+    graphics_controller_(&memory_mapper_, new NullScreen()) {
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
   memory_mapper_ = MemoryMapper(rom, size);
 }
 
+OpcodeExecutor::OpcodeExecutor(Screen* screen, unsigned char* rom, long rom_size) : 
+    memory_mapper_(true, rom, rom_size), graphics_controller_(&memory_mapper_, screen) {
+  cpu_.rPC = 0x0000;
+  opcode_map = CreateOpcodeMap(&cpu_);
+}
+
 unsigned int OpcodeExecutor::ReadInstruction() {
+  if (!memory_mapper_.internal_rom_flag()->is_set()) {
+    cpu_.rPC %= 0x100;
+  }
   HandleInterrupts(); // Before a fetch we must check for and handle interrupts.
+  unsigned short opcode_address = cpu_.rPC;
   unsigned short instruction_ptr = cpu_.rPC;
-  unsigned short opcode = memory_mapper_.Read(instruction_ptr); 
-  if (opcode == 0xCB || opcode == 0x10) {
+  unsigned short opcode = memory_mapper_.Read(instruction_ptr);
+  instruction_ptr++;
+  unsigned short next_byte = memory_mapper_.Read(instruction_ptr);
+
+  // This is jank.
+  unsigned char magic = 0;
+  if (opcode == 0xCB && (next_byte & 0b11000000) > 0) {
     instruction_ptr++;
-    unsigned char opcode_lb = memory_mapper_.Read(instruction_ptr);
-    opcode = opcode << 8 | opcode_lb;
+    magic = (0b00111000 & next_byte) >> 3;
+    opcode = (opcode << 8) | (next_byte & 0b11000111);
+  } else if (opcode == 0xCB) {
+    instruction_ptr++;
+    opcode = (opcode << 8) | next_byte;
+  } else if (next_byte == 0x10 && opcode == 0x00) {
+    instruction_ptr++;
+    opcode = next_byte << 8 | opcode;
   }
   cpu_.rPC = instruction_ptr;
-  Opcode opcode_struct = opcode_map[opcode];
+
+  Opcode opcode_struct;
+  auto opcode_iter = opcode_map.find(opcode);
+  if (opcode_iter == opcode_map.end()) {
+    LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
+  } else {
+    LOG(INFO) << "Fetched opcode: " << std::hex << opcode << " address: " << std::hex << opcode_address;
+    LOG(INFO) << "B is " << std::hex << std::hex << 0x0000 + cpu_.bc_struct.rB;
+    LOG(INFO) << "HL is " << std::hex << std::hex << 0x0000 + cpu_.rHL;
+    opcode_struct = opcode_iter->second;
+  }
 
   ExecutorContext context(&interrupt_master_enable_,
                           &cpu_.rPC,
                           &opcode_struct,
                           &memory_mapper_,
-                          &cpu_);
+                          &cpu_,
+                          magic);
   cpu_.rPC = opcode_struct.handler(&context);
+
+  graphics_controller_.Tick(opcode_struct.clock_cycles);
+
   return context.opcode->clock_cycles;
 }
 
