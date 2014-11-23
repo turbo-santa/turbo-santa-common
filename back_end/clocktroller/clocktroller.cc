@@ -95,7 +95,7 @@ void Clocktroller::ClockLoop() {
         std::this_thread::sleep_for(dur);
     }
     while(should_run && MAX_INSTRUCTIONS > 0) {
-        if (execution_lock.try_lock()) {
+//        if (execution_lock.try_lock()) {
             elapsed = clock() - start;
 
             std::chrono::microseconds wait_time(static_cast<long>(1000 * 1 / (kClockRate / clock_cycles) - (elapsed / CLOCKS_PER_SEC)));
@@ -103,10 +103,10 @@ void Clocktroller::ClockLoop() {
               wait_time = kZero;
             }
 
-            std::this_thread::sleep_for(wait_time);
+            // std::this_thread::sleep_for(wait_time);
             start = clock();
             execution_lock.unlock();
-        }
+//        }
 
     }
 }
@@ -120,10 +120,9 @@ void Clocktroller::HandleLoop() {
     while(should_run && MAX_INSTRUCTIONS-- > 0) {
         execution_lock.lock();
 
-        // TODO: handle interrupt
         clock_cycles = executor->ReadInstruction();
 
-        execution_lock.unlock();
+//        execution_lock.unlock();
     }
 }
 
