@@ -436,35 +436,156 @@ TEST_F(OpcodeHandlersTest, LoadHLN) {
   EXPECT_MEMORY({{0xC015, 0x10}});
 }
 
+//LDD n,A
+// Load A into n
+
+TEST_F(OpcodeHandlersTest, LoadAA2) {
+  SetRegisterState({{Register::A, 0xC015}, {Register::A, 0x015}});
+  ExecuteInstruction(0x7F);
+  EXPECT_REGISTER({{Register::A, 0x015}, {Register::A, 0x015}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadBA) {
+  SetRegisterState({{Register::A, 0xC015}, {Register::B, 0x015}});
+  ExecuteInstruction(0x47);
+  EXPECT_REGISTER({{Register::A, 0x015}, {Register::B, 0x015}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadCA) {
+  SetRegisterState({{Register::A, 0xC015}, {Register::C, 0x015}});
+  ExecuteInstruction(0x4F);
+  EXPECT_REGISTER({{Register::A, 0x015}, {Register::C, 0x015}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadDA) {
+  SetRegisterState({{Register::A, 0xC015}, {Register::D, 0x015}});
+  ExecuteInstruction(0x57);
+  EXPECT_REGISTER({{Register::A, 0x015}, {Register::D, 0x015}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadEA) {
+  SetRegisterState({{Register::A, 0xC015}, {Register::E, 0x015}});
+  ExecuteInstruction(0x5F);
+  EXPECT_REGISTER({{Register::A, 0x015}, {Register::E, 0x015}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadHA) {
+  SetRegisterState({{Register::A, 0xC015}, {Register::H, 0x015}});
+  ExecuteInstruction(0x67);
+  EXPECT_REGISTER({{Register::A, 0x015}, {Register::H, 0x015}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadLA) {
+  SetRegisterState({{Register::A, 0xC015}, {Register::L, 0x015}});
+  ExecuteInstruction(0x6F);
+  EXPECT_REGISTER({{Register::A, 0x015}, {Register::L, 0x015}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadBCA) {
+  SetRegisterState({{Register::A, 0x01}, {Register::BC, 0xC011}});
+  ExecuteInstruction(0x02);
+  EXPECT_REGISTER({{Register::A, 0x01}, {Register::BC, 0xC011}});
+  EXPECT_MEMORY({{0xC011, 0x01}})
+}
+
+TEST_F(OpcodeHandlersTest, LoadDEA) {
+  SetRegisterState({{Register::A, 0x01}, {Register::DE, 0xC011}});
+  ExecuteInstruction(0x12);
+  EXPECT_REGISTER({{Register::A, 0x01}, {Register::DE, 0xC011}});
+  EXPECT_MEMORY({{0xC011, 0x01}})
+}
+
+TEST_F(OpcodeHandlersTest, LoadHLA) {
+  SetRegisterState({{Register::A, 0x01}, {Register::HL, 0xC011}});
+  ExecuteInstruction(0x77);
+  EXPECT_REGISTER({{Register::A, 0x01}, {Register::HL, 0xC011}});
+  EXPECT_MEMORY({{0xC011, 0x01}})
+}
+
 // LD A,n
 // Load value at n into A
 
-  TEST_F(OpcodeHandlersTest, LoadABC) {
-    SetRegisterState({{Register::A, 0x30}, {Register::BC, 0xC011}});
-    SetMemoryState({{0xC011, 0x10}});
-    EXPECT_EQ(8, ExecuteInstruction(0x0A));
-    EXPECT_REGISTER({{Register::A, 0x10}, {Register::BC, 0xC011}});
-    EXPECT_MEMORY({{0xC011, 0x10}});
-  }
-  
-  TEST_F(OpcodeHandlersTest, LoadADE) {
-    SetRegisterState({{Register::A, 0x30}, {Register::DE, 0xC011}});
-    SetMemoryState({{0xC011, 0x10}});
-    EXPECT_EQ(8, ExecuteInstruction(0x1A));
-    EXPECT_REGISTER({{Register::A, 0x10}, {Register::DE, 0xC011}});
-    EXPECT_MEMORY({{0xC011, 0x10}});
-  }
-  
-  
-// LDD tests
+TEST_F(OpcodeHandlersTest, LoadABC) {
+  SetRegisterState({{Register::A, 0x30}, {Register::BC, 0xC011}});
+  SetMemoryState({{0xC011, 0x10}});
+  EXPECT_EQ(8, ExecuteInstruction(0x0A));
+  EXPECT_REGISTER({{Register::A, 0x10}, {Register::BC, 0xC011}});
+  EXPECT_MEMORY({{0xC011, 0x10}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadADE) {
+  SetRegisterState({{Register::A, 0x30}, {Register::DE, 0xC011}});
+  SetMemoryState({{0xC011, 0x10}});
+  EXPECT_EQ(8, ExecuteInstruction(0x1A));
+  EXPECT_REGISTER({{Register::A, 0x10}, {Register::DE, 0xC011}});
+  EXPECT_MEMORY({{0xC011, 0x10}});
+}
+
+// LD A, (C)
+// Put value at address $FF00 + register C into A
+
+TEST_F(OpcodeHandlersTest, LDAMemC) {
+  SetRegisterState({{Register::A, 0x02}, {Register::C, 0x0F}});
+  SetMemoryState({{0xFF0F, 0x05}});
+  EXPECT_EQ(8, ExecuteInstruction(0xF2));
+  EXPECT_REGISTER({{Register::A, 0x05}, {Register::C, 0x0F}});
+  EXPECT_MEMORY({{0xFF0F, 0x05}});
+}
+
+TEST_F(OpcodeHandlersTest, LDMemCA) {
+  SetRegisterState({{Register::A, 0x02}, {Register::C, 0x0F}});
+  SetMemoryState({{0xFF0F, 0x10}});
+  EXPECT_EQ(8, ExecuteInstruction(0xE2));
+  EXPECT_REGISTER({{Register::A, 0x02}, {Register::C, 0x0F}});
+  EXPECT_MEMORY({{0xFF0F, 0x02}});
+}
+ 
+
+TEST_F(OpcodeHandlersTest, LoadDecAHL) {
+  SetRegisterState({{Register::A, 0x03}, {Register::HL, 0xC015}});
+  SetMemoryState({{0xC015, 0x10}});
+  EXPECT_EQ(8, ExecuteInstruction(0x3A));
+  EXPECT_REGISTER({{Register::A, 0x10}, {Register::HL, 0xC014}});
+  EXPECT_MEMORY({{0xC015, 0x10}});
+}
 
 TEST_F(OpcodeHandlersTest, LoadDecHLA) {
-  SetRegisterState({{Register::A, 0xab}, {Register::HL, 0xa001}});
-  ExecuteInstruction(0x32);
-  EXPECT_REGISTER({{Register::A, 0xab}, {Register::HL, 0xa000}});
-  SetRegisterState({{Register::A, 0}, {Register::HL, 0xa001}});
-  ExecuteInstruction(0x2a);
-  EXPECT_REGISTER({{Register::A, 0xab}, {Register::HL, 0xa002}});
+  SetRegisterState({{Register::A, 0x03}, {Register::HL, 0xC015}});
+  SetMemoryState({{0xC015, 0x10}});
+  EXPECT_EQ(8, ExecuteInstruction(0x32));
+  EXPECT_REGISTER({{Register::A, 0x03}, {Register::HL, 0xC014}});
+  EXPECT_MEMORY({{0xC015, 0x03}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadIncAHL) {
+  SetRegisterState({{Register::A, 0x03}, {Register::HL, 0xC015}});
+  SetMemoryState({{0xC015, 0x10}});
+  EXPECT_EQ(8, ExecuteInstruction(0x2A));
+  EXPECT_REGISTER({{Register::A, 0x10}, {Register::HL, 0xC016}});
+  EXPECT_MEMORY({{0xC015, 0x10}});
+}
+
+TEST_F(OpcodeHandlersTest, LoadIncHLA) {
+  SetRegisterState({{Register::A, 0x03}, {Register::HL, 0xC015}});
+  SetMemoryState({{0xC015, 0x10}});
+  EXPECT_EQ(8, ExecuteInstruction(0x22));
+  EXPECT_REGISTER({{Register::A, 0x03}, {Register::HL, 0xC016}});
+  EXPECT_MEMORY({{0xC015, 0x03}});
+}
+
+TEST_F(OpcodeHandlersTest, LDHnA) {
+  SetRegisterState({{Register::A, 0x10}});
+  EXPECT_EQ(12, ExecuteInstruction(0xE0, static_cast<unsigned char>(0x0F)));
+  EXPECT_REGISTER({{Register::A, 0x10}});
+  EXPECT_MEMORY({{0xFF0F, 0x10}});
+}
+
+TEST_F(OpcodeHandlersTest, LDHAn) {
+  SetRegisterState({{Register::A, 0x10}});
+  SetMemoryState({{0xFF0F, 0x05}});
+  EXPECT_EQ(12, ExecuteInstruction(0xF0, static_cast<unsigned char>(0x0F)));
+  EXPECT_REGISTER({{Register::A, 0x05}});
+  EXPECT_MEMORY({{0xFF0F, 0x05}});
 }
 
 // End 8-bit load tests
@@ -501,6 +622,17 @@ TEST_F(OpcodeHandlersTest, LoadSPHL) {
   EXPECT_REGISTER({{Register::SP, 0x1234}, {Register::HL, 0x1234}});
 }
   
+TEST_F(OpcodeHandlersTest, LoadSPN) {
+  SetRegisterState({{Register::SP, 0x334C}, {Register::HL, 0x1234}});
+  EXPECT_EQ(12, ExecuteInstruction(0xF8, static_cast<unsigned char>(0x48)));
+  EXPECT_REGISTER({{Register::SP, 0x334C}, {Register::HL, 0x3394}, {Register::FZ, 0}, {Register::FN, 0}, {Register::FH, 1}, {Register::FC, 0}});
+}
+  
+TEST_F(OpcodeHandlersTest, LoadNNSP) {
+  SetRegisterState({{Register::SP, 0x2030}});
+  EXPECT_EQ(20, ExecuteInstruction(0x08, static_cast<unsigned short>(0x22C0)));
+  EXPECT_MEMORY({{0xC022, 0x30}, {0xC023, 0x20}});
+}
   
 // End 16-bit load tests
 
@@ -1305,6 +1437,5 @@ TEST_F(OpcodeHandlersTest, Interrupt) {
   // flags.
 }
 
-  
 } // namespace handlers
 } // namespace back_end

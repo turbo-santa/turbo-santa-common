@@ -318,7 +318,7 @@ int And8BitAddress(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.C = 0;
   return instruction_ptr;
 }
-
+  
 int And8BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
@@ -1180,7 +1180,15 @@ int LoadSPHL(handlers::ExecutorContext* context) {
 int LoadHLSP(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  context->cpu->rHL = context->cpu->rSP + (signed) GetParameterValue(context->memory_mapper, instruction_ptr);
+  signed char val = (signed) GetParameterValue(context->memory_mapper, instruction_ptr);
+  if (val < 0) {
+    context->cpu->flag_struct.rF.H = DoesHalfBorrow8(context->cpu->rSP, val);
+    context->cpu->flag_struct.rF.C = DoesBorrow8(context->cpu->rSP, val);
+  } else {
+    context->cpu->flag_struct.rF.H = DoesHalfCarry8(context->cpu->rSP, val);
+    context->cpu->flag_struct.rF.C = DoesCarry8(context->cpu->rSP, val);
+  }
+  context->cpu->rHL = context->cpu->rSP + val;
   context->cpu->flag_struct.rF.Z = 0;
   SetNFlag(false, context->cpu);
 
@@ -1189,10 +1197,13 @@ int LoadHLSP(handlers::ExecutorContext* context) {
 
 int LoadNNSP(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   MemoryMapper* memory_mapper = context->memory_mapper;
-  memory_mapper->Write(GetParameterValue(memory_mapper, instruction_ptr), context->cpu->rSP);
-  return instruction_ptr + 1;
+  unsigned short address = GetParameterValue16(memory_mapper, instruction_ptr);
+  unsigned char lsb = (unsigned char)(0x00FF & context->cpu->rSP);
+  unsigned char msb = (unsigned char)((0xFF00 & context->cpu->rSP) >> 8);
+  memory_mapper->Write(address++, lsb);
+  memory_mapper->Write(address, msb);
+  return instruction_ptr + 2;
 }
 
 int Push(handlers::ExecutorContext* context) {

@@ -7,6 +7,6 @@ rm Makefile.in > /dev/null
 rm configure > /dev/null
 
 echo "Building..."
-aclocal && autoconf && automake && ./configure && make
+aclocal && autoconf && automake --add-missing && ./configure && make
 
 
