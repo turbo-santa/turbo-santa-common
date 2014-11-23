@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include <thread>
+#include <mutex>
 
 namespace back_end {
 namespace handlers {
