@@ -1546,6 +1546,181 @@ TEST_F(OpcodeHandlersTest, NOP) {
   
 // End Miscellaneous
   
+  
+// Bit Opcodes
+  
+TEST_F(OpcodeHandlersTest, BitbA) {
+  SetRegisterState({{Register::A, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101000111)));
+  EXPECT_REGISTER({{Register::A, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101001111)));
+  EXPECT_REGISTER({{Register::A, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101010111)));
+  EXPECT_REGISTER({{Register::A, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101011111)));
+  EXPECT_REGISTER({{Register::A, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101100111)));
+  EXPECT_REGISTER({{Register::A, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101101111)));
+  EXPECT_REGISTER({{Register::A, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101110111)));
+  EXPECT_REGISTER({{Register::A, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101111111)));
+  EXPECT_REGISTER({{Register::A, 0b01101011}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, BitbB) {
+  SetRegisterState({{Register::B, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101000000)));
+  EXPECT_REGISTER({{Register::B, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101001000)));
+  EXPECT_REGISTER({{Register::B, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101010000)));
+  EXPECT_REGISTER({{Register::B, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101011000)));
+  EXPECT_REGISTER({{Register::B, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101100000)));
+  EXPECT_REGISTER({{Register::B, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101101000)));
+  EXPECT_REGISTER({{Register::B, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101110000)));
+  EXPECT_REGISTER({{Register::B, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101111000)));
+  EXPECT_REGISTER({{Register::B, 0b01101011}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, BitbC) {
+  SetRegisterState({{Register::C, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101000001)));
+  EXPECT_REGISTER({{Register::C, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101001001)));
+  EXPECT_REGISTER({{Register::C, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101010001)));
+  EXPECT_REGISTER({{Register::C, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101011001)));
+  EXPECT_REGISTER({{Register::C, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101100001)));
+  EXPECT_REGISTER({{Register::C, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101101001)));
+  EXPECT_REGISTER({{Register::C, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101110001)));
+  EXPECT_REGISTER({{Register::C, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101111001)));
+  EXPECT_REGISTER({{Register::C, 0b01101011}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, BitbD) {
+  SetRegisterState({{Register::D, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101000010)));
+  EXPECT_REGISTER({{Register::D, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101001010)));
+  EXPECT_REGISTER({{Register::D, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101010010)));
+  EXPECT_REGISTER({{Register::D, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101011010)));
+  EXPECT_REGISTER({{Register::D, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101100010)));
+  EXPECT_REGISTER({{Register::D, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101101010)));
+  EXPECT_REGISTER({{Register::D, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101110010)));
+  EXPECT_REGISTER({{Register::D, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101111010)));
+  EXPECT_REGISTER({{Register::D, 0b01101011}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, BitbE) {
+  SetRegisterState({{Register::E, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101000011)));
+  EXPECT_REGISTER({{Register::E, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101001011)));
+  EXPECT_REGISTER({{Register::E, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101010011)));
+  EXPECT_REGISTER({{Register::E, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101011011)));
+  EXPECT_REGISTER({{Register::E, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101100011)));
+  EXPECT_REGISTER({{Register::E, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101101011)));
+  EXPECT_REGISTER({{Register::E, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101110011)));
+  EXPECT_REGISTER({{Register::E, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101111011)));
+  EXPECT_REGISTER({{Register::E, 0b01101011}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, BitbH) {
+  SetRegisterState({{Register::H, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101000100)));
+  EXPECT_REGISTER({{Register::H, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101001100)));
+  EXPECT_REGISTER({{Register::H, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101010100)));
+  EXPECT_REGISTER({{Register::H, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101011100)));
+  EXPECT_REGISTER({{Register::H, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101100100)));
+  EXPECT_REGISTER({{Register::H, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101101100)));
+  EXPECT_REGISTER({{Register::H, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101110100)));
+  EXPECT_REGISTER({{Register::H, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101111100)));
+  EXPECT_REGISTER({{Register::H, 0b01101011}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, BitbL) {
+  SetRegisterState({{Register::L, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101000101)));
+  EXPECT_REGISTER({{Register::L, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101001101)));
+  EXPECT_REGISTER({{Register::L, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101010101)));
+  EXPECT_REGISTER({{Register::L, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101011101)));
+  EXPECT_REGISTER({{Register::L, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101100101)));
+  EXPECT_REGISTER({{Register::L, 0b01101011}, {Register::FZ, 1}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101101101)));
+  EXPECT_REGISTER({{Register::L, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101110101)));
+  EXPECT_REGISTER({{Register::L, 0b01101011}, {Register::FZ, 0}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101111101)));
+  EXPECT_REGISTER({{Register::L, 0b01101011}, {Register::FZ, 1}});
+}
+
+TEST_F(OpcodeHandlersTest, BitbHL) {
+  SetRegisterState({{Register::HL, 0xC015}});
+  SetMemoryState({{0xC015, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101000110)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FZ, 0}});
+  EXPECT_MEMORY({{0xC015, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101001110)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FZ, 0}});
+  EXPECT_MEMORY({{0xC015, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101010110)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FZ, 1}});
+  EXPECT_MEMORY({{0xC015, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101011110)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FZ, 0}});
+  EXPECT_MEMORY({{0xC015, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101100110)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FZ, 1}});
+  EXPECT_MEMORY({{0xC015, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101101110)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FZ, 0}});
+  EXPECT_MEMORY({{0xC015, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101110110)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FZ, 0}});
+  EXPECT_MEMORY({{0xC015, 0b01101011}});
+  EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0b1100101101111110)));
+  EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FZ, 1}});
+  EXPECT_MEMORY({{0xC015, 0b01101011}});
+}
+  
+// End Bit Opcodes
+
+  
 TEST_F(OpcodeHandlersTest, Call) {
   SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1234}});
   ExecuteInstruction(static_cast<unsigned char>(0xcd), static_cast<unsigned short>(0x4523));
