@@ -745,6 +745,21 @@ int RR(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
+int RRAddress(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  Opcode* opcode = context->opcode;
+  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
+  unsigned char carry = context->cpu->flag_struct.rF.C;
+  context->cpu->flag_struct.rF.C = NthBit(value, 0);
+  value = value >> 1;
+  value |= (carry << 7);
+  context->memory_mapper->Write(*opcode->reg1, value);
+  context->cpu->flag_struct.rF.H = 0;
+  SetNFlag(false, context->cpu);
+  SetZFlag(value, context->cpu);
+  return instruction_ptr;
+}
+
 int SLA(handlers::ExecutorContext* context) {
   return RLC(context);
 }
