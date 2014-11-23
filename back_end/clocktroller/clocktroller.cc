@@ -37,7 +37,7 @@ void LaunchClockLoop(Clocktroller* member) {
 Clocktroller::Clocktroller(Screen* screen, unsigned char* rom, long length) : 
     executor(new OpcodeExecutor(screen, rom, length)), start_(false) {
   raw_rom = nullptr;
-  MAX_INSTRUCTIONS = 4096;
+  MAX_INSTRUCTIONS = 50000;
 }
 
 Clocktroller::Clocktroller(unsigned char* rom, long length) : 

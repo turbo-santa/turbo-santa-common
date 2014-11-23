@@ -448,8 +448,13 @@ int AddSPLiteral(handlers::ExecutorContext* context) {
 int Inc16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned short* reg = GetRegister16(context->memory_mapper, instruction_ptr, opcode.opcode_name, context->cpu);
-  *reg += 1;
+  unsigned char* reg = (unsigned char*) opcode.reg1;
+  unsigned char forth_bit = NthBit(*reg, 3);
+  ++(*opcode.reg1);
+  bool borrowed_h = forth_bit != NthBit(*reg, 3);
+  SetZFlag(*reg, context->cpu);
+  SetNFlag(false, context->cpu);
+  context->cpu->flag_struct.rF.H = borrowed_h;
   return instruction_ptr;
 }
 

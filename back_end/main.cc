@@ -36,7 +36,7 @@ class TerminalScreen : public Screen {
 };
 
 int main() {
-  initscr();
+  // initscr();
   TerminalScreen terminal_screen;
   std::vector<unsigned char> nintendo_logo = {
     0xce, 0xed, 0x66, 0x66, 0xcc, 0x0d, 0x00, 0x0b, 

@@ -75,7 +75,7 @@ unsigned int OpcodeExecutor::ReadInstruction() {
     LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
   } else {
     LOG(INFO) << "Fetched opcode: " << std::hex << opcode << " address: " << std::hex << opcode_address;
-    LOG(INFO) << "HL is " << std::hex << cpu_.rHL;
+    LOG(INFO) << "B is " << std::hex << std::hex << 0x0000 + cpu_.bc_struct.rB;
     opcode_struct = opcode_iter->second;
   }
 
