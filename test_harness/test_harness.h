@@ -15,6 +15,7 @@ class TestHarness : public ::testing::Test {
         void SetMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
         void SetRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
         unsigned int ExecuteInstruction(unsigned char instruction);
+        unsigned int ExecuteInstruction(unsigned short instruction);
         unsigned int ExecuteInstruction(unsigned char instruction, unsigned short value);
         unsigned int ExecuteInstruction(unsigned char instruction, unsigned char value);
         ::testing::AssertionResult AssertRegisterAdapter(

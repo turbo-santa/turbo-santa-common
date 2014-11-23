@@ -533,7 +533,18 @@ int Swap(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  return instruction_ptr + 1;
+  return instruction_ptr;
+}
+  
+int SwapAddress(handlers::ExecutorContext* context) {
+  unsigned char val = context->memory_mapper->Read(*context->opcode->reg1);
+  unsigned char swapVal = (val << 4) | (val >> 4);
+  context->memory_mapper->Write(*context->opcode->reg1, swapVal);
+  SetZFlag(swapVal, context->cpu);
+  SetNFlag(false, context->cpu);
+  context->cpu->flag_struct.rF.H = 0;
+  context->cpu->flag_struct.rF.C = 0;
+  return *context->instruction_ptr;
 }
 
 int DAA(handlers::ExecutorContext* context) {
