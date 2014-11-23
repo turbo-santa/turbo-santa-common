@@ -1514,6 +1514,12 @@ TEST_F(OpcodeHandlersTest, SWAPHL) {
   EXPECT_MEMORY({{0xC020, 0x21}});
 }
   
+TEST_F(OpcodeHandlersTest, DAA) {
+  SetRegisterState({{Register::A, 0x32}});
+  EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x27)));
+  EXPECT_REGISTER({{Register::A, 0x50}});
+}
+  
 // End Miscellaneous
   
 TEST_F(OpcodeHandlersTest, Call) {
