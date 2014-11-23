@@ -105,7 +105,7 @@ void Clocktroller::ClockLoop() {
 
             // std::this_thread::sleep_for(wait_time);
             start = clock();
-            execution_lock.unlock();
+//             execution_lock.unlock();
 //        }
 
     }
@@ -118,11 +118,11 @@ void Clocktroller::HandleLoop() {
         std::this_thread::sleep_for(dur);
     }
     while(should_run && MAX_INSTRUCTIONS-- > 0) {
-        execution_lock.lock();
+//         execution_lock.lock();
 
         clock_cycles = executor->ReadInstruction();
 
-//        execution_lock.unlock();
+//         execution_lock.unlock();
     }
 }
 
