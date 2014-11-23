@@ -222,12 +222,12 @@ void GraphicsController::RenderTile(Tile* tile, unsigned char y_offset, unsigned
   for (int y = 0; y < Tile::kTileSize; y++) {
     for (int x = 0; x < Tile::kTileSize; x++) {
       unsigned char color_index = tile->Get(y, x);
-      LOG(INFO) << "Color index is " << 0x00 + color_index;
+      // LOG(INFO) << "Color index is " << 0x00 + color_index;
       MonochromePalette::Color color = palette->lookup(color_index);
       if (color != MonochromePalette::NONE) {
-        LOG(INFO) << "Color is " << std::dec << color;
+        // LOG(INFO) << "Color is " << std::dec << color;
         unsigned char realized_color = static_cast<unsigned char>(color) * (256 / 4);
-        LOG(INFO) << "realized_color is " << std::dec << realized_color;
+        // LOG(INFO) << "realized_color is " << std::dec << realized_color;
         screen_buffer_[(x + x_offset) + (y + y_offset) * kScreenBufferSize] = realized_color;
       }
     }

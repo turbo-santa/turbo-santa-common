@@ -55,15 +55,15 @@ unsigned short GetRegisterValue16(MemoryMapper* memory_mapper, int instruction_p
 }
 
 unsigned char GetParameterValue(MemoryMapper* memory_mapper, int instruction_ptr) {
-  return memory_mapper->Read(instruction_ptr + 1);
+  return memory_mapper->Read(instruction_ptr);
 }
 
 unsigned short GetParameterValue16(MemoryMapper* memory_mapper, int instruction_ptr) {
-  return (((short) memory_mapper->Read(instruction_ptr + 2)) << 8) | (short) memory_mapper->Read(instruction_ptr + 1);
+  return (((short) memory_mapper->Read(instruction_ptr + 1)) << 8) | (short) memory_mapper->Read(instruction_ptr);
 }
 
 unsigned short GetParameterValue16LS(MemoryMapper* memory_mapper, int instruction_ptr, unsigned char) {
-  return (((short) memory_mapper->Read(instruction_ptr + 2)) << 8) | (short) memory_mapper->Read(instruction_ptr + 1);
+  return (((short) memory_mapper->Read(instruction_ptr + 1)) << 8) | (short) memory_mapper->Read(instruction_ptr);
 }
 
 unsigned short GetAddress16(MemoryMapper* memory_mapper, int instruction_ptr) {
@@ -613,7 +613,7 @@ int RLC(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int RL(handlers::ExecutorContext* context) {
@@ -626,7 +626,7 @@ int RL(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int RRC(handlers::ExecutorContext* context) {
@@ -638,7 +638,7 @@ int RRC(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int RR(handlers::ExecutorContext* context) {
@@ -651,7 +651,7 @@ int RR(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int SLA(handlers::ExecutorContext* context) {
@@ -669,7 +669,7 @@ int SRA(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int SRL(handlers::ExecutorContext* context) {
@@ -684,7 +684,7 @@ int Bit(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 1;
   SetZFlag(bit, context->cpu);
   SetNFlag(false, context->cpu);
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int Set(handlers::ExecutorContext* context) {
@@ -752,10 +752,12 @@ int JumpRelative(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   instruction_ptr += GetParameterValue(context->memory_mapper, instruction_ptr);
+  LOG(INFO) << "Jumping to " << instruction_ptr;
   return instruction_ptr;
 }
 
 int JumpRelativeConditional(handlers::ExecutorContext* context) {
+  LOG(INFO) << "Called JumpRelative";
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
@@ -779,6 +781,7 @@ int JumpRelativeConditional(handlers::ExecutorContext* context) {
         return JumpRelative(context);
       }
   }
+  LOG(INFO) << "Not jumping";
   return instruction_ptr;
 }
 

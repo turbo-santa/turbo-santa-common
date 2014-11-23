@@ -42,6 +42,9 @@ OpcodeExecutor::OpcodeExecutor(Screen* screen) :
 }
 
 unsigned int OpcodeExecutor::ReadInstruction() {
+  if (!memory_mapper_.internal_rom_flag()->is_set()) {
+    cpu_.rPC %= 0x100;
+  }
   HandleInterrupts(); // Before a fetch we must check for and handle interrupts.
   unsigned short instruction_ptr = cpu_.rPC;
   unsigned short opcode = memory_mapper_.Read(instruction_ptr);
@@ -55,6 +58,7 @@ unsigned int OpcodeExecutor::ReadInstruction() {
     magic = (0b00111000 & next_byte) >> 3;
     opcode = (opcode << 8) | (next_byte & 0b11000111);
   } else if (opcode == 0xCB) {
+    instruction_ptr++;
     opcode = (opcode << 8) | next_byte;
   } else if (next_byte == 0x10 && opcode == 0x00) {
     instruction_ptr++;
@@ -67,6 +71,7 @@ unsigned int OpcodeExecutor::ReadInstruction() {
   if (opcode_iter == opcode_map.end()) {
     LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
   } else {
+    LOG(INFO) << "Fetched opcode: " << std::hex << opcode;
     opcode_struct = opcode_iter->second;
   }
 

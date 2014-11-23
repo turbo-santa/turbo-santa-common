@@ -35,6 +35,7 @@ class MemoryMapper {
 
   virtual void Write(unsigned short address, unsigned char value);
 
+  InternalROMFlag* internal_rom_flag() { return internal_rom_flag_.get(); }
   InterruptFlag* interrupt_flag() { return interrupt_flag_.get(); }
   InterruptEnable* interrupt_enable() { return interrupt_enable_.get(); }
   graphics::GraphicsFlags* graphics_flags() { return graphics_flags_.get(); }
