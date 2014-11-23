@@ -434,6 +434,26 @@ TEST_F(OpcodeHandlersTest, LoadHLN) {
   EXPECT_MEMORY({{0xC015, 0x10}});
 }
 
+// LD A,n
+// Load value at n into A
+
+  TEST_F(OpcodeHandlersTest, LoadABC) {
+    SetRegisterState({{Register::A, 0x30}, {Register::BC, 0xC011}});
+    SetMemoryState({{0xC011, 0x10}});
+    EXPECT_EQ(8, ExecuteInstruction(0x0A));
+    EXPECT_REGISTER({{Register::A, 0x10}, {Register::BC, 0xC011}});
+    EXPECT_MEMORY({{0xC011, 0x10}});
+  }
+  
+  TEST_F(OpcodeHandlersTest, LoadADE) {
+    SetRegisterState({{Register::A, 0x30}, {Register::DE, 0xC011}});
+    SetMemoryState({{0xC011, 0x10}});
+    EXPECT_EQ(8, ExecuteInstruction(0x1A));
+    EXPECT_REGISTER({{Register::A, 0x10}, {Register::DE, 0xC011}});
+    EXPECT_MEMORY({{0xC011, 0x10}});
+  }
+  
+  
 // LDD tests
 
 TEST_F(OpcodeHandlersTest, LoadDecHLA) {

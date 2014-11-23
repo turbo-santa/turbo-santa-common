@@ -44,7 +44,7 @@ unsigned short GetParameterValue16(MemoryMapper* memory_mapper, int instruction_
   return (((short) memory_mapper->Read(instruction_ptr + 1)) << 8) | (short) memory_mapper->Read(instruction_ptr + 2);
 }
 
-unsigned short GetParameterValue16LS(MemoryMapper* memory_mapper, int instruction_ptr, unsigned char) {
+unsigned short GetParameterValue16LS(MemoryMapper* memory_mapper, int instruction_ptr) {
   return (((short) memory_mapper->Read(instruction_ptr + 2)) << 8) | (short) memory_mapper->Read(instruction_ptr + 1);
 }
 
@@ -1040,20 +1040,24 @@ int LoadRR16Bit(handlers::ExecutorContext* context) {
 int LoadAN(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  if (opcode.opcode_name == 0xFA) {
-    // TODO(Diego): What is this for?
-    unsigned short address = GetParameterValue16LS(context->memory_mapper, instruction_ptr, opcode.opcode_name);
-    // TODO: figure out what nn refers to.
-  } else if (opcode.opcode_name == 0x3E) {
-    unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
-    context->cpu->flag_struct.rA = value;
-    return instruction_ptr + 2;
-  }
-
-  context->cpu->flag_struct.rA = *opcode.reg1;
+  context->cpu->flag_struct.rA = context->memory_mapper->Read(*opcode.reg1);
   return instruction_ptr + 1;
 }
 
+int LoadANAddress(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  Opcode opcode = *context->opcode;
+  unsigned short address = GetParameterValue16LS(context->memory_mapper, instruction_ptr);
+  context->cpu->flag_struct.rA = context->memory_mapper->Read(address);
+  return instruction_ptr + 3;
+}
+  
+int LoadANLiteral(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  Opcode opcode = *context->opcode;
+  context->cpu->flag_struct.rA = GetParameterValue(context->memory_mapper, instruction_ptr);
+  return instruction_ptr + 2;
+}
 
 int LoadNA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
