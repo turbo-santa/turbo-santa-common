@@ -22,7 +22,7 @@ class TerminalScreen : public Screen {
         } else if (pixel_shade <= 128) {
           real_pixel = '.';
         } else if (pixel_shade <= 192) {
-          real_pixel = 'O';
+          real_pixel = '%';
         } else {
           real_pixel = '#';
         }
@@ -36,7 +36,7 @@ class TerminalScreen : public Screen {
         //   actual_x = 0;
         // }
 
-        move(y * LINES / ScreenRaster::kScreenHeight, x * COLS / ScreenRaster::kScreenWidth);
+        move(y, x);
         addch(real_pixel);
       }
     }

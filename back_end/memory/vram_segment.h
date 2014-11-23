@@ -131,9 +131,9 @@ class VRAMSegment : public ContiguousMemorySegment {
       upper_tile_data_(&raw_tile_data_) {}
 
   virtual unsigned char Read(unsigned short address) {
-    if (!enabled_) {
-      return 0xff;
-    }
+    // if (!enabled_) {
+    //   return 0xff;
+    // }
 
     if (lower_background_map_.InRange(address)) {
       return lower_background_map_.Read(address);
@@ -149,9 +149,9 @@ class VRAMSegment : public ContiguousMemorySegment {
   }
 
   virtual void Write(unsigned short address, unsigned char value) {
-    if (!enabled_) {
-      return;
-    }
+    // if (!enabled_) {
+    //   return;
+    // }
 
     if (lower_background_map_.InRange(address)) {
       LOG(INFO) << "Writting " << std::hex << 0x0000 + value << " to "

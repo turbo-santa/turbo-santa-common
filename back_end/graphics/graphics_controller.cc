@@ -21,11 +21,11 @@ class TileReflectedX : public Tile {
   TileReflectedX(Tile* tile) : tile_(tile) {}
 
   virtual unsigned char Get(unsigned int y, unsigned int x) {
-    return tile_->Get(y, Tile::kTileSize - x);
+    return tile_->Get(y, Tile::kTileSize - 1 - x);
   }
 
   virtual void Set(unsigned int y, unsigned int x, unsigned char value) {
-    tile_->Set(y, Tile::kTileSize - x, value);
+    tile_->Set(y, Tile::kTileSize - 1 - x, value);
   }
 
   void set_tile(Tile* tile) { tile_ = tile; }
@@ -80,7 +80,9 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
     lcd_status->set_mode(LCDStatus::VRAM_OAM_LOCKED);
     DisableOAM();
     DisableVRAM();
-    Draw();
+    if (graphics_flags()->lcd_control()->lcd_display_enable()) {
+      Draw();
+    }
   // Mode 2.
   } else if (time_ % kSmallPeriod > kOAMLockedLowerBound) {
     lcd_status->set_mode(LCDStatus::OAM_LOCKED);
@@ -165,9 +167,9 @@ void GraphicsController::RenderBackground() {
 
   TileData* tile_data;
   if (lcd_control->bg_window_tile_data_select()) {
-    tile_data = vram_segment()->upper_tile_data();
-  } else {
     tile_data = vram_segment()->lower_tile_data();
+  } else {
+    tile_data = vram_segment()->upper_tile_data();
   }
 
   for (int y = 0; y < kScreenBufferSize / Tile::kTileSize; y++) {
@@ -185,7 +187,7 @@ void GraphicsController::RenderWindow() {
   int x_offset = graphics_flags()->window_x_position()->flag() + 7;
   x_offset += graphics_flags()->scroll_x()->flag();
 
-  if (lcd_control->window_display_enable()) {
+  if (!lcd_control->window_display_enable()) {
     return; // Nothing to do if disabled.
   }
 
@@ -241,28 +243,30 @@ void GraphicsController::RenderSprite(SpriteAttribute* sprite_attribute) {
 }
 
 void GraphicsController::RenderTile(Tile* tile, unsigned char y_offset, unsigned char x_offset, MonochromePalette* palette) {
+  TileReflectedX x_flip(tile);
+  tile = &x_flip;
   for (int y = 0; y < Tile::kTileSize; y++) {
     for (int x = 0; x < Tile::kTileSize; x++) {
       unsigned char color_index = tile->Get(y, x);
-      if (color_index != 0) {
-        LOG(INFO) << "Color index is " << 0x00 + color_index;
-      }
+      // if (color_index != 0) {
+      //   LOG(INFO) << "Color index is " << 0x00 + color_index;
+      // }
       MonochromePalette::Color color = palette->lookup(color_index);
       if (color != MonochromePalette::NONE) {
         if (color != 0) {
-          LOG(INFO) << "Color 0 is " << std::hex << palette->lookup(0);
-          LOG(INFO) << "Color 1 is " << std::hex << palette->lookup(1);
-          LOG(INFO) << "Color 2 is " << std::hex << palette->lookup(2);
-          LOG(INFO) << "Color 3 is " << std::hex << palette->lookup(3);
-          LOG(INFO) << "Color is " << std::dec << color;
+          // LOG(INFO) << "Color 0 is " << std::hex << palette->lookup(0);
+          // LOG(INFO) << "Color 1 is " << std::hex << palette->lookup(1);
+          // LOG(INFO) << "Color 2 is " << std::hex << palette->lookup(2);
+          // LOG(INFO) << "Color 3 is " << std::hex << palette->lookup(3);
+          // LOG(INFO) << "Color is " << std::dec << color;
         }
         unsigned char realized_color = static_cast<unsigned char>(color) * (256 / 4);
-        if (color != 0) {
-          LOG(INFO) << "realized_color is " << std::dec << 0x0000 + realized_color 
-                    << " being written to x: " << std::dec << x + x_offset << " y: " << std::dec << y + y_offset;
-//           move((y + y_offset) * 2 * LINES / kScreenBufferSize, (x + x_offset) * 2 * COLS / kScreenBufferSize);
-//           addch('#');
-        }
+        // if (color != 0) {
+        //   LOG(INFO) << "realized_color is " << std::dec << 0x0000 + realized_color 
+        //             << " being written to x: " << std::dec << x + x_offset << " y: " << std::dec << y + y_offset;
+//      //      move((y + y_offset) * 2 * LINES / kScreenBufferSize, (x + x_offset) * 2 * COLS / kScreenBufferSize);
+//      //      addch('#');
+        // }
         screen_buffer_[(x + x_offset) + (y + y_offset) * kScreenBufferSize] = realized_color;
       }
     }
