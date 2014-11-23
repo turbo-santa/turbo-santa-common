@@ -1266,7 +1266,7 @@ TEST_F(OpcodeHandlersTest, Dec16BitSP) {
 
 TEST_F(OpcodeHandlersTest, Call) {
   SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1234}});
-  ExecuteInstruction(0xcd, static_cast<unsigned short>(0x2345));
+  ExecuteInstruction(0xcd, static_cast<unsigned short>(0x4523));
   EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x2345}});
   EXPECT_MEMORY({{0xfffe, 0x35}, {0xfffd, 0x12}});
 }
