@@ -28,7 +28,7 @@ namespace handlers {
 class OpcodeExecutor {
   public: 
     OpcodeExecutor();
-    OpcodeExecutor(graphics::Screen* screen);
+    OpcodeExecutor(graphics::Screen* screen, unsigned char* rom, long rom_size);
     OpcodeExecutor(unsigned char* rom, long rom_size);
     unsigned int ReadInstruction();
 

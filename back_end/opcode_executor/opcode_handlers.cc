@@ -407,6 +407,10 @@ int Dec8Bit(handlers::ExecutorContext* context) {
   bool borrowed_h = fourth_bit != NthBit(*reg, 4);
   SetZFlag(*reg, context->cpu);
   SetNFlag(true, context->cpu);
+  if (opcode.opcode_name == 0x05) {
+    LOG(INFO) << "B decremented to " << std::hex << 0x0000 + *reg;
+    LOG(INFO) << "Z flag is " << std::dec << 0x0000 + context->cpu->flag_struct.rF.Z;
+  }
   context->cpu->flag_struct.rF.H = borrowed_h;
   return instruction_ptr;
 }
@@ -751,13 +755,13 @@ int JumpHL(handlers::ExecutorContext* context) {
 int JumpRelative(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  instruction_ptr += GetParameterValue(context->memory_mapper, instruction_ptr);
+  instruction_ptr += GetParameterValue(context->memory_mapper, instruction_ptr) + 1;
   LOG(INFO) << "Jumping to " << instruction_ptr;
   return instruction_ptr;
 }
 
 int JumpRelativeConditional(handlers::ExecutorContext* context) {
-  LOG(INFO) << "Called JumpRelative";
+  LOG(INFO) << "Called JumpRelativeConditional";
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
@@ -765,34 +769,37 @@ int JumpRelativeConditional(handlers::ExecutorContext* context) {
       if (!context->cpu->flag_struct.rF.Z) {
         return JumpRelative(context);
       }
-      return instruction_ptr;
+      return instruction_ptr + 1; // Have to account for the 8-bit parameter 
+                                  // whether we use it or not.
     case 0x28:
       if (context->cpu->flag_struct.rF.Z) {
         return JumpRelative(context);
       }
-      return instruction_ptr;
+      return instruction_ptr + 1;
     case 0x30:
       if (!context->cpu->flag_struct.rF.C) {
         return JumpRelative(context);
       }
-      return instruction_ptr;
+      return instruction_ptr + 1;
     case 0x38:
       if (context->cpu->flag_struct.rF.C) {
         return JumpRelative(context);
       }
   }
   LOG(INFO) << "Not jumping";
-  return instruction_ptr;
+  return instruction_ptr + 1;
 }
 
 // TODO(Brendan, Diego, Aaron, Dave): We should make sure we are doing endian
 // specific work in functions that we can either swap out at compile time or at
 // runtime to preserve correct endianness.
 unsigned char GetLSB(unsigned short value) {
+  LOG(INFO) << "Pushing, lsb is " << std::hex << 0x0000 + static_cast<unsigned char>(value);
   return static_cast<unsigned char>(value);
 }
 
 unsigned char GetMSB(unsigned short value) {
+  LOG(INFO) << "Pushing, msb is " << std::hex << 0x0000 + static_cast<unsigned char>(value >> 8);
   return static_cast<unsigned char>(value >> 8);
 }
 
@@ -805,13 +812,23 @@ void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg)
   --*rSP;
 }
 
+void PopRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
+  unsigned short* rSP = &cpu->rSP;
+  ++*rSP;
+  unsigned short msb = memory_mapper->Read(*rSP);
+  LOG(INFO) << "Popping, msb is " << std::hex << msb;
+  ++*rSP;
+  unsigned short lsb = memory_mapper->Read(*rSP);
+  LOG(INFO) << "Popping, lsb is " << std::hex << lsb;
+  *reg = (msb << 8) | lsb;
+}
+
 int Call(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   GB_CPU* cpu = context->cpu;
   unsigned short* rPC = &cpu->rPC;
 
-  ++*rPC;
   PushRegister(context->memory_mapper, cpu, rPC);
 
   unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
@@ -874,12 +891,9 @@ int Restart(handlers::ExecutorContext* context) {
 }
 
 int Return(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned short address = 0; // = context->cpu->rSP[0];
-  context->cpu->rSP -= 2;
-  instruction_ptr = address;
-  return instruction_ptr;
+  PopRegister(context->memory_mapper, context->cpu, &context->cpu->rPC);
+  return context->cpu->rPC;
 }
 
 int ReturnConditional(handlers::ExecutorContext* context) {
@@ -1072,17 +1086,14 @@ int LoadNNSP(handlers::ExecutorContext* context) {
 int Push(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  context->memory_mapper->Write(context->cpu->rSP, *opcode.reg1);
-  context->cpu->rSP -= 2;
+  PushRegister(context->memory_mapper, context->cpu, context->opcode->reg1);
   return instruction_ptr;
 }
 
 int Pop(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  MemoryMapper* memory_mapper = context->memory_mapper;
-  *opcode.reg1 = (((short)memory_mapper->Read(context->cpu->rSP)) << 8) | memory_mapper->Read(context->cpu->rSP + 1); 
-  context->cpu->rSP += 2;
+  PopRegister(context->memory_mapper, context->cpu, context->opcode->reg1);
   return instruction_ptr;
 }
 

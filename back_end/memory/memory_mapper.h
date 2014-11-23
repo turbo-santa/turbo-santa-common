@@ -28,7 +28,7 @@ namespace memory {
 class MemoryMapper {
  public:
   MemoryMapper();
-  MemoryMapper(bool use_internal_rom);
+  MemoryMapper(bool use_internal_rom, unsigned char* rom, long size);
   MemoryMapper(unsigned char* rom, long size);
 
   virtual unsigned char Read(unsigned short address);

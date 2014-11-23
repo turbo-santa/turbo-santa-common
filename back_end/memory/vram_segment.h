@@ -152,12 +152,20 @@ class VRAMSegment : public ContiguousMemorySegment {
     }
 
     if (lower_background_map_.InRange(address)) {
+      LOG(INFO) << "Writting " << std::hex << 0x0000 + value << " to "
+                << std::hex << address << " in LowerBackgroundMap";
       lower_background_map_.Write(address, value);
     } else if (upper_background_map_.InRange(address)) {
+      LOG(INFO) << "Writting " << std::hex << 0x0000 + value << " to "
+                << std::hex << address << " in UpperBackgroundMap";
       upper_background_map_.Write(address, value);
     } else if (lower_tile_data_.InRange(address)) {
+      LOG(INFO) << "Writting " << std::hex << 0x0000 + value << " to "
+                << std::hex << address << " in LowerTileData";
       lower_tile_data_.Write(address, value);
     } else if (upper_tile_data_.InRange(address)) {
+      LOG(INFO) << "Writting " << std::hex << 0x0000 + value << " to "
+                << std::hex << address << " in UpperTileData";
       upper_tile_data_.Write(address, value);
     } else {
       LOG(FATAL) << "Attempted Write outside of owned region: " << address;
