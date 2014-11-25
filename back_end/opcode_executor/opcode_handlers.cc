@@ -918,20 +918,20 @@ unsigned char GetMSB(unsigned short value) {
 void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
   unsigned short* rSP = &cpu->rSP;
   // memory_mapper->Write(0xfffe, GetLSB(*reg));
+  --*rSP;
   memory_mapper->Write(*rSP, GetLSB(*reg));
   --*rSP;
   memory_mapper->Write(*rSP, GetMSB(*reg));
-  --*rSP;
 }
 
 void PopRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
   unsigned short* rSP = &cpu->rSP;
-  ++*rSP;
   unsigned short msb = memory_mapper->Read(*rSP);
   LOG(INFO) << "Popping, msb is " << std::hex << msb;
   ++*rSP;
   unsigned short lsb = memory_mapper->Read(*rSP);
   LOG(INFO) << "Popping, lsb is " << std::hex << lsb;
+  ++*rSP;
   *reg = (msb << 8) | lsb;
 }
 

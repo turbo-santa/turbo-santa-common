@@ -663,35 +663,35 @@ TEST_F(OpcodeHandlersTest, PushHL) {
 }
   
 TEST_F(OpcodeHandlersTest, PopAF) {
-  SetRegisterState({{Register::AF, 0x1111}, {Register::SP, 0xDFEE}});
+  SetRegisterState({{Register::AF, 0x1111}, {Register::SP, 0xDFEF}});
   SetMemoryState({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
   EXPECT_EQ(12, ExecuteInstruction(static_cast<unsigned char>(0xF1)));
   EXPECT_MEMORY({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
-  EXPECT_REGISTER({{Register::AF, 0x5530}, {Register::SP, 0xDFF0}});
+  EXPECT_REGISTER({{Register::AF, 0x3055}, {Register::SP, 0xDFF1}});
 }
 
 TEST_F(OpcodeHandlersTest, PopBC) {
-  SetRegisterState({{Register::BC, 0x1111}, {Register::SP, 0xDFEE}});
+  SetRegisterState({{Register::BC, 0x1111}, {Register::SP, 0xDFEF}});
   SetMemoryState({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
   EXPECT_EQ(12, ExecuteInstruction(static_cast<unsigned char>(0xC1)));
   EXPECT_MEMORY({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
-  EXPECT_REGISTER({{Register::BC, 0x5530}, {Register::SP, 0xDFF0}});
+  EXPECT_REGISTER({{Register::BC, 0x3055}, {Register::SP, 0xDFF1}});
 }
 
 TEST_F(OpcodeHandlersTest, PopDE) {
-  SetRegisterState({{Register::DE, 0x1111}, {Register::SP, 0xDFEE}});
+  SetRegisterState({{Register::DE, 0x1111}, {Register::SP, 0xDFEF}});
   SetMemoryState({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
   EXPECT_EQ(12, ExecuteInstruction(static_cast<unsigned char>(0xD1)));
   EXPECT_MEMORY({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
-  EXPECT_REGISTER({{Register::DE, 0x5530}, {Register::SP, 0xDFF0}});
+  EXPECT_REGISTER({{Register::DE, 0x3055}, {Register::SP, 0xDFF1}});
 }
 
 TEST_F(OpcodeHandlersTest, PopHL) {
-  SetRegisterState({{Register::HL, 0x1111}, {Register::SP, 0xDFEE}});
+  SetRegisterState({{Register::HL, 0x1111}, {Register::SP, 0xDFEF}});
   SetMemoryState({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
   EXPECT_EQ(12, ExecuteInstruction(static_cast<unsigned char>(0xE1)));
   EXPECT_MEMORY({{0xDFEF, 0x30}, {0xDFF0, 0x55}});
-  EXPECT_REGISTER({{Register::HL, 0x5530}, {Register::SP, 0xDFF0}});
+  EXPECT_REGISTER({{Register::HL, 0x3055}, {Register::SP, 0xDFF1}});
 }
   
 // End 16-bit load tests
@@ -1975,10 +1975,10 @@ TEST_F(OpcodeHandlersTest, BitbHL) {
 
   
 TEST_F(OpcodeHandlersTest, Call) {
-  SetRegisterState({{Register::SP, 0xfffe}, {Register::PC, 0x1234}});
-  ExecuteInstruction(static_cast<unsigned char>(0xcd), static_cast<unsigned short>(0x4523));
-  EXPECT_REGISTER({{Register::SP, 0xfffc}, {Register::PC, 0x2345}});
-  EXPECT_MEMORY({{0xfffe, 0x35}, {0xfffd, 0x12}});
+  SetRegisterState({{Register::SP, 0xFFFE}, {Register::PC, 0x1234}});
+  ExecuteInstruction(static_cast<unsigned char>(0xCD), static_cast<unsigned short>(0x4523));
+  EXPECT_REGISTER({{Register::SP, 0xFFFC}, {Register::PC, 0x2345}});
+  EXPECT_MEMORY({{0xFFFD, 0x35}, {0xFFFC, 0x12}});
 }
 
 TEST_F(OpcodeHandlersTest, LoadAndRunROM) {
