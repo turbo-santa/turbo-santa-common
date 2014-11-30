@@ -32,10 +32,7 @@ MemoryMapper::MemoryMapper(unsigned char* rom, long size) {
 }
 
 unsigned char MemoryMapper::Read(unsigned short address) {
-  if (!internal_rom_flag_->is_set() && mbc_->InRange(address)) {
-    // The internal ROM is only 0x100 in size so we need to mod the address by
-    // that value for loop overs.
-    address %= 0x100;
+  if (!internal_rom_flag_->is_set() && internal_rom_->InRange(address)) {
     return internal_rom_->Read(address);
   }
 
