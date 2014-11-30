@@ -9,7 +9,6 @@ namespace memory {
 using std::unique_ptr;
 
 MemoryMapper::MemoryMapper() {
-  internal_rom_ = InternalROM::ConstructInternalROM();
   internal_rom_flag_->set();
 
   unsigned char data = 0x00;
@@ -17,7 +16,6 @@ MemoryMapper::MemoryMapper() {
 }
 
 MemoryMapper::MemoryMapper(bool use_internal_rom, unsigned char* rom, long size) {
-  internal_rom_ = InternalROM::ConstructInternalROM();
   if (!use_internal_rom) {
     internal_rom_flag_->set();
   }
@@ -26,7 +24,6 @@ MemoryMapper::MemoryMapper(bool use_internal_rom, unsigned char* rom, long size)
 }
 
 MemoryMapper::MemoryMapper(unsigned char* rom, long size) {
-  internal_rom_ = InternalROM::ConstructInternalROM();
   internal_rom_flag_->set();
   mbc_ = ConstructMBC(rom, size);
 }

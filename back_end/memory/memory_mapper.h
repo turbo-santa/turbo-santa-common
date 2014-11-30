@@ -47,7 +47,7 @@ class MemoryMapper {
   static const int kMaxSize = 0x10000;
 
  private:
-  std::unique_ptr<InternalROM> internal_rom_; // 0x0000 - 0x0100
+  std::unique_ptr<InternalROM> internal_rom_ = std::unique_ptr<InternalROM>(new InternalROM()); // 0x0000 - 0x0100
   std::unique_ptr<MBC> mbc_; // rom_bank_0    0x0000 - 0x3fff
                              // rom_bank_n    0x4000 - 0x7fff
                              // cartridge_ram 0xa000 - 0xbfff
