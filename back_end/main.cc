@@ -25,6 +25,7 @@ static const vector<unsigned char> kNintendoLogo = {
 class TerminalScreen : public Screen {
  public:
   virtual void Draw(const ScreenRaster& raster) {
+    const int realized_width = std::min(COLS, LINES);
     for (int y = 0; y < ScreenRaster::kScreenHeight; y++) {
       for (int x = 0; x < ScreenRaster::kScreenWidth; x++) {
         unsigned char pixel_shade = raster.Get(y, x);
@@ -39,16 +40,7 @@ class TerminalScreen : public Screen {
           real_pixel = '#';
         }
 
-        // int actual_y = y * 2 * LINES / ScreenRaster::kScreenHeight - 20;
-        // if (actual_y < 0) {
-        //   actual_y = 0;
-        // }
-        // int actual_x = x * 2 * COLS / ScreenRaster::kScreenWidth - 170;
-        // if (actual_x < 0) {
-        //   actual_x = 0;
-        // }
-
-        move(y, x);
+        move(y * realized_width / ScreenRaster::kScreenHeight, x * 2 * realized_width / ScreenRaster::kScreenWidth);
         addch(real_pixel);
       }
     }
