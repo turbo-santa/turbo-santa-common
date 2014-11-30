@@ -124,7 +124,7 @@ class NoMBC : public MBC {
 class MBC1 : public MBC {
   public:
    MBC1(ROMBank rom_bank_0, std::vector<ROMBank> rom_bank_n, std::vector<RAMBank> ram_bank_n)
-       : rom_bank_0_(rom_bank_0), rom_bank_n_(rom_bank_n), ram_bank_n_(ram_bank_n) {}
+       : rom_bank_0_(rom_bank_0), rom_bank_n_(rom_bank_n, &bank_mode_register_), ram_bank_n_(ram_bank_n, &bank_mode_register_) {}
 
     virtual unsigned char Read(unsigned short address);
     virtual void Write(unsigned short address, unsigned char value);
@@ -165,7 +165,9 @@ class MBC1 : public MBC {
 
     class ROMBankN {
       public:
-       ROMBankN(std::vector<ROMBank> banks) : banks_(banks) {}
+       ROMBankN(std::vector<ROMBank> banks, BankModeRegister* bank_mode_register) : 
+           banks_(banks), bank_mode_register_(bank_mode_register) {}
+
         virtual unsigned char Read(unsigned short address) {
           return banks_[ComputeROMBank()].Read(address);
         }
@@ -189,7 +191,8 @@ class MBC1 : public MBC {
 
     class RAMBankN {
       public:
-       RAMBankN(std::vector<RAMBank> banks) : banks_(banks) {}
+       RAMBankN(std::vector<RAMBank> banks, BankModeRegister* bank_mode_register) : 
+           banks_(banks), bank_mode_register_(bank_mode_register) {}
 
         virtual unsigned char Read(unsigned short address) {
           return banks_[bank_mode_register_->GetRAMBank()].Read(address);
@@ -212,7 +215,7 @@ class MBC1 : public MBC {
     void SetRAMEnabled(unsigned char value);
     virtual void ForceWrite(unsigned short address, unsigned char value);
     
-    bool ram_enabled_ = false;
+    bool ram_enabled_ = true;
     BankModeRegister bank_mode_register_;
     ROMBank rom_bank_0_;
     ROMBankN rom_bank_n_;

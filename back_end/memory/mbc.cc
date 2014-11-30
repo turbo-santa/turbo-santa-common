@@ -217,17 +217,19 @@ unsigned char MBC1::ROMBankN::ComputeROMBank() {
 unsigned char MBC1::Read(unsigned short address) {
   if (0x0000 <= address && address <= 0x3fff) {
     return rom_bank_0_.Read(address - 0x0000);
-  } else if (0x4000 <= address && address <= 0x4000) {
+  } else if (0x4000 <= address && address <= 0x7fff) {
     return rom_bank_n_.Read(address - 0x4000);
   } else if (0xa000 <= address && address <= 0xbfff) {
     return rom_bank_n_.Read(address - 0xa000);
   }
-  LOG(FATAL) << "Read attempted outside of MBC region: " << address;
+  LOG(FATAL) << "Read attempted outside of MBC region: " << std::hex << address;
 }
 
 void MBC1::Write(unsigned short address, unsigned char value) {
   if (0x0000 <= address && address <= 0x1fff) {
     SetRAMEnabled(value);
+    LOG(INFO) << std::hex << 0x0000 + value << " was written to RAM enable region";
+    LOG(INFO) << "RAM enabled = " << ram_enabled_;
   } else if (0x2000 <= address && address <= 0x3fff) {
     bank_mode_register_.SetLowerBits(value);
   } else if (0x4000 <= address && address <= 0x5fff) {
@@ -241,7 +243,7 @@ void MBC1::Write(unsigned short address, unsigned char value) {
       // TODO(Brendan): Determine correct behavior when possible.
       // The documentation was not entirely clear as to what to do when the RAM
       // is written to and is not enabled.
-      LOG(ERROR) << "Write was attempted when either the RAM was disabled";
+      LOG(ERROR) << "Write was attempted when the RAM was disabled";
     }
   } else {
     LOG(FATAL) << "Write attempted outside of MBC region: " << address;

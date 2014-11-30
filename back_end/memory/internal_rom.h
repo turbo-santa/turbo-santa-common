@@ -54,6 +54,9 @@ class InternalROMFlag : public Flag {
   virtual void Write(unsigned short address, unsigned char value) {
     if (!is_set()) {
       Flag::Write(address, value);
+      if (is_set()) {
+        LOG(INFO) << "Internal ROM disabled";
+      }
     }
   }
 

@@ -68,6 +68,7 @@ unsigned int OpcodeExecutor::ReadInstruction() {
   } else {
     LOG(INFO) << "Fetched opcode: " << std::hex << opcode << " address: " << std::hex << opcode_address;
     LOG(INFO) << "B is " << std::hex << std::hex << 0x0000 + cpu_.bc_struct.rB;
+    LOG(INFO) << "C is " << std::hex << std::hex << 0x0000 + cpu_.bc_struct.rC;
     LOG(INFO) << "HL is " << std::hex << std::hex << 0x0000 + cpu_.rHL;
     opcode_struct = opcode_iter->second;
   }
@@ -96,14 +97,19 @@ void OpcodeExecutor::HandleInterrupts() {
     InterruptFlag* interrupt_flag = memory_mapper_.interrupt_flag();
     InterruptEnable* interrupt_enable = memory_mapper_.interrupt_enable();
     if (interrupt_flag->v_blank() && interrupt_enable->v_blank()) {
+      LOG(INFO) << "Handling V blank interrupt.";
       cpu_.rPC = 0x0040;
     } else if (interrupt_flag->lcd_stat() && interrupt_enable->lcd_stat()) {
+      LOG(INFO) << "Handling LCD stat interrupt.";
       cpu_.rPC = 0x0048;
     } else if (interrupt_flag->timer() && interrupt_enable->timer()) {
+      LOG(INFO) << "Handling timer interrupt.";
       cpu_.rPC = 0x0050;
     } else if (interrupt_flag->serial() && interrupt_enable->serial()) {
+      LOG(INFO) << "Handling serial interrupt.";
       cpu_.rPC = 0x0058;
     } else if (interrupt_flag->joypad() && interrupt_enable->joypad()) {
+      LOG(INFO) << "Handling joypad interrupt.";
       cpu_.rPC = 0x0060;
     }
   }

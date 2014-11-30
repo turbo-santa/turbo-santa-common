@@ -41,7 +41,7 @@ unsigned char MemoryMapper::Read(unsigned short address) {
   } else if (sprite_attribute_table_->InRange(address)) {
     return sprite_attribute_table_->Read(address);
   } else if (not_usable_->InRange(address)) {
-    LOG(ERROR) << "Attempted read in non-usable region, address = " << address;
+    LOG(ERROR) << "Attempted read in non-usable region, address = " << std::hex << address;
     return 0;
     return not_usable_->Read(address);
   } else if (interrupt_flag_->InRange(address)) {
@@ -57,7 +57,7 @@ unsigned char MemoryMapper::Read(unsigned short address) {
   } else if (interrupt_enable_->InRange(address)) {
     return interrupt_enable_->Read(address);
   } else {
-    LOG(FATAL) << "Read was attempted at non-existent memory address: " << address;
+    LOG(FATAL) << "Read was attempted at non-existent memory address: " << std::hex << address;
   }
 }
 
@@ -75,8 +75,8 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
   } else if (sprite_attribute_table_->InRange(address)) {
     sprite_attribute_table_->Write(address, value);
   } else if (not_usable_->InRange(address)) {
-    LOG(ERROR) << "Attempted write in non-usable region, address = " << address 
-        << " value = " << value;
+    LOG(ERROR) << "Attempted write in non-usable region, address: " << std::hex << address 
+        << " value: " << std::hex << 0x0000 + value;
     not_usable_->Write(address, value);
   } else if (interrupt_flag_->InRange(address)) {
     interrupt_flag_->Write(address, value);
@@ -91,7 +91,7 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
   } else if (interrupt_enable_->InRange(address)) {
     interrupt_enable_->Write(address, value);
   } else {
-    LOG(FATAL) << "Write was attempted at non-existent memory address: " << address;
+    LOG(FATAL) << "Write was attempted at non-existent memory address: " << std::hex << address;
   }
 }
 

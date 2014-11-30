@@ -867,13 +867,12 @@ int JumpHL(handlers::ExecutorContext* context) {
 int JumpRelative(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  instruction_ptr += GetParameterValue(context->memory_mapper, instruction_ptr) + 1;
-  LOG(INFO) << "Jumping to " << instruction_ptr;
+  instruction_ptr += 1 + static_cast<char>(GetParameterValue(context->memory_mapper, instruction_ptr));
+  LOG(INFO) << "Jumping to " << std::hex << instruction_ptr;
   return instruction_ptr;
 }
 
 int JumpRelativeConditional(handlers::ExecutorContext* context) {
-  LOG(INFO) << "Called JumpRelativeConditional";
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
@@ -927,10 +926,8 @@ void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg)
 void PopRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
   unsigned short* rSP = &cpu->rSP;
   unsigned short msb = memory_mapper->Read(*rSP);
-  LOG(INFO) << "Popping, msb is " << std::hex << msb;
   ++*rSP;
   unsigned short lsb = memory_mapper->Read(*rSP);
-  LOG(INFO) << "Popping, lsb is " << std::hex << lsb;
   ++*rSP;
   *reg = (msb << 8) | lsb;
 }
@@ -941,9 +938,10 @@ int Call(handlers::ExecutorContext* context) {
   GB_CPU* cpu = context->cpu;
   unsigned short* rPC = &cpu->rPC;
 
+  unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
+  *rPC += 2; // Must take the parameter into account.
   PushRegister(context->memory_mapper, cpu, rPC);
 
-  unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
   LOG(INFO) << "Calling address: " << std::hex << address;
   instruction_ptr = address;
   return instruction_ptr;
@@ -1003,12 +1001,14 @@ int Restart(handlers::ExecutorContext* context) {
 }
 
 int Return(handlers::ExecutorContext* context) {
+  LOG(INFO) << "Returning";
   Opcode opcode = *context->opcode;
   PopRegister(context->memory_mapper, context->cpu, &context->cpu->rPC);
   return context->cpu->rPC;
 }
 
 int ReturnConditional(handlers::ExecutorContext* context) {
+  LOG(INFO) << "Conditional return";
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
@@ -1036,16 +1036,10 @@ int ReturnConditional(handlers::ExecutorContext* context) {
 }
 
 int ReturnInterrupt(handlers::ExecutorContext* context) {
-  unsigned short instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  // TODO(Brendan, Diego): Implement call stack.
-  unsigned short address = 0; // = context->cpu->rSP[0];
-  context->cpu->rSP -= 2;
-  instruction_ptr = address;
+  LOG(INFO) << "Returning from interrupt.";
   ExecutorContext new_context(context);
-  new_context.instruction_ptr = &instruction_ptr;
-  EI(&new_context);
-  return instruction_ptr;
+  EI(context);
+  return Return(context);
 }
 
 int LoadN(handlers::ExecutorContext* context) {
