@@ -23,5 +23,6 @@ Makefile.in
 **/.deps
 .deps
 *.bin
+*.gb
 compile
 test-driver

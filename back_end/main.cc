@@ -1,11 +1,17 @@
 #include "back_end/config.h"
 #include <curses.h>
 
+#include <algorithm>
 #include <vector>
+
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
 
 #include "back_end/clocktroller/clocktroller.h"
 #include "back_end/graphics/screen.h"
 
+using std::string;
 using std::vector;
 using back_end::clocktroller::Clocktroller;
 using back_end::graphics::Screen;
@@ -57,11 +63,40 @@ vector<unsigned char> BuildROM() {
   return rom;
 }
 
-int main() {
-  initscr();
+vector<unsigned char> ReadROM(string file_name) {
+  vector<unsigned char> rom;
+  FILE* file = fopen(file_name.c_str(), "r");
+  if (file == nullptr) {
+    LOG(FATAL) << "Cannot read file: " << strerror(errno);
+  }
+
+  const int buffer_size = 1024;
+  vector<unsigned char> buffer(buffer_size);
+  int amount_read = 0;
+  do {
+    amount_read = fread(buffer.data(), 1, buffer_size, file);
+    // TODO(Brendan): Should not copy the entire buffer since buffer may not be
+    // entirely filled.
+    rom.insert(rom.end(), buffer.begin(), buffer.end());
+  } while (amount_read == buffer_size);
+
+  fclose(file);
+  return rom;
+}
+
+int main(int argc, char* argv[]) {
+  if (argc != 2) {
+    printf("Please provide the name of the ROM\n");
+    return -1;
+  }
+
   TerminalScreen terminal_screen;
-  vector<unsigned char> rom = BuildROM();
+  vector<unsigned char> rom = ReadROM(argv[1]);
+  LOG(INFO) << "Finished reading rom";
   Clocktroller clocktroller(&terminal_screen, rom.data(), rom.size());
+  LOG(INFO) << "Clocktroller built";
+
+  initscr();
   clocktroller.Setup();
   clocktroller.Start();
   clocktroller.WaitForThreads();

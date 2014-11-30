@@ -31,27 +31,46 @@ MBC* CreateMBC1(unsigned char* program_rom, long size) {
 
 void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, ROMBank* rom_bank_1) {
   int address = 0;
-  for (; address < MBC::kROMBank0Size && address < rom_size; address++) {
-    rom_bank_0->memory_[address] = rom[address];
+  int i = 0;
+  while (i < MBC::kROMBank0Size && address < rom_size) {
+    rom_bank_0->memory_[i] = rom[address];
+    address++;
+    i++;
   }
 
-  for (; address < MBC::kROMBankNSize && address < rom_size; address++) {
-    rom_bank_1->memory_[address] = rom[address];
+  i = 0;
+  while (i < MBC::kROMBankNSize && address < rom_size) {
+    rom_bank_1->memory_[i] = rom[address];
+    address++;
+    i++;
   }
 }
 
 void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, std::vector<ROMBank>* rom_bank_n) {
-  int address = 0;
-  for (; address < MBC::kROMBank0Size && address < rom_size; address++) {
-    rom_bank_0->memory_[address] = rom[address];
-  }
+  LOG(INFO) << "Creating ROM banks";
+  LOG(INFO) << "ROM size = " << rom_size;
 
+  int address = 0;
+  int i = 0;
+  while (i < MBC::kROMBank0Size && address < rom_size) {
+    rom_bank_0->memory_[i] = rom[address];
+    address++;
+    i++;
+  }
+  LOG(INFO) << "Created ROM 0";
+
+  int n = 1;
   while (address < rom_size) {
     ROMBank rom_bank;
-    for (; address < MBC::kROMBankNSize && address < rom_size; address++) {
-      rom_bank.memory_[address] = rom[address];
+    i = 0;
+    while (i < MBC::kROMBankNSize && address < rom_size) {
+      rom_bank.memory_[i] = rom[address];
+      address++;
+      i++;
     }
     rom_bank_n->push_back(rom_bank);
+    LOG(INFO) << "Created ROM " <<  n;
+    n++;
   }
 }
 
@@ -88,10 +107,12 @@ unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size) {
     case MBC::ROM_ONLY:
     case MBC::ROM_AND_RAM:
     case MBC::ROM_AND_RAM_BATTERY:
+      LOG(INFO) << "Creating NoMBC";
       return unique_ptr<MBC>(CreateNoMBC(program_rom, size));
     case MBC::MBC1:
     case MBC::MBC1_WITH_RAM:
     case MBC::MBC1_WITH_RAM_BATTERY:
+      LOG(INFO) << "Creating MBC1";
       return unique_ptr<MBC>(CreateMBC1(program_rom, size));
     case MBC::UNSUPPORTED:
     default:

@@ -25,20 +25,12 @@ class NullScreen : public Screen {
 
 OpcodeExecutor::OpcodeExecutor() :
     graphics_controller_(&memory_mapper_, new NullScreen()) {
-  // TODO(Diego): It acutally starts at something like 0x100.
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
-}
-
-OpcodeExecutor::OpcodeExecutor(unsigned char* rom, long size) :
-    graphics_controller_(&memory_mapper_, new NullScreen()) {
-  cpu_.rPC = 0x0000;
-  opcode_map = CreateOpcodeMap(&cpu_);
-  memory_mapper_ = MemoryMapper(rom, size);
 }
 
 OpcodeExecutor::OpcodeExecutor(Screen* screen, unsigned char* rom, long rom_size) : 
-    memory_mapper_(true, rom, rom_size), graphics_controller_(&memory_mapper_, screen) {
+    memory_mapper_(rom, rom_size, true), graphics_controller_(&memory_mapper_, screen) {
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
 }

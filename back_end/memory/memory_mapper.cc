@@ -15,16 +15,11 @@ MemoryMapper::MemoryMapper() {
   mbc_ = unique_ptr<MBC>(CreateNoMBC(&data, 1));
 }
 
-MemoryMapper::MemoryMapper(bool use_internal_rom, unsigned char* rom, long size) {
+MemoryMapper::MemoryMapper(unsigned char* rom, long size, bool use_internal_rom) {
   if (!use_internal_rom) {
     internal_rom_flag_->set();
   }
 
-  mbc_ = unique_ptr<MBC>(CreateNoMBC(rom, size));
-}
-
-MemoryMapper::MemoryMapper(unsigned char* rom, long size) {
-  internal_rom_flag_->set();
   mbc_ = ConstructMBC(rom, size);
 }
 
