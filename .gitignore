@@ -8,6 +8,7 @@
 *.status
 *.trs
 *.txt
+*.old
 test
 test_bin
 back_end/turbo_test

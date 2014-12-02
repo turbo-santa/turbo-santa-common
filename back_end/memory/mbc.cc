@@ -232,6 +232,7 @@ void MBC1::Write(unsigned short address, unsigned char value) {
     LOG(INFO) << "RAM enabled = " << ram_enabled_;
   } else if (0x2000 <= address && address <= 0x3fff) {
     bank_mode_register_.SetLowerBits(value);
+    LOG(INFO) << "ROM bank " << static_cast<int>(bank_mode_register_.GetROMBank()) << " was selected";
   } else if (0x4000 <= address && address <= 0x5fff) {
     bank_mode_register_.SetUpperBits(value);
   } else if (0x6000 <= address && address <= 0x7fff) {
