@@ -997,6 +997,11 @@ int Restart(handlers::ExecutorContext* context) {
     case 0xC7:
       instruction_ptr = accum;
   }
+
+  GB_CPU* cpu = context->cpu;
+  PushRegister(context->memory_mapper, cpu, &cpu->rPC);
+
+  LOG(INFO) << "Restarting at address: " << std::hex << instruction_ptr;
   return instruction_ptr;
 }
 

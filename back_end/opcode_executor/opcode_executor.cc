@@ -98,18 +98,23 @@ void OpcodeExecutor::HandleInterrupts() {
     InterruptEnable* interrupt_enable = memory_mapper_.interrupt_enable();
     if (interrupt_flag->v_blank() && interrupt_enable->v_blank()) {
       LOG(INFO) << "Handling V blank interrupt.";
+      interrupt_flag->set_v_blank(false);
       cpu_.rPC = 0x0040;
     } else if (interrupt_flag->lcd_stat() && interrupt_enable->lcd_stat()) {
       LOG(INFO) << "Handling LCD stat interrupt.";
+      interrupt_flag->set_lcd_stat(false);
       cpu_.rPC = 0x0048;
     } else if (interrupt_flag->timer() && interrupt_enable->timer()) {
       LOG(INFO) << "Handling timer interrupt.";
+      interrupt_flag->set_timer(false);
       cpu_.rPC = 0x0050;
     } else if (interrupt_flag->serial() && interrupt_enable->serial()) {
       LOG(INFO) << "Handling serial interrupt.";
+      interrupt_flag->set_serial(false);
       cpu_.rPC = 0x0058;
     } else if (interrupt_flag->joypad() && interrupt_enable->joypad()) {
       LOG(INFO) << "Handling joypad interrupt.";
+      interrupt_flag->set_joypad(false);
       cpu_.rPC = 0x0060;
     }
   }

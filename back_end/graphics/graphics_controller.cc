@@ -123,7 +123,9 @@ void GraphicsController::WriteToScreen() {
   const int x_offset = graphics_flags()->scroll_x()->flag();
   // TODO(Brendan): This is a hack to get the boot ROM working. Graphics
   // should probably have portions of code executed ever clock cycle.
-  if (graphics_flags()->ly_coordinate()->flag() == 0x90) {
+  if (graphics_flags()->ly_coordinate()->flag() == 0x94) {
+    graphics_flags()->ly_coordinate()->set_flag(0x93);
+  } else if (graphics_flags()->ly_coordinate()->flag() == 0x90) {
     graphics_flags()->ly_coordinate()->set_flag(0x94);
   } else {
     graphics_flags()->ly_coordinate()->set_flag(0x90);
