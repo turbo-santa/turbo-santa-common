@@ -579,6 +579,7 @@ int NOP(handlers::ExecutorContext* context) {
 int Halt(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
+  LOG(WARNING) << "UNINPLEMENTED OPCODE: Halt";
   // TODO: We should actually halt instead of just nop
   return instruction_ptr;
 }
@@ -586,6 +587,7 @@ int Halt(handlers::ExecutorContext* context) {
 int Stop(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
+  LOG(WARNING) << "UNINPLEMENTED OPCODE: Stop";
   // TODO: We should actually stop instead of just nop
   return instruction_ptr;
 }
