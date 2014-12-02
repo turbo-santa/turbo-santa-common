@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include "back_end/graphics/dma_transfer.h"
 #include "back_end/graphics/graphics_flags.h"
 #include "back_end/memory/echo_segment.h"
 #include "back_end/memory/internal_rom.h"
@@ -25,6 +26,12 @@ class ClocktrollerTest;
 } // namespace clocktroller
 
 namespace back_end {
+namespace graphics {
+class DMATransfer;
+} // namespace graphics
+} // namespace back_end
+
+namespace back_end {
 namespace memory {
 
 class MemoryMapper {
@@ -35,6 +42,10 @@ class MemoryMapper {
   virtual unsigned char Read(unsigned short address);
 
   virtual void Write(unsigned short address, unsigned char value);
+
+  void Enable();
+
+  void Disable();
 
   InternalROMFlag* internal_rom_flag() { return internal_rom_flag_.get(); }
   InterruptFlag* interrupt_flag() { return interrupt_flag_.get(); }
@@ -60,6 +71,7 @@ class MemoryMapper {
   std::unique_ptr<NullMemorySegment> not_usable_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xfea0, 0xfeff));
   std::unique_ptr<InterruptFlag> interrupt_flag_ = std::unique_ptr<InterruptFlag>(new InterruptFlag()); // 0xff0f
   std::unique_ptr<graphics::GraphicsFlags> graphics_flags_ = std::unique_ptr<graphics::GraphicsFlags>(new graphics::GraphicsFlags());
+  std::unique_ptr<graphics::DMATransfer> dma_transfer_ = std::unique_ptr<graphics::DMATransfer>(new graphics::DMATransfer(this));
   std::unique_ptr<InternalROMFlag> internal_rom_flag_ = std::unique_ptr<InternalROMFlag>(new InternalROMFlag()); // 0xff50
   std::unique_ptr<NullMemorySegment> io_ports_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xff00, 0xff7f));
   std::unique_ptr<RAMSegment> high_ram_ = std::unique_ptr<RAMSegment>(new RAMSegment(0xff80, 0xfffe));
@@ -67,6 +79,32 @@ class MemoryMapper {
 
   friend class test_harness::TestHarness;
   friend class back_end::clocktroller::ClocktrollerTest;
+};
+
+class DMATransfer : public SingleAddressSegment {
+ public:
+  DMATransfer(MemoryMapper* mapper) : SingleAddressSegment(0xff46), mapper_(mapper) {}
+
+  virtual unsigned char Read(unsigned short) { return 0xff; }
+
+  virtual void Write(unsigned short, unsigned char value) {
+    mapper_->Disable();
+
+    // TODO(Brendan): This should actually take the expected amount of time.
+    unsigned short source_address = value * 0x100;
+    unsigned short destination_address = 0xfe00;
+    while (destination_address <= 0xfe9f) {
+      unsigned char value = mapper_->Read(source_address);
+      mapper_->Write(destination_address, value);
+      source_address++;
+      destination_address++;
+    }
+
+    mapper_->Enable();
+  }
+
+ private:
+  MemoryMapper* mapper_;
 };
 
 } // namespace memory

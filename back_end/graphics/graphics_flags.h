@@ -154,12 +154,14 @@ class GraphicsFlags : public memory::MemorySegment {
     if (lcd_control_.InRange(address)) {
       return lcd_control_.Read(address);
     } else if (lcd_status_.InRange(address)) {
+      LOG(INFO) << "Checked LCD Status.";
       return lcd_status_.Read(address);
     } else if (scroll_y_.InRange(address)) {
       return scroll_y_.Read(address);
     } else if (scroll_x_.InRange(address)) {
       return scroll_x_.Read(address);
     } else if (ly_coordinate_.InRange(address)) {
+      LOG(INFO) << "Checked LY LYCoordinate";
       return ly_coordinate_.Read(address);
     } else if (ly_compare_.InRange(address)) {
       return ly_compare_.Read(address);
@@ -181,27 +183,48 @@ class GraphicsFlags : public memory::MemorySegment {
   virtual void Write(unsigned short address, unsigned char value) {
     if (lcd_control_.InRange(address)) {
       lcd_control_.Write(address, value);
+      LOG(INFO) << "LCD control written to.";
+      LOG(INFO) << "lcd_control = " << lcd_control_.lcd_display_enable();
+      LOG(INFO) << "window_tile_map_display_select = " << lcd_control_.window_tile_map_display_select();
+      LOG(INFO) << "window_display_enable = " << lcd_control_.window_display_enable();
+      LOG(INFO) << "bg_window_tile_data_select = " << lcd_control_.bg_window_tile_data_select();
+      LOG(INFO) << "bg_tile_map_display_select = " << lcd_control_.bg_tile_map_display_select();
+      LOG(INFO) << "sprite_size = " << lcd_control_.sprite_size();
+      LOG(INFO) << "sprite_display_enable = " << lcd_control_.sprite_display_enable();
+      LOG(INFO) << "bg_display = " << lcd_control_.bg_display();
     } else if (lcd_status_.InRange(address)) {
       lcd_status_.Write(address, value);
+      LOG(INFO) << "LCD status written to.";
+      LOG(INFO) << "coincidence_interrupt = " << lcd_status_.coincidence_interrupt();
+      LOG(INFO) << "oam_interrupt = " << lcd_status_.oam_interrupt();
+      LOG(INFO) << "v_blank_interrupt = " << lcd_status_.v_blank_interrupt();
+      LOG(INFO) << "h_blank_interrupt = " << lcd_status_.h_blank_interrupt();
     } else if (scroll_y_.InRange(address)) {
       scroll_y_.Write(address, value);
+      LOG(INFO) << "Scroll Y written to.";
     } else if (scroll_x_.InRange(address)) {
       scroll_x_.Write(address, value);
+      LOG(INFO) << "Scroll X written to.";
     } else if (ly_coordinate_.InRange(address)) {
       ly_coordinate_.Write(address, value);
     } else if (ly_compare_.InRange(address)) {
       ly_compare_.Write(address, value);
+      LOG(INFO) << "LY Compare written to, value = " << value;
     } else if (window_y_position_.InRange(address)) {
       window_y_position_.Write(address, value);
+      LOG(INFO) << "Window Y Position set.";
     } else if (window_x_position_.InRange(address)) {
+      LOG(INFO) << "Window X Position set.";
       window_x_position_.Write(address, value);
     } else if (background_palette_.InRange(address)) {
       background_palette_.Write(address, value);
       LOG(INFO) << std::hex << 0x0000 + value << " was written to the background palette";
     } else if (object_palette_0_.InRange(address)) {
       object_palette_0_.Write(address, value);
+      LOG(INFO) << std::hex << 0x0000 + value << " was written to the object palette 0 palette";
     } else if (object_palette_1_.InRange(address)) {
       object_palette_1_.Write(address, value);
+      LOG(INFO) << std::hex << 0x0000 + value << " was written to the object palette 1 palette";
     } else {
       LOG(FATAL) << "Address outside of range: " << address;
     }

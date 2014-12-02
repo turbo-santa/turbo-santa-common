@@ -23,6 +23,12 @@ MemoryMapper::MemoryMapper(unsigned char* rom, long size, bool use_internal_rom)
   mbc_ = ConstructMBC(rom, size);
 }
 
+void MemoryMapper::Enable() {
+}
+
+void MemoryMapper::Disable() {
+}
+
 unsigned char MemoryMapper::Read(unsigned short address) {
   if (!internal_rom_flag_->is_set() && internal_rom_->InRange(address)) {
     return internal_rom_->Read(address);
@@ -48,6 +54,8 @@ unsigned char MemoryMapper::Read(unsigned short address) {
     return interrupt_flag_->Read(address);
   } else if (graphics_flags_->InRange(address)) {
     return graphics_flags_->Read(address);
+  } else if (dma_transfer_->InRange(address)) {
+    return dma_transfer_->Read(address);
   } else if (internal_rom_flag_->InRange(address)) {
     return internal_rom_flag_->Read(address);
   } else if (io_ports_->InRange(address)) {
@@ -82,6 +90,8 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
     interrupt_flag_->Write(address, value);
   } else if (graphics_flags_->InRange(address)) {
     graphics_flags_->Write(address, value);
+  } else if (dma_transfer_->InRange(address)) {
+    dma_transfer_->Write(address, value);
   } else if (internal_rom_flag_->InRange(address)) {
     internal_rom_flag_->Write(address, value);
   } else if (io_ports_->InRange(address)) {

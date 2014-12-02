@@ -39,6 +39,8 @@ class SingleAddressSegment : public MemorySegment {
  public:
   SingleAddressSegment(unsigned short address) : address_(address) {}
 
+  virtual bool InRange(unsigned short address) { return address == address_; }
+
   unsigned short address() { return address_; }
 
  private:
