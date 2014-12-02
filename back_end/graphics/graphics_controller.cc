@@ -140,6 +140,10 @@ void GraphicsController::WriteToScreen() {
 }
 
 void GraphicsController::RenderLowPrioritySprites() {
+  if (!graphics_flags()->lcd_control()->sprite_display_enable()) {
+    return;
+  }
+  LOG(INFO) << "Rendering low priority sprites.";
   for (int i = 0; i < OAMSegment::kAttributeNumber; i++) {
     SpriteAttribute* sprite_attribute = oam_segment()->sprite_attribute(i);
     if (!sprite_attribute->over_background()) {
@@ -149,6 +153,10 @@ void GraphicsController::RenderLowPrioritySprites() {
 }
 
 void GraphicsController::RenderHighPrioritySprites() {
+  if (!graphics_flags()->lcd_control()->sprite_display_enable()) {
+    return;
+  }
+  LOG(INFO) << "Rendering high priority sprites.";
   for (int i = 0; i < OAMSegment::kAttributeNumber; i++) {
     SpriteAttribute* sprite_attribute = oam_segment()->sprite_attribute(i);
     if (sprite_attribute->over_background()) {
