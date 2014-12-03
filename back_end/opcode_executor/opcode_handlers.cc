@@ -311,7 +311,7 @@ int And8BitLiteral(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
   PrintInstruction("AND", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr;
+  return instruction_ptr + 1;
 }
 
 int Or8Bit(handlers::ExecutorContext* context) {
@@ -347,7 +347,7 @@ int Or8BitLiteral(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
   PrintInstruction("OR", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr;
+  return instruction_ptr + 1;
 }
 
 int Xor8Bit(handlers::ExecutorContext* context) {
@@ -383,7 +383,7 @@ int Xor8BitLiteral(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
   PrintInstruction("XOR", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr;
+  return instruction_ptr + 1;
 }
 
 int Cp8Bit(handlers::ExecutorContext* context) {
@@ -728,7 +728,7 @@ int RLCAddress(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
   PrintInstruction("RLC", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int RL(handlers::ExecutorContext* context) {
@@ -844,7 +844,7 @@ int SLAAddress(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
   PrintInstruction("SLA", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int SRA(handlers::ExecutorContext* context) {
@@ -1384,7 +1384,7 @@ int LoadHNA(handlers::ExecutorContext* context) {
   memory_mapper->Write(address, value);
   LOG(INFO) << std::hex << 0x0000 + value << " was written to " << std::hex << address;
   
-  PrintInstruction("LDH", Hex(GetParameterValue(memory_mapper, instruction_ptr)), "A");
+  PrintInstruction("LD", "(0xff00 +" + Hex(GetParameterValue(memory_mapper, instruction_ptr)) + ")", "A");
   return instruction_ptr + 1;
 }
 
@@ -1394,7 +1394,7 @@ int LoadHAN(handlers::ExecutorContext* context) {
   MemoryMapper* memory_mapper = context->memory_mapper;
   context->cpu->flag_struct.rA = memory_mapper->Read(0xFF00 + GetParameterValue(memory_mapper, instruction_ptr));
   
-  PrintInstruction("LDH", "A", Hex(GetParameterValue(memory_mapper, instruction_ptr)));
+  PrintInstruction("LD", "A", "(0xff00 + " + Hex(GetParameterValue(memory_mapper, instruction_ptr)) + ")");
   return instruction_ptr + 1;
 }
 
