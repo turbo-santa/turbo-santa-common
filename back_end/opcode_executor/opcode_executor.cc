@@ -36,9 +36,6 @@ OpcodeExecutor::OpcodeExecutor(Screen* screen, unsigned char* rom, long rom_size
 }
 
 unsigned int OpcodeExecutor::ReadInstruction() {
-  if (!memory_mapper_.internal_rom_flag()->is_set()) {
-    cpu_.rPC %= 0x100;
-  }
   HandleInterrupts(); // Before a fetch we must check for and handle interrupts.
   unsigned short opcode_address = cpu_.rPC;
   unsigned short instruction_ptr = cpu_.rPC;

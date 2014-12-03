@@ -97,7 +97,7 @@ class UpperTileData : public TileData {
 
   virtual Tile* tile(unsigned char value) {
     // Actually value is signed so we have to shift it.
-    return TileData::tile(value + 128);
+    return TileData::tile(static_cast<char>(value) + 0x80);
   }
 };
 

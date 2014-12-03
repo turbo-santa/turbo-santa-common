@@ -100,18 +100,22 @@ void GraphicsController::Draw() {
   // for (int y = 0; y < kScreenBufferSize; y++) {
   //   for (int x = 0; x < kScreenBufferSize; x++) {
   //     unsigned char pixel_shade = screen_buffer_[x + y * kScreenBufferSize];
-  //     char real_pixel;
-  //     if (pixel_shade != 0) {
-  //       real_pixel = '#';
-  //     } else {
-  //       real_pixel = ' ';
-  //     }
+  //       char real_pixel;
+  //       if (pixel_shade <= 64) {
+  //         real_pixel = ' ';
+  //       } else if (pixel_shade <= 128) {
+  //         real_pixel = '.';
+  //       } else if (pixel_shade <= 192) {
+  //         real_pixel = '*';
+  //       } else {
+  //         real_pixel = '#';
+  //       }
 
-  //     move(y * 3 * LINES / kScreenBufferSize - 10, x * 3 * COLS / kScreenBufferSize - 40);
+  //     move(y * LINES / kScreenBufferSize, x * COLS / kScreenBufferSize);
   //     addch(real_pixel);
   //   }
   // }
-  // refresh();
+  refresh();
   RenderWindow();
   RenderHighPrioritySprites();
   WriteToScreen();
@@ -183,6 +187,7 @@ void GraphicsController::RenderBackground() {
   if (lcd_control->bg_window_tile_data_select()) {
     tile_data = vram_segment()->lower_tile_data();
   } else {
+    LOG(INFO) << "Upper tile data selected for rendering background.";
     tile_data = vram_segment()->upper_tile_data();
   }
 

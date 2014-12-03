@@ -41,7 +41,7 @@ class TerminalScreen : public Screen {
         } else if (pixel_shade <= 128) {
           real_pixel = '.';
         } else if (pixel_shade <= 192) {
-          real_pixel = '%';
+          real_pixel = '*';
         } else {
           real_pixel = '#';
         }
