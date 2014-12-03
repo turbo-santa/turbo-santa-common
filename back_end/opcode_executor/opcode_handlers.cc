@@ -1077,6 +1077,8 @@ int LoadN(handlers::ExecutorContext* context) {
   Opcode* opcode = context->opcode;
   unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
   *((unsigned char*) opcode->reg1) = value;
+  
+  PrintInstruction("LD", RegisterName8(opcode->reg1, context->cpu), Hex(value));
   return instruction_ptr + 1;
 }
 
@@ -1086,6 +1088,8 @@ int LoadRR8Bit(handlers::ExecutorContext* context) {
   unsigned char* reg1 = (unsigned char*)opcode.reg1;
   unsigned char* reg2 = (unsigned char*)opcode.reg2;
   *((unsigned char*) reg1) = *((unsigned char*) reg2);
+  
+  PrintInstruction("LD", RegisterName8(opcode.reg1, context->cpu), RegisterName8(opcode.reg2, context->cpu));
   return instruction_ptr;
 }
 
@@ -1094,12 +1098,16 @@ int LoadRR8BitAddress(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   unsigned char* reg1 = (unsigned char*) opcode.reg1;
   *reg1 = context->memory_mapper->Read(*opcode.reg2);
+  
+  PrintInstruction("LD", RegisterName8(opcode.reg1, context->cpu), "(HL)");
   return instruction_ptr;
 }
 
 int LoadRR8BitIntoAddress(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   context->memory_mapper->Write(*opcode.reg1, *opcode.reg2);
+  
+  PrintInstruction("LD", "(HL)", RegisterName8(opcode.reg2, context->cpu));
   return *context->instruction_ptr;
 }
   
@@ -1108,6 +1116,8 @@ int Load8BitLiteral(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   unsigned short val = (unsigned short)GetParameterValue(context->memory_mapper, instruction_ptr);
   context->memory_mapper->Write(*opcode.reg1, val);
+  
+  PrintInstruction("LD", "(HL)", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 
 }
@@ -1116,6 +1126,8 @@ int LoadRR16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   *opcode.reg1 = *opcode.reg2;
+  
+  PrintInstruction("LD", RegisterName16(opcode.reg1, context->cpu), RegisterName16(opcode.reg2, context->cpu));
   return instruction_ptr;
 }
 
@@ -1123,6 +1135,8 @@ int LoadAN(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(*opcode.reg1);
+  
+  PrintInstruction("LD", "(" + RegisterName16(opcode.reg1, context->cpu) + ")", "A");
   return instruction_ptr;
 }
 
@@ -1131,6 +1145,8 @@ int LoadAN16BitLiteral(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
   context->cpu->flag_struct.rA = context->memory_mapper->Read(address);
+  
+  PrintInstruction("LD", "(" + Hex(address) + ")", "A");
   return instruction_ptr + 2;
 }
   
@@ -1138,6 +1154,8 @@ int LoadAN8BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = GetParameterValue(context->memory_mapper, instruction_ptr);
+  
+  PrintInstruction("LD", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 }
 
@@ -1145,6 +1163,8 @@ int LoadNA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   *opcode.reg1 = (unsigned char)context->cpu->flag_struct.rA;
+  
+  PrintInstruction("LD", RegisterName8(opcode.reg1, context->cpu), "A");
   return instruction_ptr;
 }
 
@@ -1152,6 +1172,8 @@ int LoadNAAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   context->memory_mapper->Write(*opcode.reg1, context->cpu->flag_struct.rA);
+  
+  PrintInstruction("LD", "(" + RegisterName16(opcode.reg1, context->cpu) + ")", "A");
   return instruction_ptr;
 }
   
@@ -1159,6 +1181,8 @@ int LoadNA16BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
   context->memory_mapper->Write(address, context->cpu->flag_struct.rA);
+  
+  PrintInstruction("LD", Hex(address), "A");
   return instruction_ptr + 2;
 }
 
@@ -1166,6 +1190,8 @@ int LoadAC(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(0xFF00 + context->cpu->bc_struct.rC);
+  
+  PrintInstruction("LD", "A", "(C)");
   return instruction_ptr;
 }
 
@@ -1173,6 +1199,8 @@ int LoadCA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   context->memory_mapper->Write(0xFF00 + context->cpu->bc_struct.rC, context->cpu->flag_struct.rA);
+  
+  PrintInstruction("LD", "(C)", "A");
   return instruction_ptr;
 }
 
