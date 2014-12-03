@@ -42,8 +42,7 @@ unsigned char NthBit(unsigned int byte, int n) {
   return (byte >> n) & 1;
 }
 
-template<typename T>
-string Hex(T i) {
+string Hex(unsigned short i) {
   std::stringstream stream;
   stream << "0x" << std::hex << i;
   return stream.str();
@@ -1205,6 +1204,8 @@ int LoadSPHL(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   context->cpu->rSP = context->cpu->rHL;
+  
+  PrintInstruction("LD", "SP", "HL");
   return instruction_ptr;
 }
 
@@ -1222,7 +1223,8 @@ int LoadHLSP(handlers::ExecutorContext* context) {
   context->cpu->rHL = context->cpu->rSP + val;
   context->cpu->flag_struct.rF.Z = 0;
   SetNFlag(false, context->cpu);
-
+  
+  PrintInstruction("LDHL", "SP", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 }
 
