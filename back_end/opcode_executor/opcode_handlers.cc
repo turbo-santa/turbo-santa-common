@@ -1027,6 +1027,8 @@ int Restart(handlers::ExecutorContext* context) {
   PushRegister(context->memory_mapper, cpu, &cpu->rPC);
 
   LOG(INFO) << "Restarting at address: " << std::hex << instruction_ptr;
+  
+  PrintInstruction("RST", Hex(opcode.opcode_name));
   return instruction_ptr;
 }
 
@@ -1034,6 +1036,7 @@ int Return(handlers::ExecutorContext* context) {
   LOG(INFO) << "Returning";
   Opcode opcode = *context->opcode;
   PopRegister(context->memory_mapper, context->cpu, &context->cpu->rPC);
+  PrintInstruction("RET");
   return context->cpu->rPC;
 }
 
@@ -1043,21 +1046,25 @@ int ReturnConditional(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
     case 0xC0:
+      PrintInstruction("RET", "NZ");
       if (!context->cpu->flag_struct.rF.Z) {
         return Return(context);
       }
       return instruction_ptr;
     case 0xC8:
+      PrintInstruction("RET", "Z");
       if (context->cpu->flag_struct.rF.Z) {
         return Return(context);
       }
       return instruction_ptr;
     case 0xD0:
+      PrintInstruction("RET", "NC");
       if (!context->cpu->flag_struct.rF.C) {
         return Return(context);
       }
       return instruction_ptr;
     case 0xD8:
+      PrintInstruction("RET", "C");
       if (context->cpu->flag_struct.rF.C) {
         return Return(context);
       }
@@ -1069,6 +1076,8 @@ int ReturnInterrupt(handlers::ExecutorContext* context) {
   LOG(INFO) << "Returning from interrupt.";
   ExecutorContext new_context(context);
   EI(context);
+  
+  PrintInstruction("RETI");
   return Return(context);
 }
 
