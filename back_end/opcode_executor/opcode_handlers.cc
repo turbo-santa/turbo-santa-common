@@ -164,7 +164,7 @@ int Add8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   Add8BitImpl(*opcode.reg1, context->cpu);
-  PrintInstruction("Add", "A", RegisterName8(opcode.reg1, context->cpu));
+  PrintInstruction("ADD", "A", RegisterName8(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -172,7 +172,7 @@ int Add8BitAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   Add8BitImpl(context->memory_mapper->Read(*opcode.reg1), context->cpu);
-  PrintInstruction("Add", "A", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
+  PrintInstruction("ADD", "A", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
   return instruction_ptr;
 }
 
@@ -180,7 +180,7 @@ int Add8BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   Add8BitImpl(GetParameterValue(context->memory_mapper, instruction_ptr), context->cpu);
-  PrintInstruction("Add", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  PrintInstruction("ADD", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 }
 
@@ -230,7 +230,7 @@ int Sub8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   Sub8BitImpl(*opcode->reg1, context->cpu);
-  PrintInstruction("Sub", "A", RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("SUB", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -238,7 +238,7 @@ int Sub8BitAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   Sub8BitImpl(context->memory_mapper->Read(*opcode->reg1), context->cpu);
-  PrintInstruction("Sub", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
+  PrintInstruction("SUB", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
   
@@ -246,7 +246,7 @@ int Sub8BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   Sub8BitImpl(GetParameterValue(context->memory_mapper, instruction_ptr), context->cpu);
-  PrintInstruction("Sub", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  PrintInstruction("SUB", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 }
 
@@ -286,7 +286,7 @@ int And8Bit(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("And", "A", RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("AND", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
   
@@ -298,7 +298,7 @@ int And8BitAddress(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("And", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
+  PrintInstruction("AND", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
   
@@ -310,7 +310,7 @@ int And8BitLiteral(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("And", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  PrintInstruction("AND", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr;
 }
 
@@ -322,7 +322,7 @@ int Or8Bit(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("Or", "A", RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("OR", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -334,7 +334,7 @@ int Or8BitAddress(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("Or", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
+  PrintInstruction("OR", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
   
@@ -346,7 +346,7 @@ int Or8BitLiteral(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("Or", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  PrintInstruction("OR", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr;
 }
 
@@ -358,7 +358,7 @@ int Xor8Bit(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("Xor", "A", RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("XOR", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -370,7 +370,7 @@ int Xor8BitAddress(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("Xor", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
+  PrintInstruction("XOR", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
 
@@ -382,7 +382,7 @@ int Xor8BitLiteral(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("Xor", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  PrintInstruction("XOR", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr;
 }
 
@@ -394,7 +394,7 @@ int Cp8Bit(handlers::ExecutorContext* context) {
   SetNFlag(true, context->cpu); // Performed subtraction.
   context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
-  PrintInstruction("Cp", "A", RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("CP", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -406,7 +406,7 @@ int Cp8BitAddress(handlers::ExecutorContext* context) {
   SetNFlag(true, context->cpu); // Performed subtraction.
   context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
-  PrintInstruction("Cp", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
+  PrintInstruction("CP", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
   
@@ -419,7 +419,7 @@ int Cp8BitLiteral(handlers::ExecutorContext* context) {
   SetNFlag(true, context->cpu); // Performed subtraction.
   context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
-  PrintInstruction("Cp", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  PrintInstruction("CP", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 }
 
@@ -433,7 +433,7 @@ int Inc8Bit(handlers::ExecutorContext* context) {
   SetZFlag(*reg, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = borrowed_h;
-  PrintInstruction("Inc", RegisterName8(opcode.reg1, context->cpu));
+  PrintInstruction("INC", RegisterName8(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -447,7 +447,7 @@ int Inc8BitAddress(handlers::ExecutorContext* context) {
   SetZFlag(val, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = borrowed_h;
-  PrintInstruction("Inc", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
+  PrintInstruction("INC", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
   return instruction_ptr;
 }
   
@@ -465,7 +465,7 @@ int Dec8Bit(handlers::ExecutorContext* context) {
     LOG(INFO) << "Z flag is " << std::dec << 0x0000 + context->cpu->flag_struct.rF.Z;
   }
   context->cpu->flag_struct.rF.H = borrowed_h;
-  PrintInstruction("Dec", RegisterName8(opcode.reg1, context->cpu));
+  PrintInstruction("DEC", RegisterName8(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -479,7 +479,7 @@ int Dec8BitAddress(handlers::ExecutorContext* context) {
   SetZFlag(val, context->cpu);
   SetNFlag(true, context->cpu);
   context->cpu->flag_struct.rF.H = borrowed_h;
-  PrintInstruction("Dec", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
+  PrintInstruction("DEC", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
   return instruction_ptr;
 }
   
@@ -490,7 +490,7 @@ int Add16Bit(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->rHL, *opcode.reg1);
   context->cpu->rHL += *opcode.reg1;
   SetNFlag(false, context->cpu);
-  PrintInstruction("Add", "HL", RegisterName16(opcode.reg1, context->cpu));
+  PrintInstruction("ADD", "HL", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -508,7 +508,7 @@ int AddSPLiteral(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.Z = 0;
   context->cpu->rSP += value;
-  PrintInstruction("Add", "SP", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  PrintInstruction("ADD", "SP", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 }
 
@@ -522,7 +522,7 @@ int Inc16Bit(handlers::ExecutorContext* context) {
   SetZFlag(*reg, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = borrowed_h;
-  PrintInstruction("Inc", RegisterName16(opcode.reg1, context->cpu));
+  PrintInstruction("INC", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -530,7 +530,7 @@ int Dec16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   *opcode.reg1 -= 1;
-  PrintInstruction("Dec", RegisterName16(opcode.reg1, context->cpu));
+  PrintInstruction("DEC", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -544,7 +544,7 @@ int Swap(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("Swap", RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("SWAP", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
   
@@ -556,7 +556,7 @@ int SwapAddress(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
-  PrintInstruction("Swap", "(" + RegisterName16(context->opcode->reg1, context->cpu) + ")");
+  PrintInstruction("SWAP", "(" + RegisterName16(context->opcode->reg1, context->cpu) + ")");
   return *context->instruction_ptr;
 }
 
@@ -623,7 +623,7 @@ int Halt(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   LOG(WARNING) << "UNINPLEMENTED OPCODE: Halt";
   // TODO: We should actually halt instead of just nop
-  PrintInstruction("Halt");
+  PrintInstruction("HALT");
   return instruction_ptr;
 }
 
@@ -632,7 +632,7 @@ int Stop(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   LOG(WARNING) << "UNINPLEMENTED OPCODE: Stop";
   // TODO: We should actually stop instead of just nop
-  PrintInstruction("Stop");
+  PrintInstruction("STOP");
   return instruction_ptr;
 }
 
