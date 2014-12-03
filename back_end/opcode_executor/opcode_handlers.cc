@@ -850,18 +850,22 @@ int Bit(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 1;
   SetZFlag(bit, context->cpu);
   SetNFlag(false, context->cpu);
+  
+  PrintInstruction("BIT", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
-  int BitAddress(handlers::ExecutorContext* context) {
-    int instruction_ptr = *context->instruction_ptr;
-    unsigned char val = context->memory_mapper->Read(context->cpu->rHL);
-    unsigned char bit = NthBit(val, context->magic);
-    context->cpu->flag_struct.rF.H = 1;
-    SetZFlag(bit, context->cpu);
-    SetNFlag(false, context->cpu);
-    return instruction_ptr;
-  }
+int BitAddress(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  unsigned char val = context->memory_mapper->Read(context->cpu->rHL);
+  unsigned char bit = NthBit(val, context->magic);
+  context->cpu->flag_struct.rF.H = 1;
+  SetZFlag(bit, context->cpu);
+  SetNFlag(false, context->cpu);
+  
+  PrintInstruction("BIT", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)), "(HL)");
+  return instruction_ptr;
+}
   
 int Set(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
@@ -869,6 +873,8 @@ int Set(handlers::ExecutorContext* context) {
   unsigned char* reg = (unsigned char*) opcode->reg1;
   unsigned char bit = GetParameterValue(context->memory_mapper, instruction_ptr);
   *reg |= (0x1 << bit);
+  
+  PrintInstruction("SET", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr + 1;
 }
 
@@ -878,6 +884,8 @@ int Res(handlers::ExecutorContext* context) {
   unsigned char* reg = (unsigned char*) opcode->reg1;
   unsigned char bit = GetParameterValue(context->memory_mapper, instruction_ptr);
   *reg &= ~(0x1 << bit);
+  
+  PrintInstruction("RES", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr + 1;
 }
 
@@ -886,6 +894,8 @@ int Jump(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   instruction_ptr = GetAddress16(context->memory_mapper, instruction_ptr);
+  
+  PrintInstruction("JP", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr;
 }
 
@@ -894,21 +904,25 @@ int JumpConditional(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
     case 0xC2:
+      PrintInstruction("JP", "NZ", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
         return Jump(context);
       }
       return instruction_ptr;
     case 0xCA:
+      PrintInstruction("JP", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
         return Jump(context);
       }
       return instruction_ptr;
     case 0xD2:
+      PrintInstruction("JP", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
         return Jump(context);
       }
       return instruction_ptr;
     case 0xDA:
+      PrintInstruction("JP", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
         return Jump(context);
       }
@@ -921,6 +935,8 @@ int JumpHL(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   instruction_ptr = context->cpu->rHL;
+  
+  PrintInstruction("JP", "(HL)");
   return instruction_ptr;
 }
 
@@ -929,6 +945,8 @@ int JumpRelative(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   instruction_ptr += 1 + static_cast<char>(GetParameterValue(context->memory_mapper, instruction_ptr));
   LOG(INFO) << "Jumping to " << std::hex << instruction_ptr;
+  
+  PrintInstruction("JR", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr;
 }
 
@@ -937,22 +955,26 @@ int JumpRelativeConditional(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
     case 0x20:
+      PrintInstruction("JR", "NZ", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
         return JumpRelative(context);
       }
       return instruction_ptr + 1; // Have to account for the 8-bit parameter 
                                   // whether we use it or not.
     case 0x28:
+      PrintInstruction("JR", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
         return JumpRelative(context);
       }
       return instruction_ptr + 1;
     case 0x30:
+      PrintInstruction("JR", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
         return JumpRelative(context);
       }
       return instruction_ptr + 1;
     case 0x38:
+      PrintInstruction("JR", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
         return JumpRelative(context);
       }
@@ -1004,6 +1026,8 @@ int Call(handlers::ExecutorContext* context) {
 
   LOG(INFO) << "Calling address: " << std::hex << address;
   instruction_ptr = address;
+  
+  PrintInstruction("CALL", Hex(address));
   return instruction_ptr;
 }
 
@@ -1012,21 +1036,25 @@ int CallConditional(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
     case 0xC4:
+      PrintInstruction("CALL", "NZ", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
         return Call(context);
       }
       return instruction_ptr;
     case 0xCC:
+      PrintInstruction("CALL", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
         return Call(context);
       }
       return instruction_ptr;
     case 0xD4:
+      PrintInstruction("CALL", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
         return Call(context);
       }
       return instruction_ptr;
     case 0xDC:
+      PrintInstruction("CALL", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
         return Call(context);
       }
