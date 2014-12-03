@@ -75,23 +75,59 @@ AssertionResult TestHarness::AssertMemoryState(const vector<MemoryAddressValuePa
   return AssertionSuccess();
 }
 
-void TestHarness::ExecuteInstruction(unsigned char instruction) {
+unsigned int TestHarness::ExecuteInstruction(unsigned char instruction) {
   parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
-  parser_->ReadInstruction();
+  return parser_->ReadInstruction();
 }
 
-void TestHarness::ExecuteInstruction(unsigned char instruction, unsigned short value) {
+unsigned int TestHarness::ExecuteInstruction(unsigned short instruction) {
+  unsigned char lsb = (unsigned char)(0x00FF & instruction);
+  unsigned char msb = (unsigned char)((0xFF00 & instruction) >> 8);
+  parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), msb);
+  parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 1, lsb);
+  return parser_->ReadInstruction();
+}
+
+unsigned int TestHarness::ExecuteInstruction(unsigned char instruction, unsigned short value) {
     parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
     // TODO(Deigo): Make sure that we are actually MSB.
     parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 1, static_cast<unsigned char>(value >> 8));
     parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 2, static_cast<unsigned char>(value));
-    parser_->ReadInstruction();
+    return parser_->ReadInstruction();
 }
 
-void TestHarness::ExecuteInstruction(unsigned char instruction, unsigned char value) {
+unsigned int TestHarness::ExecuteInstruction(unsigned char instruction, unsigned char value) {
     parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
     parser_->memory_mapper_.mbc_->ForceWrite(instruction_ptr() + 1, value);
+    return parser_->ReadInstruction();
+}
+
+void TestHarness::LoadROM(const vector<TestROM>& test_rom) {
+  MBC* mbc = parser_->memory_mapper_.mbc_.get();
+  for (const TestROM& segment : test_rom) {
+    unsigned short address = segment.start_address;
+    for (unsigned char instruction : segment.instructions) {
+      mbc->ForceWrite(address, instruction);
+      address++;
+    }
+  }
+}
+
+void TestHarness::Run(int instruction_number_to_run) {
+  for (int i = 0; i < instruction_number_to_run; i++) {
     parser_->ReadInstruction();
+  }
+}
+
+void TestHarness::LoadAndRunROM(const vector<TestROM>& test_rom) {
+  int instruction_number_to_run = 0;
+  for (const TestROM& segment : test_rom) {
+    for (unsigned char address : segment.instructions) {
+      instruction_number_to_run++;
+    }
+  }
+  LoadROM(test_rom);
+  Run(instruction_number_to_run);
 }
 
 AssertionResult TestHarness::ValidateRegister(const RegisterNameValuePair& register_diff) {

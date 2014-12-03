@@ -1,3 +1,5 @@
+#include "back_end/config.h"
+
 #include "back_end/memory/mbc.h"
 
 #include <stdio.h>
@@ -29,27 +31,46 @@ MBC* CreateMBC1(unsigned char* program_rom, long size) {
 
 void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, ROMBank* rom_bank_1) {
   int address = 0;
-  for (; address < MBC::kROMBank0Size && address < rom_size; address++) {
-    rom_bank_0->memory_[address] = rom[address];
+  int i = 0;
+  while (i < MBC::kROMBank0Size && address < rom_size) {
+    rom_bank_0->memory_[i] = rom[address];
+    address++;
+    i++;
   }
 
-  for (; address < MBC::kROMBankNSize && address < rom_size; address++) {
-    rom_bank_1->memory_[address] = rom[address];
+  i = 0;
+  while (i < MBC::kROMBankNSize && address < rom_size) {
+    rom_bank_1->memory_[i] = rom[address];
+    address++;
+    i++;
   }
 }
 
 void CreateROMBanks(unsigned char* rom, long rom_size, ROMBank* rom_bank_0, std::vector<ROMBank>* rom_bank_n) {
-  int address = 0;
-  for (; address < MBC::kROMBank0Size && address < rom_size; address++) {
-    rom_bank_0->memory_[address] = rom[address];
-  }
+  LOG(INFO) << "Creating ROM banks";
+  LOG(INFO) << "ROM size = " << rom_size;
 
+  int address = 0;
+  int i = 0;
+  while (i < MBC::kROMBank0Size && address < rom_size) {
+    rom_bank_0->memory_[i] = rom[address];
+    address++;
+    i++;
+  }
+  LOG(INFO) << "Created ROM 0";
+
+  int n = 1;
   while (address < rom_size) {
     ROMBank rom_bank;
-    for (; address < MBC::kROMBankNSize && address < rom_size; address++) {
-      rom_bank.memory_[address] = rom[address];
+    i = 0;
+    while (i < MBC::kROMBankNSize && address < rom_size) {
+      rom_bank.memory_[i] = rom[address];
+      address++;
+      i++;
     }
     rom_bank_n->push_back(rom_bank);
+    LOG(INFO) << "Created ROM " <<  n;
+    n++;
   }
 }
 
@@ -86,10 +107,12 @@ unique_ptr<MBC> ConstructMBC(unsigned char* program_rom, long size) {
     case MBC::ROM_ONLY:
     case MBC::ROM_AND_RAM:
     case MBC::ROM_AND_RAM_BATTERY:
+      LOG(INFO) << "Creating NoMBC";
       return unique_ptr<MBC>(CreateNoMBC(program_rom, size));
     case MBC::MBC1:
     case MBC::MBC1_WITH_RAM:
     case MBC::MBC1_WITH_RAM_BATTERY:
+      LOG(INFO) << "Creating MBC1";
       return unique_ptr<MBC>(CreateMBC1(program_rom, size));
     case MBC::UNSUPPORTED:
     default:
@@ -114,9 +137,9 @@ unsigned char NoMBC::Read(unsigned short address) {
 
 void NoMBC::Write(unsigned short address, unsigned char value) {
   if (0x0000 <= address && address <= 0x3fff) {
-    LOG(WARNING) << "Write attempted in ROM_0: " << value;
+    LOG(WARNING) << "Write attempted in ROM_0, address: " << std::hex << address << " value: " << std::hex << 0x0000 + value;
   } else if (0x4000 <= address && address <= 0x7fff) {
-    LOG(WARNING) << "Write attempted in ROM_1: " << value;
+    LOG(WARNING) << "Write attempted in ROM_1, address: " << std::hex << address << " value: " << std::hex << 0x0000 + value;
   } else if (0xa000 <= address && address <= 0xbfff) {
     ram_bank_0_.Write(address - 0xa000, value);
   } else {
@@ -194,19 +217,22 @@ unsigned char MBC1::ROMBankN::ComputeROMBank() {
 unsigned char MBC1::Read(unsigned short address) {
   if (0x0000 <= address && address <= 0x3fff) {
     return rom_bank_0_.Read(address - 0x0000);
-  } else if (0x4000 <= address && address <= 0x4000) {
+  } else if (0x4000 <= address && address <= 0x7fff) {
     return rom_bank_n_.Read(address - 0x4000);
   } else if (0xa000 <= address && address <= 0xbfff) {
     return rom_bank_n_.Read(address - 0xa000);
   }
-  LOG(FATAL) << "Read attempted outside of MBC region: " << address;
+  LOG(FATAL) << "Read attempted outside of MBC region: " << std::hex << address;
 }
 
 void MBC1::Write(unsigned short address, unsigned char value) {
   if (0x0000 <= address && address <= 0x1fff) {
     SetRAMEnabled(value);
+    LOG(INFO) << std::hex << 0x0000 + value << " was written to RAM enable region";
+    LOG(INFO) << "RAM enabled = " << ram_enabled_;
   } else if (0x2000 <= address && address <= 0x3fff) {
     bank_mode_register_.SetLowerBits(value);
+    LOG(INFO) << "ROM bank " << static_cast<int>(bank_mode_register_.GetROMBank()) << " was selected";
   } else if (0x4000 <= address && address <= 0x5fff) {
     bank_mode_register_.SetUpperBits(value);
   } else if (0x6000 <= address && address <= 0x7fff) {
@@ -218,7 +244,7 @@ void MBC1::Write(unsigned short address, unsigned char value) {
       // TODO(Brendan): Determine correct behavior when possible.
       // The documentation was not entirely clear as to what to do when the RAM
       // is written to and is not enabled.
-      LOG(ERROR) << "Write was attempted when either the RAM was disabled";
+      LOG(ERROR) << "Write was attempted when the RAM was disabled";
     }
   } else {
     LOG(FATAL) << "Write attempted outside of MBC region: " << address;

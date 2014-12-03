@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_ECHO_SEGMENT_H_
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_ECHO_SEGMENT_H_
 
+#include "back_end/config.h"
+
 #include "back_end/memory/memory_segment.h"
 #include "back_end/memory/ram_segment.h"
 #include <glog/logging.h>
@@ -16,10 +18,10 @@ class EchoSegment : public ContiguousMemorySegment {
   virtual unsigned char Read(unsigned short address) {
     if (internal_ram_0_->InRange(translate_address(address))) {
       return internal_ram_0_->Read(translate_address(address));
-    } else if (internal_ram_0_->InRange(translate_address(address))) {
+    } else if (internal_ram_1_->InRange(translate_address(address))) {
       return internal_ram_1_->Read(translate_address(address));
     } else {
-      LOG(FATAL) << "Unexpected address: " << address;
+      LOG(FATAL) << "Unexpected address: " << std::hex << address << " translated address: " << std::hex << translate_address(address);
     }
   }
 
@@ -29,7 +31,7 @@ class EchoSegment : public ContiguousMemorySegment {
     } else if (internal_ram_1_->InRange(translate_address(address))) {
       internal_ram_1_->Write(translate_address(address), value);
     } else {
-      LOG(FATAL) << "Unexpected address: " << address;
+      LOG(FATAL) << "Unexpected address: " << std::hex << address;
     }
   }
 

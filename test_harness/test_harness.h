@@ -14,9 +14,10 @@ class TestHarness : public ::testing::Test {
     public:
         void SetMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
         void SetRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
-        void ExecuteInstruction(unsigned char instruction);
-        void ExecuteInstruction(unsigned char instruction, unsigned short value);
-        void ExecuteInstruction(unsigned char instruction, unsigned char value);
+        unsigned int ExecuteInstruction(unsigned char instruction);
+        unsigned int ExecuteInstruction(unsigned short instruction);
+        unsigned int ExecuteInstruction(unsigned char instruction, unsigned short value);
+        unsigned int ExecuteInstruction(unsigned char instruction, unsigned char value);
         ::testing::AssertionResult AssertRegisterAdapter(
                 const std::string& not_used,
                 std::vector<RegisterNameValuePair>& register_diff) {
@@ -29,11 +30,19 @@ class TestHarness : public ::testing::Test {
             return AssertMemoryState(memory_diff);
         }
         ::testing::AssertionResult AssertMemoryState(const std::vector<MemoryAddressValuePair>& memory_diff);
+        // XXX: LoadROM and LoadAndRunROM are only implemented for 8-bit
+        // instructions that take no arguments after the actual opcode!!!
+        void LoadROM(const std::vector<TestROM>& test_rom);
+        void Run(int instruction_number_to_run);
+        void LoadAndRunROM(const std::vector<TestROM>& test_rom);
         unsigned short instruction_ptr() { return parser_->cpu_.rPC; }
 
     protected:
         TestHarness(back_end::handlers::OpcodeExecutor* parser) : parser_(parser) {}
         virtual void TearDown() { ClearParser(); }
+        // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
+        // delete it when done.
+        back_end::handlers::OpcodeExecutor* parser_;
 
     private:
         bool VerifyCorrectInstruction(const std::vector<unsigned char>& instruction);
@@ -43,9 +52,6 @@ class TestHarness : public ::testing::Test {
         bool SetRegisterState(const RegisterNameValuePair& register_diff);
         void SetMemoryState(const MemoryAddressValuePair& memory_diff);
         bool LoadROM(const std::vector<InstructionExpectedStatePair>& instructions);
-        // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
-        // delete it when done.
-        back_end::handlers::OpcodeExecutor* parser_;
 };
 
 #define EXPECT_REGISTER(...)\

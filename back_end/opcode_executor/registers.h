@@ -1,13 +1,14 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
 #define TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
 
+#include "back_end/config.h"
+
 namespace back_end {
 namespace registers {
 
 struct GB_CPU {
 	union {
 		struct {
-			unsigned char rA;
 			// flags register
 			struct {
 				unsigned int Z : 1;
@@ -16,30 +17,31 @@ struct GB_CPU {
 				unsigned int C : 1;
 				unsigned int reserved : 4;
 			} rF;
+      unsigned char rA;
 		} flag_struct;
 		unsigned short rAF;
 	};
 
 	union {
 		struct {
-			unsigned char rB;
 			unsigned char rC;
+			unsigned char rB;
 		} bc_struct;
 		unsigned short rBC;
 	};
 
 	union {
 		struct {
-			unsigned char rD;
 			unsigned char rE;
+			unsigned char rD;
 		} de_struct;
 		unsigned short rDE;
 	};
 
 	union {
 		struct {
-			unsigned char rH;
 			unsigned char rL;
+			unsigned char rH;
 		} hl_struct;
 		unsigned short rHL;
 	};

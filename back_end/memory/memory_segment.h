@@ -1,6 +1,8 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_SEGMENT_H_
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_SEGMENT_H_
 
+#include "back_end/config.h"
+
 #include <functional>
 #include <vector>
 
@@ -31,6 +33,18 @@ class ContiguousMemorySegment : public MemorySegment {
 
   // Inclusive upper bound of this memory segment.
   virtual unsigned short upper_address_bound() = 0;
+};
+
+class SingleAddressSegment : public MemorySegment {
+ public:
+  SingleAddressSegment(unsigned short address) : address_(address) {}
+
+  virtual bool InRange(unsigned short address) { return address == address_; }
+
+  unsigned short address() { return address_; }
+
+ private:
+  unsigned short address_;
 };
 
 // For memory segments that we have not written yet.
