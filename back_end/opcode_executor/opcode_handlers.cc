@@ -1288,7 +1288,7 @@ int Push(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   PushRegister(context->memory_mapper, context->cpu, opcode.reg1);
-  PrintInstruction("Push", RegisterName16(opcode.reg1, context->cpu), "");
+  PrintInstruction("Push", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -1296,7 +1296,7 @@ int Pop(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   PopRegister(context->memory_mapper, context->cpu, opcode.reg1);
-  PrintInstruction("Pop", RegisterName16(opcode.reg1, context->cpu), "");
+  PrintInstruction("Pop", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
