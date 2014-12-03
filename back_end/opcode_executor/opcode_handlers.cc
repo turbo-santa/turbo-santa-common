@@ -1384,7 +1384,7 @@ int LoadHNA(handlers::ExecutorContext* context) {
   memory_mapper->Write(address, value);
   LOG(INFO) << std::hex << 0x0000 + value << " was written to " << std::hex << address;
   
-  PrintInstruction("LDH", Hex(GetParameterValue(memory_mapper, instruction_ptr)), "A");
+  PrintInstruction("LD", "(0xff00 +" + Hex(GetParameterValue(memory_mapper, instruction_ptr)) + ")", "A");
   return instruction_ptr + 1;
 }
 
@@ -1394,7 +1394,7 @@ int LoadHAN(handlers::ExecutorContext* context) {
   MemoryMapper* memory_mapper = context->memory_mapper;
   context->cpu->flag_struct.rA = memory_mapper->Read(0xFF00 + GetParameterValue(memory_mapper, instruction_ptr));
   
-  PrintInstruction("LDH", "A", Hex(GetParameterValue(memory_mapper, instruction_ptr)));
+  PrintInstruction("LD", "A", "(0xff00 + " + Hex(GetParameterValue(memory_mapper, instruction_ptr)) + ")");
   return instruction_ptr + 1;
 }
 
