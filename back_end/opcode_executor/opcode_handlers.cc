@@ -938,7 +938,7 @@ int Set(handlers::ExecutorContext* context) {
   *reg |= (0x1 << bit);
   
   PrintInstruction("SET", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 int Res(handlers::ExecutorContext* context) {
@@ -949,7 +949,7 @@ int Res(handlers::ExecutorContext* context) {
   *reg &= ~(0x1 << bit);
   
   PrintInstruction("RES", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
 
