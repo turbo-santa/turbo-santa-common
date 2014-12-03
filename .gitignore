@@ -1,6 +1,8 @@
 *.o
+*.lo
 *.s
 *.a
+*.la
 *.log
 *.out
 *.zip
@@ -17,6 +19,10 @@ third_party/glog/
 third_party/gtest/samples/
 third_party/gtest/fused-src/
 third_party/gtest/scripts/
+ltmain.sh
+libtool
+ar-lib
+config.*
 *.m4
 **/Makefile.in
 **/Makefile

@@ -6,6 +6,7 @@ AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
 AC_CONFIG_SRCDIR([third_party/gtest/src/gtest-internal-inl.h])
 # AC_CONFIG_HEADERS([config.h])
 AM_INIT_AUTOMAKE
+AC_CONFIG_MACRO_DIR([m4])
 AC_LANG([C++])
 
 # CXX='g++-4.8'
@@ -18,7 +19,9 @@ LIBS='-lglog -lncurses'
 # Checks for programs.
 AC_PROG_CXX([g++-4.8 g++])
 AC_PROG_CC
-AC_PROG_RANLIB
+# AC_PROG_RANLIB
+# AM_PROG_AR
+LT_INIT([disable-shared])
 
 # Checks for libraries.
 # Cannot check for glog since it is all C++ and does not provide a non-mangled function.

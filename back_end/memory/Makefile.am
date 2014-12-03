@@ -1,3 +1,3 @@
-noinst_LIBRARIES = libmemory.a
+noinst_LTLIBRARIES = libmemory.la
 
-libmemory_a_SOURCES = memory_mapper.h memory_mapper.cc memory_segment.h mbc.h mbc.cc
+libmemory_la_SOURCES = memory_mapper.h memory_mapper.cc memory_segment.h mbc.h mbc.cc
