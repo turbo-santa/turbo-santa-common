@@ -824,6 +824,10 @@ int SLA(handlers::ExecutorContext* context) {
   return RLC(context);
 }
 
+int SLAAddress(handlers::ExecutorContext* context) {
+  return RLCAddress(context);
+}
+
 int SRA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
@@ -835,11 +839,32 @@ int SRA(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
+  PrintInstruction("SRA", RegisterName8(opcode->reg1, context->cpu));
+  return instruction_ptr;
+}
+
+int SRAAddress(handlers::ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  Opcode* opcode = context->opcode;
+  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
+  context->cpu->flag_struct.rF.C = NthBit(value, 0);
+  unsigned char msb = NthBit(value, 7) << 7;
+  value = value >> 1;
+  value |= msb;
+  context->memory_mapper->Write(*opcode->reg1, value);
+  context->cpu->flag_struct.rF.H = 0;
+  SetNFlag(false, context->cpu);
+  SetZFlag(value, context->cpu);
+  PrintInstruction("SRA", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
 
 int SRL(handlers::ExecutorContext* context) {
   return RRC(context);
+}
+
+int SRLAddress(handlers::ExecutorContext* context) {
+  return RRCAddress(context);
 }
 
 int Bit(handlers::ExecutorContext* context) {

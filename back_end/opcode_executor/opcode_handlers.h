@@ -79,8 +79,11 @@ int RRCAddress(handlers::ExecutorContext* context);
 int RR(handlers::ExecutorContext* context);
 int RRAddress(handlers::ExecutorContext* context);
 int SLA(handlers::ExecutorContext* context);
+int SLAAddress(handlers::ExecutorContext* context);
 int SRA(handlers::ExecutorContext* context);
+int SRAAddress(handlers::ExecutorContext* context);
 int SRL(handlers::ExecutorContext* context);
+int SRLAddress(handlers::ExecutorContext* context);
 
 // Bit operators
 int Bit(handlers::ExecutorContext* context);
