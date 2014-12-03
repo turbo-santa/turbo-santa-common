@@ -9,9 +9,9 @@ std::vector<Opcode> ToList2(std::vector<PartialOpcodeExtraReg> partial_opcodes, 
     std::vector<Opcode> full_opcodes;
     for (PartialOpcodeExtraReg partial_opcode : partial_opcodes) {
         full_opcodes.push_back(
-            {partial_opcode.opcode_name, partial_opcode.opcode_name_str, 
-            partial_opcode.reg1, partial_opcode.reg1_str,
-            partial_opcode.reg2, partial_opcode.reg2_str,
+            {partial_opcode.opcode_name,
+            partial_opcode.reg1,
+            partial_opcode.reg2,
             handler,
             partial_opcode.clock_cycles});
     }
@@ -22,9 +22,9 @@ std::vector<Opcode> ToList1(std::vector<PartialOpcode> partial_opcodes, OpcodeHa
     std::vector<Opcode> full_opcodes;
     for (PartialOpcode partial_opcode : partial_opcodes) {
         full_opcodes.push_back(
-            {partial_opcode.opcode_name, partial_opcode.opcode_name_str,
-            partial_opcode.reg1, partial_opcode.reg1_str,
-            nullptr, "",
+            {partial_opcode.opcode_name,
+            partial_opcode.reg1,
+            nullptr,
             handler,
             partial_opcode.clock_cycles});
     }
