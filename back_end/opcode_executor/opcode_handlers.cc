@@ -1051,9 +1051,11 @@ int ReturnInterrupt(handlers::ExecutorContext* context) {
 
 int LoadN(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
+  Opcode* opcode = context->opcode;
   unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
-  *((unsigned char*) opcode.reg1) = value;
+  // TODO(Diego): Make the opcodes print the instructions like this.
+  LOG(INFO) << "Instruction: " << opcode->opcode_name_str << " " << opcode->reg1_str << ", " << std::hex << value + 0x0000;
+  *((unsigned char*) opcode->reg1) = value;
   return instruction_ptr + 1;
 }
 
