@@ -1978,7 +1978,7 @@ TEST_F(OpcodeHandlersTest, Call) {
   SetRegisterState({{Register::SP, 0xFFFE}, {Register::PC, 0x1234}});
   ExecuteInstruction(static_cast<unsigned char>(0xCD), static_cast<unsigned short>(0x4523));
   EXPECT_REGISTER({{Register::SP, 0xFFFC}, {Register::PC, 0x2345}});
-  EXPECT_MEMORY({{0xFFFD, 0x35}, {0xFFFC, 0x12}});
+  EXPECT_MEMORY({{0xFFFD, 0x37}, {0xFFFC, 0x12}});
 }
 
 TEST_F(OpcodeHandlersTest, LoadAndRunROM) {
