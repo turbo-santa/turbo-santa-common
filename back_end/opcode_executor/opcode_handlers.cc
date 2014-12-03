@@ -914,7 +914,7 @@ int Bit(handlers::ExecutorContext* context) {
   SetZFlag(bit, context->cpu);
   SetNFlag(false, context->cpu);
   
-  PrintInstruction("BIT", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)), RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("BIT", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -926,7 +926,7 @@ int BitAddress(handlers::ExecutorContext* context) {
   SetZFlag(bit, context->cpu);
   SetNFlag(false, context->cpu);
   
-  PrintInstruction("BIT", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)), "(HL)");
+  PrintInstruction("BIT", Hex(context->magic), "(HL)");
   return instruction_ptr;
 }
   
@@ -934,10 +934,10 @@ int Set(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char bit = GetParameterValue(context->memory_mapper, instruction_ptr);
+  unsigned char bit = context->magic;
   *reg |= (0x1 << bit);
   
-  PrintInstruction("SET", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)), RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("SET", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr + 1;
 }
 
@@ -945,10 +945,10 @@ int Res(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char bit = GetParameterValue(context->memory_mapper, instruction_ptr);
+  unsigned char bit = context->magic;
   *reg &= ~(0x1 << bit);
   
-  PrintInstruction("RES", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)), RegisterName8(opcode->reg1, context->cpu));
+  PrintInstruction("RES", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr + 1;
 }
 
