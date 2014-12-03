@@ -79,6 +79,10 @@ string RegisterName16(void* reg, GB_CPU* cpu) {
     return "DE";
   } else if (reg == &cpu->rHL) {
     return "HL";
+  } else if (reg == &cpu->rSP) {
+    return "SP";
+  } else if (reg == &cpu->rPC) {
+    return "PC";
   } else {
     return "ERROR GETTING REGISTER NAME!";
   }
@@ -1150,6 +1154,8 @@ int LoadDecAHL(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(context->cpu->rHL);
   context->cpu->rHL--;
+  
+  PrintInstruction("LD", "A", "(HL-)");
   return instruction_ptr;
 }
 
@@ -1157,6 +1163,8 @@ int LoadDecHLA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   context->memory_mapper->Write(context->cpu->rHL, context->cpu->flag_struct.rA);
   context->cpu->rHL--;
+  
+  PrintInstruction("LD", "(HL-)", "A");
   return instruction_ptr;
 }
 
@@ -1164,6 +1172,8 @@ int LoadIncAHL(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(context->cpu->rHL);
   context->cpu->rHL++;
+  
+  PrintInstruction("LD", "A", "(HL+)");
   return instruction_ptr;
 }
 
@@ -1171,6 +1181,8 @@ int LoadIncHLA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   context->memory_mapper->Write(context->cpu->rHL, context->cpu->flag_struct.rA);
   context->cpu->rHL++;
+  
+  PrintInstruction("LD", "(HL+)", "A");
   return instruction_ptr;
 }
 
@@ -1182,6 +1194,8 @@ int LoadHNA(handlers::ExecutorContext* context) {
   unsigned char value = context->cpu->flag_struct.rA;
   memory_mapper->Write(address, value);
   LOG(INFO) << std::hex << 0x0000 + value << " was written to " << std::hex << address;
+  
+  PrintInstruction("LDH", Hex(GetParameterValue(memory_mapper, instruction_ptr)), "A");
   return instruction_ptr + 1;
 }
 
@@ -1190,6 +1204,8 @@ int LoadHAN(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   MemoryMapper* memory_mapper = context->memory_mapper;
   context->cpu->flag_struct.rA = memory_mapper->Read(0xFF00 + GetParameterValue(memory_mapper, instruction_ptr));
+  
+  PrintInstruction("LDH", "A", Hex(GetParameterValue(memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 }
 
@@ -1197,6 +1213,8 @@ int LoadNN(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   *opcode.reg1 = GetParameterValue16(context->memory_mapper, instruction_ptr);
+  
+  PrintInstruction("LD", RegisterName16(opcode.reg1, context->cpu), Hex(GetParameterValue16(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 2;
 }
 
