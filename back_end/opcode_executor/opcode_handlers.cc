@@ -11,6 +11,7 @@ namespace handlers {
 using opcodes::Opcode;
 using registers::GB_CPU;
 using memory::MemoryMapper;
+using std::string;
 
 unsigned char GetParameterValue(MemoryMapper* memory_mapper, int instruction_ptr) {
   return memory_mapper->Read(instruction_ptr);
@@ -19,7 +20,6 @@ unsigned char GetParameterValue(MemoryMapper* memory_mapper, int instruction_ptr
 unsigned short GetParameterValue16(MemoryMapper* memory_mapper, int instruction_ptr) {
   return (((short) memory_mapper->Read(instruction_ptr + 1)) << 8) | (short) memory_mapper->Read(instruction_ptr);
 }
-
 
 unsigned short GetAddress16(MemoryMapper* memory_mapper, int instruction_ptr) {
   unsigned char upper = GetParameterValue(memory_mapper, instruction_ptr + 1);
@@ -42,59 +42,44 @@ unsigned char NthBit(unsigned int byte, int n) {
   return (byte >> n) & 1;
 }
 
-// TODO(Brendan): These opcodes are not in the same order as with ALU operations.
-// 8-bit loads. Consider using opcodes::Opcode to address this.
-int Ld8Bit(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  *reg = *opcode->reg2;
-  return instruction_ptr;
+string RegisterName8(void* reg, GB_CPU* cpu) {
+  if (reg == &cpu->flag_struct.rA) {
+      return "A";
+  } else if (reg == &cpu->bc_struct.rB) {
+      return "B";
+  } else if (reg == &cpu->bc_struct.rC) {
+      return "C";
+  } else if (reg == &cpu->de_struct.rD) {
+      return "D";
+  } else if (reg == &cpu->de_struct.rE) {
+      return "E";
+  } else if (reg == &cpu->flag_struct.rF) {
+      return "F";
+  } else if (reg == &cpu->hl_struct.rL) {
+      return "L";
+  } else if (reg == &cpu->hl_struct.rH) {
+      return "H";
+  } else {
+    return "ERROR GETTING REGISTER NAME!";
+  }
+}
+  
+string RegisterName16(void* reg, GB_CPU* cpu) {
+  if (reg == &cpu->rAF) {
+    return "AF";
+  } else if (reg == &cpu->rBC) {
+    return "BC";
+  } else if (reg == &cpu->rDE) {
+    return "DE";
+  } else if (reg == &cpu->rHL) {
+    return "HL";
+  } else {
+    return "ERROR GETTING REGISTER NAME!";
+  }
 }
 
-int Ld8BitLiteral(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  *reg = GetParameterValue(context->memory_mapper, instruction_ptr);
-  return instruction_ptr + 1;
-}
-
-int LoadToA8Bit(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  context->cpu->flag_struct.rA = *opcode->reg1;
-  return instruction_ptr;
-}
-
-int LoadToA8BitLiteral(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rA = GetParameterValue(context->memory_mapper, instruction_ptr);
-  return instruction_ptr + 1;
-}
-
-int LoadToA16BitLiteral(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rA = GetParameterValue16(context->memory_mapper, instruction_ptr);
-  return instruction_ptr + 2;
-}
-
-int LoadFromA8Bit(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  *reg = *opcode->reg2;
-  return instruction_ptr;
-}
-
-int LoadFromA16Bit(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  *reg = *opcode->reg2;
-  return instruction_ptr;
+void PrintInstruction(string instruction, string arg1, string arg2) {
+  LOG(INFO) << instruction << " " << arg1 << "," << arg2;
 }
 
 // ALU.
@@ -161,6 +146,7 @@ int Add8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   Add8BitImpl(*opcode.reg1, context->cpu);
+  PrintInstruction("Add", "A", RegisterName8(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
@@ -168,6 +154,7 @@ int Add8BitAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   Add8BitImpl(context->memory_mapper->Read(*opcode.reg1), context->cpu);
+  PrintInstruction("Add", "A", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
   return instruction_ptr;
 }
 
@@ -1053,8 +1040,6 @@ int LoadN(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
-  // TODO(Diego): Make the opcodes print the instructions like this.
-  LOG(INFO) << "Instruction: " << opcode->opcode_name_str << " " << opcode->reg1_str << ", " << std::hex << value + 0x0000;
   *((unsigned char*) opcode->reg1) = value;
   return instruction_ptr + 1;
 }

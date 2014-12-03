@@ -21,30 +21,22 @@ typedef std::function<int(handlers::ExecutorContext* context)> OpcodeHandler;
 
 struct Opcode {
     unsigned short opcode_name;
-    std::string opcode_name_str;
     unsigned short* reg1;
-    std::string reg1_str;
     unsigned short* reg2;
-    std::string reg2_str;
     OpcodeHandler handler;
     unsigned int clock_cycles;
 };
 
 struct PartialOpcode {
     unsigned short opcode_name;
-    std::string opcode_name_str;
     unsigned short* reg1;
-    std::string reg1_str;
     unsigned int clock_cycles;
 };
 
 struct PartialOpcodeExtraReg {
     unsigned short opcode_name;
-    std::string opcode_name_str;
     unsigned short* reg1;
-    std::string reg1_str;
     unsigned short* reg2;
-    std::string reg2_str;
     unsigned int clock_cycles;
 };
 
