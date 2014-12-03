@@ -42,6 +42,13 @@ unsigned char NthBit(unsigned int byte, int n) {
   return (byte >> n) & 1;
 }
 
+template<typename T>
+string Hex(T i) {
+  std::stringstream stream;
+  stream << "0x" << std::hex << i;
+  return stream.str();
+}
+  
 string RegisterName8(void* reg, GB_CPU* cpu) {
   if (reg == &cpu->flag_struct.rA) {
       return "A";
@@ -1227,20 +1234,23 @@ int LoadNNSP(handlers::ExecutorContext* context) {
   unsigned char msb = (unsigned char)((0xFF00 & context->cpu->rSP) >> 8);
   memory_mapper->Write(address++, lsb);
   memory_mapper->Write(address, msb);
+  PrintInstruction("LD", "(" + Hex(GetParameterValue16(memory_mapper, instruction_ptr)) + ")", "SP");
   return instruction_ptr + 2;
 }
 
 int Push(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  PushRegister(context->memory_mapper, context->cpu, context->opcode->reg1);
+  PushRegister(context->memory_mapper, context->cpu, opcode.reg1);
+  PrintInstruction("Push", RegisterName16(opcode.reg1, context->cpu), "");
   return instruction_ptr;
 }
 
 int Pop(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  PopRegister(context->memory_mapper, context->cpu, context->opcode->reg1);
+  PopRegister(context->memory_mapper, context->cpu, opcode.reg1);
+  PrintInstruction("Pop", RegisterName16(opcode.reg1, context->cpu), "");
   return instruction_ptr;
 }
 
