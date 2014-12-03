@@ -89,15 +89,15 @@ string RegisterName16(void* reg, GB_CPU* cpu) {
 }
 
 void PrintInstruction(string instruction) {
-  LOG(INFO) << instruction;
+  LOG(INFO) << "Instruction: " << instruction;
 }
 
 void PrintInstruction(string instruction, string arg1) {
-  LOG(INFO) << instruction << " " << arg1;
+  LOG(INFO) << "Instruction: " << instruction << " " << arg1;
 }
 
 void PrintInstruction(string instruction, string arg1, string arg2) {
-  LOG(INFO) << instruction << " " << arg1 << "," << arg2;
+  LOG(INFO) << "Instruction: " << instruction << " " << arg1 << "," << arg2;
 }
 
 // ALU.
