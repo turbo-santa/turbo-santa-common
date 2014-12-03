@@ -1,3 +1,3 @@
-noinst_LIBRARIES = libgraphics.a
+noinst_LTLIBRARIES = libgraphics.la
 
-libgraphics_a_SOURCES = graphics_controller.h graphics_controller.cc graphics_flags.h screen.h dma_transfer.h dma_transfer.cc
+libgraphics_la_SOURCES = graphics_controller.h graphics_controller.cc graphics_flags.h screen.h dma_transfer.h dma_transfer.cc
