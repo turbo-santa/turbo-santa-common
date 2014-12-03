@@ -497,8 +497,10 @@ int Add16Bit(handlers::ExecutorContext* context) {
 int AddSPLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
+  // This value is signed.
+  char value = static_cast<char>(GetParameterValue(context->memory_mapper, instruction_ptr));
   if (NthBit(value, 7)) {
+    // TODO(Brendan): Make sure this works the same for signed.
     context->cpu->flag_struct.rF.H = DoesHalfBorrow16(context->cpu->rSP, value);
     context->cpu->flag_struct.rF.C = DoesBorrow16(context->cpu->rSP, value);
   } else {
@@ -958,7 +960,7 @@ int Jump(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   instruction_ptr = GetAddress16(context->memory_mapper, instruction_ptr);
   
-  PrintInstruction("JP", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  PrintInstruction("JP", Hex(instruction_ptr));
   return instruction_ptr;
 }
 
@@ -967,7 +969,7 @@ int JumpConditional(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   switch (opcode.opcode_name) {
     case 0xC2:
-      PrintInstruction("JP", "NZ", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+      PrintInstruction("JP", "NZ", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
         return Jump(context);
       }
@@ -1419,7 +1421,7 @@ int LoadSPHL(handlers::ExecutorContext* context) {
 int LoadHLSP(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  signed char val = (signed) GetParameterValue(context->memory_mapper, instruction_ptr);
+  char val = static_cast<char>(GetParameterValue(context->memory_mapper, instruction_ptr));
   if (val < 0) {
     context->cpu->flag_struct.rF.H = DoesHalfBorrow8(context->cpu->rSP, val);
     context->cpu->flag_struct.rF.C = DoesBorrow8(context->cpu->rSP, val);

@@ -95,6 +95,7 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
 }
 
 void GraphicsController::Draw() {
+  Clear();
   RenderLowPrioritySprites();
   RenderBackground();
   // for (int y = 0; y < kScreenBufferSize; y++) {
@@ -189,7 +190,6 @@ void GraphicsController::RenderBackground() {
   if (lcd_control->bg_window_tile_data_select()) {
     tile_data = vram_segment()->lower_tile_data();
   } else {
-    LOG(INFO) << "Upper tile data selected for rendering background.";
     tile_data = vram_segment()->upper_tile_data();
   }
 
@@ -261,6 +261,14 @@ void GraphicsController::RenderSprite(SpriteAttribute* sprite_attribute) {
   }
 
   RenderTile(tile, sprite_attribute->y(), sprite_attribute->x(), palette);
+}
+
+void GraphicsController::Clear() {
+  for (int y = 0; y < kScreenBufferSize; y++) {
+    for (int x = 0; x < kScreenBufferSize; x++) {
+      screen_buffer_[x + y * kScreenBufferSize] = 0;
+    }
+  }
 }
 
 void GraphicsController::RenderTile(Tile* tile, unsigned char y_offset, unsigned char x_offset, MonochromePalette* palette) {

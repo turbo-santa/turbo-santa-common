@@ -220,7 +220,7 @@ unsigned char MBC1::Read(unsigned short address) {
   } else if (0x4000 <= address && address <= 0x7fff) {
     return rom_bank_n_.Read(address - 0x4000);
   } else if (0xa000 <= address && address <= 0xbfff) {
-    return rom_bank_n_.Read(address - 0xa000);
+    return ram_bank_n_.Read(address - 0xa000);
   }
   LOG(FATAL) << "Read attempted outside of MBC region: " << std::hex << address;
 }
@@ -266,7 +266,7 @@ void MBC1::ForceWrite(unsigned short address, unsigned char value) {
 void MBC1::SetRAMEnabled(unsigned char value) {
   // Any value with 0x0a in the lower 4 bits enables RAM and any other value
   // disables it.
-  ram_enabled_ = 0x0a == (value & 0b00001111);
+  ram_enabled_ = (0x0a == (value & 0b00001111));
 }
 
 } // namespace memory

@@ -41,6 +41,7 @@ class GraphicsController {
   memory::InterruptFlag* interrupt_flag() { return memory_mapper_->interrupt_flag(); }
   Screen* screen() { return screen_; }
 
+  void Clear();
   void Draw();
   void WriteToScreen();
   void SetLCDSTATInterrupt() { interrupt_flag()->set_lcd_stat(true); }
