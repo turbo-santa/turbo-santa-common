@@ -1922,7 +1922,7 @@ TEST_F(OpcodeHandlersTest, SRLE) {
 TEST_F(OpcodeHandlersTest, SRLH) {
   SetRegisterState({{Register::H, 0b10011011}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB3C)));
-  EXPECT_REGISTER({{Register::H, 0b11001101}, {Register::FC, 1}});
+  EXPECT_REGISTER({{Register::H, 0b01001101}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, SRLL) {
