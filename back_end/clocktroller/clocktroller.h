@@ -22,6 +22,7 @@ namespace clocktroller {
 
 class Clocktroller {
     public:
+        Clocktroller(graphics::Screen* screen, unsigned char* rom, long length, bool setup);
         Clocktroller(graphics::Screen* screen, unsigned char* rom, long length);
         Clocktroller(unsigned char* rom, long length);
         void Setup();
