@@ -40,4 +40,10 @@ void TurboSanta::launch() {
   clocktroller->Start();
 }
 
+void TurboSanta::stop() {
+  if (clocktroller != nullptr) {
+    clocktroller->Terminate();
+  }
+}
+
 
