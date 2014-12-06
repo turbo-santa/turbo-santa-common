@@ -114,7 +114,12 @@ bool DoesOverflow(unsigned int left, unsigned int right, int bit) {
 }
 
 bool DoesUnderflow(unsigned int left, unsigned int right, int bit) {
-  if (!NthBit(left, bit) && (NthBit(right, bit) || NthBit(left - right, bit))) {
+  // Cases:
+  //  01110110  01110010  00011011
+  // -00001111 -00000100 -00001100
+  //  01100111  01101110  00001111
+  
+  if ((!NthBit(left, bit) && (NthBit(right, bit) || NthBit(left - right, bit))) || (NthBit(left, bit) && NthBit(right, bit) && NthBit(left - right, bit))) {
     return true;
   }
   return false;
