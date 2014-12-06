@@ -364,7 +364,9 @@ const vector<vector<Opcode>> opcodes = {
             {0xC8, nullptr, 8},
             {0xD0, nullptr, 8},
             {0xD8, nullptr, 8}}, ReturnConditional),
-    ToList1({{0xD9, nullptr, 8}}, ReturnInterrupt)
+    ToList1({{0xD9, nullptr, 8}}, ReturnInterrupt),
+    // XXX: This should be removed before distribution!!!
+    ToList1({{0xDD, nullptr, 8}}, HaltAndCatchFire)
 };
 
   return ToMap(Flatten(opcodes));

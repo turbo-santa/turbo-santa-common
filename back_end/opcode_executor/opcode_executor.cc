@@ -64,7 +64,7 @@ unsigned int OpcodeExecutor::ReadInstruction() {
     LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
   } else {
     LOG(INFO) << "Fetched opcode: " << std::hex << opcode << " address: " << std::hex << opcode_address;
-    LOG(INFO) << "B is " << std::hex << std::hex << 0x0000 + cpu_.bc_struct.rB;
+    LOG(INFO) << "A is " << std::hex << std::hex << 0x0000 + cpu_.flag_struct.rA;
     LOG(INFO) << "C is " << std::hex << std::hex << 0x0000 + cpu_.bc_struct.rC;
     LOG(INFO) << "HL is " << std::hex << std::hex << 0x0000 + cpu_.rHL;
     opcode_struct = opcode_iter->second;
@@ -76,6 +76,15 @@ unsigned int OpcodeExecutor::ReadInstruction() {
                           &memory_mapper_,
                           &cpu_,
                           magic);
+  // XXX(Brendan): A hack to poke tetris.
+  // if (opcode_address == 0x034c && opcode_struct.opcode_name == 0xf0) {
+  //   LOG(INFO) << "TETRIS HACK!!!!";
+  //   memory_mapper_.Write(0xff80, 0x00);
+  // }
+  // if (opcode_address == 0x36c && opcode_struct.opcode_name == 0xf0) {
+  //   LOG(INFO) << "TETRIS HACK!!!!";
+  //   memory_mapper_.Write(0xff85, 0xff);
+  // }
   cpu_.rPC = opcode_struct.handler(&context);
 
   graphics_controller_.Tick(opcode_struct.clock_cycles);

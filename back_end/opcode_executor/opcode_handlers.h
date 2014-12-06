@@ -140,6 +140,9 @@ int LoadNNSP(handlers::ExecutorContext* context);
 int Push(handlers::ExecutorContext* context);
 int Pop(handlers::ExecutorContext* context);
 
+// Bonus
+int HaltAndCatchFire(handlers::ExecutorContext* context);
+
 } // namespace back_end
 } // namespace handlers
 

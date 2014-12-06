@@ -4,6 +4,7 @@
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "back_end/opcode_executor/opcodes.h"
 #include <glog/logging.h>
+#include <ncurses.h>
 
 namespace back_end {
 namespace handlers {
@@ -400,6 +401,10 @@ int Cp8Bit(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, *opcode->reg1);
   context->cpu->flag_struct.rF.C = !DoesBorrow8(context->cpu->flag_struct.rA, *opcode->reg1);
   PrintInstruction("CP", "A", RegisterName8(opcode->reg1, context->cpu));
+  LOG(INFO) << "Z flag = " << 0x0000 + context->cpu->flag_struct.rF.Z;
+  LOG(INFO) << "N flag = " << 0x0000 + context->cpu->flag_struct.rF.N;
+  LOG(INFO) << "H flag = " << 0x0000 + context->cpu->flag_struct.rF.H;
+  LOG(INFO) << "C flag = " << 0x0000 + context->cpu->flag_struct.rF.C;
   return instruction_ptr;
 }
 
@@ -413,6 +418,10 @@ int Cp8BitAddress(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, value);
   context->cpu->flag_struct.rF.C = !DoesBorrow8(context->cpu->flag_struct.rA, value);
   PrintInstruction("CP", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
+  LOG(INFO) << "Z flag = " << 0x0000 + context->cpu->flag_struct.rF.Z;
+  LOG(INFO) << "N flag = " << 0x0000 + context->cpu->flag_struct.rF.N;
+  LOG(INFO) << "H flag = " << 0x0000 + context->cpu->flag_struct.rF.H;
+  LOG(INFO) << "C flag = " << 0x0000 + context->cpu->flag_struct.rF.C;
   return instruction_ptr;
 }
   
@@ -427,6 +436,10 @@ int Cp8BitLiteral(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, value);
   context->cpu->flag_struct.rF.C = !DoesBorrow8(context->cpu->flag_struct.rA, value);
   PrintInstruction("CP", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  LOG(INFO) << "Z flag = " << 0x0000 + context->cpu->flag_struct.rF.Z;
+  LOG(INFO) << "N flag = " << 0x0000 + context->cpu->flag_struct.rF.N;
+  LOG(INFO) << "H flag = " << 0x0000 + context->cpu->flag_struct.rF.H;
+  LOG(INFO) << "C flag = " << 0x0000 + context->cpu->flag_struct.rF.C;
   return instruction_ptr + 1;
 }
 
@@ -981,19 +994,19 @@ int JumpConditional(handlers::ExecutorContext* context) {
       }
       return instruction_ptr;
     case 0xCA:
-      PrintInstruction("JP", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+      PrintInstruction("JP", "Z", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
         return Jump(context);
       }
       return instruction_ptr;
     case 0xD2:
-      PrintInstruction("JP", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+      PrintInstruction("JP", "NC", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
         return Jump(context);
       }
       return instruction_ptr;
     case 0xDA:
-      PrintInstruction("JP", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+      PrintInstruction("JP", "C", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
         return Jump(context);
       }
@@ -1469,6 +1482,12 @@ int Pop(handlers::ExecutorContext* context) {
   PopRegister(context->memory_mapper, context->cpu, opcode.reg1);
   PrintInstruction("Pop", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
+}
+
+int HaltAndCatchFire(handlers::ExecutorContext*) {
+  PrintInstruction("HCF");
+  endwin();
+  LOG(FATAL) << "Setting memory on fire.";
 }
 
 } // namespace handlers
