@@ -289,7 +289,7 @@ int And8Bit(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rA &= *opcode->reg1;
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
-  context->cpu->flag_struct.rF.H = 0;
+  context->cpu->flag_struct.rF.H = 1;
   context->cpu->flag_struct.rF.C = 0;
   PrintInstruction("AND", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
@@ -301,7 +301,7 @@ int And8BitAddress(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rA &= context->memory_mapper->Read(*opcode->reg1);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
-  context->cpu->flag_struct.rF.H = 0;
+  context->cpu->flag_struct.rF.H = 1;
   context->cpu->flag_struct.rF.C = 0;
   PrintInstruction("AND", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
@@ -313,7 +313,7 @@ int And8BitLiteral(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rA &= GetParameterValue(context->memory_mapper, instruction_ptr);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
-  context->cpu->flag_struct.rF.H = 0;
+  context->cpu->flag_struct.rF.H = 1;
   context->cpu->flag_struct.rF.C = 0;
   PrintInstruction("AND", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
@@ -394,11 +394,11 @@ int Xor8BitLiteral(handlers::ExecutorContext* context) {
 int Cp8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char result = context->cpu->flag_struct.rA - *opcode->reg1;;
+  unsigned char result = context->cpu->flag_struct.rA - *opcode->reg1;
   SetZFlag(result, context->cpu);
   SetNFlag(true, context->cpu); // Performed subtraction.
-  context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
-  context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
+  context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, *opcode->reg1);
+  context->cpu->flag_struct.rF.C = !DoesBorrow8(context->cpu->flag_struct.rA, *opcode->reg1);
   PrintInstruction("CP", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
@@ -406,11 +406,12 @@ int Cp8Bit(handlers::ExecutorContext* context) {
 int Cp8BitAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
-  unsigned char result = context->cpu->flag_struct.rA - context->memory_mapper->Read(*opcode->reg1);
+  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
+  unsigned char result = context->cpu->flag_struct.rA - value;
   SetZFlag(result, context->cpu);
   SetNFlag(true, context->cpu); // Performed subtraction.
-  context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
-  context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
+  context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, value);
+  context->cpu->flag_struct.rF.C = !DoesBorrow8(context->cpu->flag_struct.rA, value);
   PrintInstruction("CP", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
@@ -419,11 +420,12 @@ int Cp8BitAddress(handlers::ExecutorContext* context) {
 int Cp8BitLiteral(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned char result = context->cpu->flag_struct.rA - GetParameterValue(context->memory_mapper, instruction_ptr);
+  unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
+  unsigned char result = context->cpu->flag_struct.rA - value;
   SetZFlag(result, context->cpu);
   SetNFlag(true, context->cpu); // Performed subtraction.
-  context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
-  context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
+  context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, value);
+  context->cpu->flag_struct.rF.C = !DoesBorrow8(context->cpu->flag_struct.rA, value);
   PrintInstruction("CP", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr + 1;
 }
@@ -433,11 +435,12 @@ int Inc8Bit(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   unsigned char* reg = (unsigned char*) opcode.reg1;
   unsigned char fourth_bit = NthBit(*reg, 3);
+  bool half_carry = DoesHalfCarry8(*reg, 1);
   ++(*reg);
-  bool borrowed_h = fourth_bit != NthBit(*reg, 3);
+  
   SetZFlag(*reg, context->cpu);
   SetNFlag(false, context->cpu);
-  context->cpu->flag_struct.rF.H = borrowed_h;
+  context->cpu->flag_struct.rF.H = half_carry;
   PrintInstruction("INC", RegisterName8(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
@@ -446,12 +449,12 @@ int Inc8BitAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   unsigned char val = context->memory_mapper->Read(*opcode.reg1);
+  bool half_carry = DoesHalfCarry8(val, 1);
   context->memory_mapper->Write(*opcode.reg1, ++val);
-  unsigned char forth_bit = NthBit(val, 3);
-  bool borrowed_h = forth_bit != NthBit(val, 3);
+
   SetZFlag(val, context->cpu);
   SetNFlag(false, context->cpu);
-  context->cpu->flag_struct.rF.H = borrowed_h;
+  context->cpu->flag_struct.rF.H = half_carry;
   PrintInstruction("INC", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
   return instruction_ptr;
 }
@@ -460,16 +463,16 @@ int Dec8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   unsigned char* reg = (unsigned char*) opcode.reg1;
-  unsigned char fourth_bit = NthBit(*reg, 4);
+  bool borrowed_h = DoesHalfBorrow8(*reg, 1);
   --(*reg);
-  bool borrowed_h = fourth_bit != NthBit(*reg, 4);
+  
   SetZFlag(*reg, context->cpu);
   SetNFlag(true, context->cpu);
+  context->cpu->flag_struct.rF.H = borrowed_h;
   if (opcode.opcode_name == 0x05) {
     LOG(INFO) << "B decremented to " << std::hex << 0x0000 + *reg;
     LOG(INFO) << "Z flag is " << std::dec << 0x0000 + context->cpu->flag_struct.rF.Z;
   }
-  context->cpu->flag_struct.rF.H = borrowed_h;
   PrintInstruction("DEC", RegisterName8(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
@@ -478,9 +481,9 @@ int Dec8BitAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   unsigned char val = context->memory_mapper->Read(*opcode.reg1);
+  bool borrowed_h = DoesHalfBorrow8(val, 1);
   context->memory_mapper->Write(*opcode.reg1, --val);
-  unsigned char fourth_bit = NthBit(val, 4);
-  bool borrowed_h = fourth_bit != NthBit(val, 4);
+  
   SetZFlag(val, context->cpu);
   SetNFlag(true, context->cpu);
   context->cpu->flag_struct.rF.H = borrowed_h;
@@ -522,13 +525,9 @@ int AddSPLiteral(handlers::ExecutorContext* context) {
 int Inc16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned char* reg = (unsigned char*) opcode.reg1;
-  unsigned char forth_bit = NthBit(*reg, 3);
+  unsigned short* reg = (unsigned short*) opcode.reg1;
   ++(*opcode.reg1);
-  bool borrowed_h = forth_bit != NthBit(*reg, 3);
-  SetZFlag(*reg, context->cpu);
-  SetNFlag(false, context->cpu);
-  context->cpu->flag_struct.rF.H = borrowed_h;
+  // No flags are affected by this instruction
   PrintInstruction("INC", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
@@ -536,7 +535,9 @@ int Inc16Bit(handlers::ExecutorContext* context) {
 int Dec16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  *opcode.reg1 -= 1;
+  unsigned short* reg = (unsigned short*) opcode.reg1;
+  --(*opcode.reg1);
+  // No flags are affected by this instruction
   PrintInstruction("DEC", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }

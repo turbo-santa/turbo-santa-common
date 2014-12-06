@@ -1190,56 +1190,56 @@ TEST_F(OpcodeHandlersTest, Xor8BitLiteral) {
 TEST_F(OpcodeHandlersTest, Cp8BitA) {
   SetRegisterState({{Register::A, 1}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0xBF)));
-  EXPECT_REGISTER({{Register::FZ, 1}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
+  EXPECT_REGISTER({{Register::FZ, 1}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Cp8BitB) {
   SetRegisterState({{Register::A, 1}, {Register::B, 2}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0xB8)));
-  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
+  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Cp8BitC) {
   SetRegisterState({{Register::A, 4}, {Register::C, 4}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0xB9)));
-  EXPECT_REGISTER({{Register::FZ, 1}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
+  EXPECT_REGISTER({{Register::FZ, 1}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
 }
 
 TEST_F(OpcodeHandlersTest, Cp8BitD) {
   SetRegisterState({{Register::A, 1}, {Register::D, 2}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0xBA)));
-  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
+  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Cp8BitE) {
   SetRegisterState({{Register::A, 1}, {Register::E, 2}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0xBB)));
-  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
+  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Cp8BitH) {
   SetRegisterState({{Register::A, 1}, {Register::H, 2}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0xBC)));
-  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
+  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Cp8BitL) {
   SetRegisterState({{Register::A, 1}, {Register::L, 2}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0xBD)));
-  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
+  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Cp8BitHL) {
   SetRegisterState({{Register::A, 1}, {Register::HL, 0xC015}});
   SetMemoryState({{0xC015, 2}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xBE)));
-  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
+  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, Cp8BitLiteral) {
   SetRegisterState({{Register::A, 1}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned char>(0xFE), static_cast<unsigned char>(2)));
-  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 1}, {Register::FC, 1}});
+  EXPECT_REGISTER({{Register::FZ, 0}, {Register::FN, 1}, {Register::FH, 0}, {Register::FC, 0}});
 }
 
 // Test INC n
@@ -1278,7 +1278,7 @@ TEST_F(OpcodeHandlersTest, INC8BitE) {
 TEST_F(OpcodeHandlersTest, INC8BitH) {
   SetRegisterState({{Register::H, 7}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x24)));
-  EXPECT_REGISTER({{Register::H, 8}, {Register::FH, 1}});
+  EXPECT_REGISTER({{Register::H, 8}, {Register::FH, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, INC8BitL) {
