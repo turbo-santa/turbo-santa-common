@@ -4,6 +4,7 @@
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "back_end/opcode_executor/opcodes.h"
 #include <glog/logging.h>
+#include <ncurses.h>
 
 namespace back_end {
 namespace handlers {
@@ -1463,6 +1464,12 @@ int Pop(handlers::ExecutorContext* context) {
   PopRegister(context->memory_mapper, context->cpu, opcode.reg1);
   PrintInstruction("Pop", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
+}
+
+int HaltAndCatchFire(handlers::ExecutorContext*) {
+  PrintInstruction("HCF");
+  endwin();
+  LOG(FATAL) << "Setting memory on fire.";
 }
 
 } // namespace handlers
