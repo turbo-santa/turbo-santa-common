@@ -396,6 +396,10 @@ int Cp8Bit(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
   PrintInstruction("CP", "A", RegisterName8(opcode->reg1, context->cpu));
+  LOG(INFO) << "Z flag = " << 0x0000 + context->cpu->flag_struct.rF.Z;
+  LOG(INFO) << "N flag = " << 0x0000 + context->cpu->flag_struct.rF.N;
+  LOG(INFO) << "H flag = " << 0x0000 + context->cpu->flag_struct.rF.H;
+  LOG(INFO) << "C flag = " << 0x0000 + context->cpu->flag_struct.rF.C;
   return instruction_ptr;
 }
 
@@ -408,6 +412,10 @@ int Cp8BitAddress(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
   PrintInstruction("CP", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
+  LOG(INFO) << "Z flag = " << 0x0000 + context->cpu->flag_struct.rF.Z;
+  LOG(INFO) << "N flag = " << 0x0000 + context->cpu->flag_struct.rF.N;
+  LOG(INFO) << "H flag = " << 0x0000 + context->cpu->flag_struct.rF.H;
+  LOG(INFO) << "C flag = " << 0x0000 + context->cpu->flag_struct.rF.C;
   return instruction_ptr;
 }
   
@@ -421,6 +429,10 @@ int Cp8BitLiteral(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.H = NthBit(context->cpu->flag_struct.rA, 4) != NthBit(result, 4);
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7) != NthBit(result, 7);
   PrintInstruction("CP", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+  LOG(INFO) << "Z flag = " << 0x0000 + context->cpu->flag_struct.rF.Z;
+  LOG(INFO) << "N flag = " << 0x0000 + context->cpu->flag_struct.rF.N;
+  LOG(INFO) << "H flag = " << 0x0000 + context->cpu->flag_struct.rF.H;
+  LOG(INFO) << "C flag = " << 0x0000 + context->cpu->flag_struct.rF.C;
   return instruction_ptr + 1;
 }
 
@@ -976,19 +988,19 @@ int JumpConditional(handlers::ExecutorContext* context) {
       }
       return instruction_ptr;
     case 0xCA:
-      PrintInstruction("JP", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+      PrintInstruction("JP", "Z", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
         return Jump(context);
       }
       return instruction_ptr;
     case 0xD2:
-      PrintInstruction("JP", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+      PrintInstruction("JP", "NC", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
         return Jump(context);
       }
       return instruction_ptr;
     case 0xDA:
-      PrintInstruction("JP", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
+      PrintInstruction("JP", "C", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
         return Jump(context);
       }

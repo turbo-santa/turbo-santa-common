@@ -3,6 +3,8 @@
 
 #include "back_end/config.h"
 
+#include <glog/logging.h>
+
 #include "back_end/memory/memory_segment.h"
 
 namespace back_end {
@@ -36,7 +38,15 @@ class InterruptBase : public MemorySegment {
 
   virtual bool InRange(unsigned short address) { return address == address_; }
   virtual unsigned char Read(unsigned short) { return value_; }
-  virtual void Write(unsigned short, unsigned char value) { value_ = value; }
+  virtual void Write(unsigned short, unsigned char value) { 
+    value_ = value;
+    LOG(INFO) << "Interrupt flag written to.";
+    LOG(INFO) << "v_blank = " << v_blank();
+    LOG(INFO) << "lcd_stat = " << lcd_stat();
+    LOG(INFO) << "timer = " << timer();
+    LOG(INFO) << "serial = " << serial();
+    LOG(INFO) << "joypad = " << joypad();
+  }
   virtual bool v_blank() { return value_bit(0); }
   virtual bool lcd_stat() { return value_bit(1); }
   virtual bool timer() { return value_bit(2); }

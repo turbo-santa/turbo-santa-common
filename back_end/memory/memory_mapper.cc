@@ -30,6 +30,13 @@ void MemoryMapper::Disable() {
 }
 
 unsigned char MemoryMapper::Read(unsigned short address) {
+  if (address == 0xff80) {
+    LOG(INFO) << "Reading from 0xff80, value = " << std::hex << 0x0000 + high_ram_->Read(address);
+  }
+  if (address == 0xff85) {
+    LOG(INFO) << "Reading from 0xff85, value = " << std::hex << 0x0000 + high_ram_->Read(address);
+  }
+
   if (!internal_rom_flag_->is_set() && internal_rom_->InRange(address)) {
     return internal_rom_->Read(address);
   }
@@ -70,6 +77,13 @@ unsigned char MemoryMapper::Read(unsigned short address) {
 }
 
 void MemoryMapper::Write(unsigned short address, unsigned char value) {
+  if (address == 0xff80) {
+    LOG(INFO) << "Writing to 0xff80, value = " << std::hex << 0x0000 + value;
+  }
+  if (address == 0xff85) {
+    LOG(INFO) << "Writing to 0xff85, value = " << std::hex << 0x0000 + value;
+  }
+
   if (mbc_->InRange(address)) {
     mbc_->Write(address, value);
   } else if (video_ram_->InRange(address)) {
