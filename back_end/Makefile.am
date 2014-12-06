@@ -2,7 +2,7 @@ SUBDIRS = memory opcode_executor clocktroller graphics
 
 noinst_LTLIBRARIES = libback_end.la
 
-libback_end_la_SOURCES =
+libback_end_la_SOURCES = TurboSanta.cc
 
 libback_end_la_LIBADD = memory/libmemory.la opcode_executor/libopcode_executor.la clocktroller/libclocktroller.la graphics/libgraphics.la
 

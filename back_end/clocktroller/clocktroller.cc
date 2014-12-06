@@ -26,13 +26,22 @@ void LaunchHandleLoop(Clocktroller* member) {
 void LaunchClockLoop(Clocktroller* member) {
     member->ClockLoop();
 }
-
-Clocktroller::Clocktroller(Screen* screen, unsigned char* rom, long length) : 
+  
+Clocktroller::Clocktroller(Screen* screen, unsigned char* rom, long length, bool setup) :
     executor(new OpcodeExecutor(screen, rom, length)), start_(false) {
   raw_rom = nullptr;
   MAX_INSTRUCTIONS = 2500000;
+  if (setup) {
+    Setup();
+  }
 }
 
+Clocktroller::Clocktroller(Screen* screen, unsigned char* rom, long length) :
+  executor(new OpcodeExecutor(screen, rom, length)), start_(false) {
+  raw_rom = nullptr;
+  MAX_INSTRUCTIONS = 2500000;
+}
+  
 Clocktroller::Clocktroller(unsigned char* rom, long length) : 
     start_(false) {
   LOG(INFO) << "Creating OpcodeExecutor";

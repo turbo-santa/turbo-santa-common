@@ -1403,7 +1403,8 @@ TEST_F(OpcodeHandlersTest, Add16BitSPLiteral2) {
   EXPECT_EQ(0, instruction_ptr());
   EXPECT_EQ(16, ExecuteInstruction(static_cast<unsigned char>(0xE8), static_cast<unsigned char>(0xF0)));
   EXPECT_EQ(2, instruction_ptr());
-  EXPECT_REGISTER({{Register::SP, 0xF5}});
+  // since this instruction takes a signed char, the SP will underflow
+  EXPECT_REGISTER({{Register::SP, 0xFFF5}});
 }
 
 // Test INC nn
