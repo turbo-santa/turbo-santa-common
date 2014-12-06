@@ -11,7 +11,7 @@ class TurboScreen : public Screen {
   public:
     TurboScreen(void(*videoCallback)(const signed char* bitmap, int length)) : videoCallback_(videoCallback), bitmap(new  signed char[ScreenRaster::kScreenHeight * ScreenRaster::kScreenWidth]) {}
     virtual void Draw(const ScreenRaster& raster) {
-            for (int y = 0; y < ScreenRaster::kScreenHeight; y++) {
+      for (int y = 0; y < ScreenRaster::kScreenHeight; y++) {
         for (int x = 0; x < ScreenRaster::kScreenWidth; x++) {
           bitmap.get()[x + y * ScreenRaster::kScreenWidth] = (signed)raster.Get(y, x);
         }
@@ -21,7 +21,6 @@ class TurboScreen : public Screen {
   private:
     void(*videoCallback_)(const signed char* bitmap, int length);
     unique_ptr<signed char> bitmap;
-
 };
 
 TurboSanta::TurboSanta() {}
