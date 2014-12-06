@@ -1,4 +1,4 @@
-SUBDIRS = memory opcode_executor clocktroller graphics
+SUBDIRS = memory opcode_executor clocktroller graphics debugger
 
 noinst_LTLIBRARIES = libback_end.la
 

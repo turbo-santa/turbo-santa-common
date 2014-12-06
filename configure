@@ -16051,7 +16051,7 @@ fi
 done
 
 
-ac_config_files="$ac_config_files Makefile back_end/Makefile back_end/graphics/Makefile back_end/memory/Makefile back_end/opcode_executor/Makefile back_end/clocktroller/Makefile test_harness/Makefile"
+ac_config_files="$ac_config_files Makefile back_end/Makefile back_end/graphics/Makefile back_end/memory/Makefile back_end/opcode_executor/Makefile back_end/clocktroller/Makefile back_end/debugger/Makefile test_harness/Makefile"
 
 
 
@@ -17191,6 +17191,7 @@ do
     "back_end/memory/Makefile") CONFIG_FILES="$CONFIG_FILES back_end/memory/Makefile" ;;
     "back_end/opcode_executor/Makefile") CONFIG_FILES="$CONFIG_FILES back_end/opcode_executor/Makefile" ;;
     "back_end/clocktroller/Makefile") CONFIG_FILES="$CONFIG_FILES back_end/clocktroller/Makefile" ;;
+    "back_end/debugger/Makefile") CONFIG_FILES="$CONFIG_FILES back_end/debugger/Makefile" ;;
     "test_harness/Makefile") CONFIG_FILES="$CONFIG_FILES test_harness/Makefile" ;;
 
   *) as_fn_error $? "invalid argument: \`$ac_config_target'" "$LINENO" 5;;
