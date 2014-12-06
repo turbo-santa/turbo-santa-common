@@ -20,26 +20,6 @@ namespace debugger {
 
 class Frame {
  public:
-  Frame() {}
-  Frame(const Frame& frame) :
-      register_deltas_(frame.register_deltas_),
-      memory_deltas_(frame.memory_deltas_),
-      pc_delta_(frame.pc_delta_),
-      event_(frame.event_),
-      str_instruction_(frame.str_instruction_),
-      raw_instruction_(frame.raw_instruction_),
-      raw_parameters_(frame.raw_parameters_),
-      timestamp_(frame.timestamp_) {}
-  Frame(Frame&& frame) : 
-      register_deltas_(std::move(frame.register_deltas_)),
-      memory_deltas_(std::move(frame.memory_deltas_)),
-      pc_delta_(frame.pc_delta_),
-      event_(frame.event_),
-      str_instruction_(frame.str_instruction_),
-      raw_instruction_(frame.raw_instruction_),
-      raw_parameters_(frame.raw_parameters_),
-      timestamp_(frame.timestamp_) {}
-
   const std::vector<RegisterDelta>& register_deltas() const { return register_deltas_; }
   const std::vector<MemoryDelta>& memory_deltas() const { return memory_deltas_; }
   const PCDelta& pc_delta() const { return pc_delta_; }
@@ -73,6 +53,15 @@ typedef std::list<Frame>::const_iterator ConstFrameIterator;
 
 class FrameFactory {
  public:
+  FrameFactory(GreatLibrary* great_library,
+               RegisterProducer* register_producer,
+               MemoryProducer* memory_producer,
+               PCProducer* pc_producer) :
+      great_library_(great_library),
+      register_producer_(register_producer),
+      memory_producer_(memory_producer),
+      pc_producer_(pc_producer) {}
+
   void SubmitFrame();
   void SetEvent(std::string event) { current_frame_.set_event(event); }
   void SetInstructionName(std::string instruction) { current_frame_.set_str_instruction(instruction); }

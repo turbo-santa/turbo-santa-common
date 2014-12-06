@@ -6,6 +6,8 @@
 #include <map>
 #include <memory>
 
+#include "back_end/debugger/deltas.h"
+#include "back_end/debugger/frames.h"
 #include "back_end/graphics/graphics_controller.h"
 #include "back_end/graphics/screen.h"
 #include "back_end/memory/memory_mapper.h"
@@ -30,7 +32,10 @@ namespace handlers {
 class OpcodeExecutor {
   public: 
     OpcodeExecutor();
-    OpcodeExecutor(graphics::Screen* screen, unsigned char* rom, long rom_size);
+    OpcodeExecutor(graphics::Screen* screen,
+                   debugger::GreatLibrary* great_library,
+                   unsigned char* rom,
+                   long rom_size);
     unsigned int ReadInstruction();
 
   private:
@@ -44,6 +49,9 @@ class OpcodeExecutor {
     // This is a special flag/register that can only be set or unset and can
     // only be accessed by the user using the EI, DI or RETI instructions.
     bool interrupt_master_enable_ = false;
+    debugger::RegisterProducer register_producer_;
+    debugger::PCProducer pc_producer_;
+    debugger::FrameFactory frame_factory_;
 
     friend class test_harness::TestHarness;
     friend class back_end::clocktroller::ClocktrollerTest;
@@ -55,13 +63,15 @@ struct ExecutorContext {
                   opcodes::Opcode* opcode_, 
                   memory::MemoryMapper* memory_mapper_, 
                   registers::GB_CPU* cpu_,
-                  unsigned char magic_) : 
+                  unsigned char magic_,
+                  debugger::FrameFactory* frame_factory_) : 
       interrupt_master_enable(interrupt_master_enable_),
       instruction_ptr(instruction_ptr_),
       opcode(opcode_),
       memory_mapper(memory_mapper_), 
       cpu(cpu_),
-      magic(magic_) {}
+      magic(magic_),
+      frame_factory(frame_factory_) {}
 
   ExecutorContext(ExecutorContext* context) : 
       interrupt_master_enable(context->interrupt_master_enable),
@@ -69,7 +79,8 @@ struct ExecutorContext {
       opcode(context->opcode),
       memory_mapper(context->memory_mapper),
       cpu(context->cpu),
-      magic(context->magic) {}
+      magic(context->magic),
+      frame_factory(context->frame_factory) {}
 
   bool* interrupt_master_enable;
   unsigned short* instruction_ptr;
@@ -77,6 +88,7 @@ struct ExecutorContext {
   memory::MemoryMapper* memory_mapper;
   registers::GB_CPU* cpu;
   unsigned char magic;
+  debugger::FrameFactory* frame_factory;
 };
 
 

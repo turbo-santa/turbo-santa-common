@@ -8,6 +8,7 @@
 #include <mutex>
 #include <thread>
 
+#include "back_end/debugger/great_library.h"
 #include "back_end/graphics/screen.h"
 #include "back_end/graphics/graphics_controller.h"
 
@@ -22,7 +23,7 @@ namespace clocktroller {
 
 class Clocktroller {
     public:
-        Clocktroller(graphics::Screen* screen, unsigned char* rom, long length);
+        Clocktroller(graphics::Screen* screen, debugger::GreatLibrary* great_library, unsigned char* rom, long length);
         Clocktroller(unsigned char* rom, long length);
         void Setup();
         void Start();

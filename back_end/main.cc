@@ -2,6 +2,7 @@
 #include <curses.h>
 
 #include <algorithm>
+#include <iostream>
 #include <vector>
 
 #include <errno.h>
@@ -9,11 +10,18 @@
 #include <string.h>
 
 #include "back_end/clocktroller/clocktroller.h"
+#include "back_end/debugger/frames.h"
+#include "back_end/debugger/great_library.h"
 #include "back_end/graphics/screen.h"
 
+using std::cout;
+using std::endl;
+using std::hex;
 using std::string;
 using std::vector;
 using back_end::clocktroller::Clocktroller;
+using back_end::debugger::Frame;
+using back_end::debugger::GreatLibrary;
 using back_end::graphics::Screen;
 using back_end::graphics::ScreenRaster;
 
@@ -84,6 +92,32 @@ vector<unsigned char> ReadROM(string file_name) {
   return rom;
 }
 
+void ViewHistory(GreatLibrary* great_library) {
+  auto iterator = great_library->begin();
+  cout << "Size of GreatLibrary = " << great_library->last_frame().timestamp() << endl;
+  while (true) {
+    switch(getchar()) {
+      case 'q':
+        return;
+      case 'n':
+        iterator++;
+        break;
+      case 'p':
+        iterator--;
+        break;
+      default:
+        break;
+    }
+    const Frame& frame = *iterator;
+    cout << frame.event() << endl;
+    cout << frame.timestamp() << endl;
+    cout << frame.str_instruction() << endl;
+    cout << "PC from " << hex << frame.pc_delta().old_value << " to " << hex << frame.pc_delta().new_value << endl;
+    // cout << "Register deltas: " << frame.register_deltas() << endl;
+    // cout << "Memory deltas: " << frame.memory_deltas() << endl;
+  }
+}
+
 int main(int argc, char* argv[]) {
   if (argc != 2) {
     printf("Please provide the name of the ROM\n");
@@ -91,15 +125,17 @@ int main(int argc, char* argv[]) {
   }
 
   TerminalScreen terminal_screen;
+  GreatLibrary great_library;
   vector<unsigned char> rom = ReadROM(argv[1]);
   LOG(INFO) << "Finished reading rom";
-  Clocktroller clocktroller(&terminal_screen, rom.data(), rom.size());
+  Clocktroller clocktroller(&terminal_screen, &great_library, rom.data(), rom.size());
   LOG(INFO) << "Clocktroller built";
 
-  initscr();
+  // initscr();
   clocktroller.Setup();
   clocktroller.Start();
   clocktroller.WaitForThreads();
   endwin();
+  ViewHistory(&great_library);
   return 0;
 };

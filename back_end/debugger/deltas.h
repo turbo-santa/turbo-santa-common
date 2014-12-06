@@ -44,7 +44,9 @@ struct PCDelta {
 
 class RegisterProducer {
  public:
-  virtual std::vector<RegisterDelta>&& RetrieveDelta();
+  RegisterProducer(registers::GB_CPU* current_cpu) : current_cpu_(current_cpu) {}
+
+  virtual std::vector<RegisterDelta> RetrieveDelta();
  private:
   registers::GB_CPU previous_cpu_;
   registers::GB_CPU* current_cpu_;
@@ -53,10 +55,10 @@ class RegisterProducer {
 
 class MemoryProducer {
  public:
-  virtual std::vector<MemoryDelta>&& RetrieveDelta() {
-    std::vector<MemoryDelta> temp = std::move(memory_deltas_);
-    memory_deltas_ = std::vector<MemoryDelta>();
-    return std::move(temp);
+  virtual std::vector<MemoryDelta> RetrieveDelta() {
+    std::vector<MemoryDelta> temp;
+    temp.swap(memory_deltas_);
+    return temp;
   }
 
   virtual void MemoryWrite(unsigned short address, unsigned char old_value, unsigned char new_value) {
@@ -68,6 +70,7 @@ class MemoryProducer {
 
 class PCProducer {
  public:
+  PCProducer(unsigned short* current_value) : current_value_(current_value) {}
   virtual PCDelta RetrieveDelta() {
     PCDelta ret_val = {previous_value_, *current_value_};
     previous_value_ = *current_value_;

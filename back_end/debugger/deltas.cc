@@ -4,7 +4,7 @@ namespace back_end {
 namespace debugger {
 using std::vector;
 
-vector<RegisterDelta>&& RegisterProducer::RetrieveDelta() {
+vector<RegisterDelta> RegisterProducer::RetrieveDelta() {
   vector<RegisterDelta> deltas;
 
   if (previous_cpu_.flag_struct.rA != current_cpu_->flag_struct.rA) {
@@ -72,7 +72,7 @@ vector<RegisterDelta>&& RegisterProducer::RetrieveDelta() {
     previous_cpu_.rSP = current_cpu_->rSP;
   }
 
-  return std::move(deltas);
+  return deltas;
 }
 
 } // namespace debugger

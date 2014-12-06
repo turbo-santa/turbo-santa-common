@@ -10,6 +10,7 @@
 namespace back_end {
 namespace clocktroller {
 
+using debugger::GreatLibrary;
 using graphics::Screen;
 using handlers::OpcodeExecutor;
 using std::chrono::microseconds;
@@ -27,8 +28,8 @@ void LaunchClockLoop(Clocktroller* member) {
     member->ClockLoop();
 }
 
-Clocktroller::Clocktroller(Screen* screen, unsigned char* rom, long length) : 
-    executor(new OpcodeExecutor(screen, rom, length)), start_(false) {
+Clocktroller::Clocktroller(Screen* screen, GreatLibrary* great_library, unsigned char* rom, long length) : 
+    executor(new OpcodeExecutor(screen, great_library, rom, length)), start_(false) {
   raw_rom = nullptr;
   MAX_INSTRUCTIONS = 2500000;
 }
