@@ -36,7 +36,7 @@ class OpcodeExecutor {
                    debugger::GreatLibrary* great_library,
                    unsigned char* rom,
                    long rom_size);
-    unsigned int ReadInstruction();
+    int ReadInstruction();
 
   private:
     bool CheckInterrupts();

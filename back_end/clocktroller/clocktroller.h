@@ -44,7 +44,7 @@ class Clocktroller {
         std::mutex execution_lock;
         std::thread handler_thread;
         std::thread clock_thread;
-        unsigned int clock_cycles;
+        int clock_cycles;
 
     friend void LaunchHandleLoop(Clocktroller*);
     friend void LaunchClockLoop(Clocktroller*);

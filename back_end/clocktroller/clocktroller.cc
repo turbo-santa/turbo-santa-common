@@ -116,6 +116,10 @@ void Clocktroller::HandleLoop() {
 
         clock_cycles = executor->ReadInstruction();
 
+        if (clock_cycles == -1) {
+          should_run = false;
+        }
+
 //         execution_lock.unlock();
     }
 }

@@ -50,7 +50,7 @@ OpcodeExecutor::OpcodeExecutor(Screen* screen, GreatLibrary* great_library, unsi
   opcode_map = CreateOpcodeMap(&cpu_);
 }
 
-unsigned int OpcodeExecutor::ReadInstruction() {
+int OpcodeExecutor::ReadInstruction() {
   HandleInterrupts(); // Before a fetch we must check for and handle interrupts.
   unsigned short opcode_address = cpu_.rPC;
   unsigned short instruction_ptr = cpu_.rPC;
@@ -76,7 +76,8 @@ unsigned int OpcodeExecutor::ReadInstruction() {
   Opcode opcode_struct;
   auto opcode_iter = opcode_map.find(opcode);
   if (opcode_iter == opcode_map.end()) {
-    LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
+    LOG(ERROR) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
+    return -1; // Let the clocktroller know that we cannot continue.
   } else {
     LOG(INFO) << "Fetched opcode: " << std::hex << opcode << " address: " << std::hex << opcode_address;
     LOG(INFO) << "A is " << std::hex << std::hex << 0x0000 + cpu_.flag_struct.rA;

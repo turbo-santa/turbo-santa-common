@@ -12,6 +12,7 @@
 #include "back_end/clocktroller/clocktroller.h"
 #include "back_end/debugger/frames.h"
 #include "back_end/debugger/great_library.h"
+#include "back_end/debugger/librarians.h"
 #include "back_end/graphics/screen.h"
 
 using std::cout;
@@ -93,7 +94,7 @@ vector<unsigned char> ReadROM(string file_name) {
 }
 
 void ViewHistory(GreatLibrary* great_library) {
-  auto iterator = great_library->begin();
+  auto iterator = back_end::debugger::MostRecentOldAddress(great_library);
   cout << "Size of GreatLibrary = " << great_library->last_frame().timestamp() << endl;
   while (true) {
     switch(getchar()) {

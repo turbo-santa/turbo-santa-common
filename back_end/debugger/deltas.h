@@ -4,6 +4,7 @@
 #include "back_end/config.h"
 
 #include <vector>
+#include "back_end/debugger/bloon_filter.h"
 #include "back_end/opcode_executor/registers.h"
 
 namespace back_end {
@@ -38,6 +39,7 @@ struct MemoryDelta {
 };
 
 struct PCDelta {
+  bool visited_before;
   unsigned short old_value;
   unsigned short new_value;
 };
@@ -72,12 +74,13 @@ class PCProducer {
  public:
   PCProducer(unsigned short* current_value) : current_value_(current_value) {}
   virtual PCDelta RetrieveDelta() {
-    PCDelta ret_val = {previous_value_, *current_value_};
+    PCDelta ret_val = {filter_.AddAndCheckIfNew(*current_value_), previous_value_, *current_value_};
     previous_value_ = *current_value_;
     return ret_val;
   }
   
  private:
+  BloonFilter filter_;
   unsigned short previous_value_;
   unsigned short* current_value_;
 };
