@@ -676,8 +676,9 @@ int EI(handlers::ExecutorContext* context) {
 int RLCA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7);
-  context->cpu->flag_struct.rA = context->cpu->flag_struct.rA << 1;
+  unsigned char msb = NthBit(context->cpu->flag_struct.rA, 7);
+  context->cpu->flag_struct.rF.C = msb;
+  context->cpu->flag_struct.rA = (context->cpu->flag_struct.rA << 1) | msb;
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
@@ -702,8 +703,9 @@ int RLA(handlers::ExecutorContext* context) {
 int RRCA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 0);
-  context->cpu->flag_struct.rA = context->cpu->flag_struct.rA >> 1;
+  unsigned char lsb = NthBit(context->cpu->flag_struct.rA, 0);
+  context->cpu->flag_struct.rF.C = lsb;
+  context->cpu->flag_struct.rA = (context->cpu->flag_struct.rA >> 1) | (lsb << 7);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
@@ -729,8 +731,9 @@ int RLC(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char* reg = (unsigned char*) opcode->reg1;
-  context->cpu->flag_struct.rF.C = NthBit(*reg, 7);
-  *reg = *reg << 1;
+  unsigned char msb = NthBit(*reg, 7);
+  context->cpu->flag_struct.rF.C = msb;
+  *reg = (*reg << 1) | msb;
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
@@ -742,8 +745,9 @@ int RLCAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char value = context->memory_mapper->Read(*opcode->reg1);
-  context->cpu->flag_struct.rF.C = NthBit(value, 7);
-  value = value << 1;
+  unsigned char msb = NthBit(value, 7);
+  context->cpu->flag_struct.rF.C = msb;
+  value = (value << 1) | msb;
   context->memory_mapper->Write(*opcode->reg1, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
@@ -787,8 +791,9 @@ int RRC(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char* reg = (unsigned char*) opcode->reg1;
-  context->cpu->flag_struct.rF.C = NthBit(*reg, 0);
-  *reg = *reg >> 1;
+  unsigned char lsb = NthBit(*reg, 0);
+  context->cpu->flag_struct.rF.C = lsb;
+  *reg = (*reg >> 1) | (lsb << 7);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(*reg, context->cpu);
@@ -800,8 +805,9 @@ int RRCAddress(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
   unsigned char value = context->memory_mapper->Read(*opcode->reg1);
-  context->cpu->flag_struct.rF.C = NthBit(value, 0);
-  value = value >> 1;
+  unsigned char lsb = NthBit(value, 0);
+  context->cpu->flag_struct.rF.C = lsb;
+  value = (value >> 1) | (lsb << 7);
   context->memory_mapper->Write(*opcode->reg1, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);

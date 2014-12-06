@@ -1553,11 +1553,11 @@ TEST_F(OpcodeHandlersTest, NOP) {
 TEST_F(OpcodeHandlersTest, RLCA) {
   SetRegisterState({{Register::A, 0b10010101}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x07)));
-  EXPECT_REGISTER({{Register::A, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::A, 0b00101011}, {Register::FC, 1}, {Register::FZ, 0}});
 
   SetRegisterState({{Register::A, 0b10000000}});
   ExecuteInstruction(static_cast<unsigned char>(0x07));
-  EXPECT_REGISTER({{Register::A, 0}, {Register::FZ, 1}});
+  EXPECT_REGISTER({{Register::A, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RLA) {
@@ -1573,7 +1573,7 @@ TEST_F(OpcodeHandlersTest, RLA) {
 TEST_F(OpcodeHandlersTest, RRCA) {
   SetRegisterState({{Register::A, 0b10010101}});
   EXPECT_EQ(4, ExecuteInstruction(static_cast<unsigned char>(0x0F)));
-  EXPECT_REGISTER({{Register::A, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::A, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RRA) {
@@ -1585,47 +1585,47 @@ TEST_F(OpcodeHandlersTest, RRA) {
 TEST_F(OpcodeHandlersTest, RLCnA) {
   SetRegisterState({{Register::A, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB07)));
-  EXPECT_REGISTER({{Register::A, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::A, 0b00101011}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RLCnB) {
   SetRegisterState({{Register::B, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB00)));
-  EXPECT_REGISTER({{Register::B, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::B, 0b00101011}, {Register::FC, 1}, {Register::FZ, 0}});
 
   SetRegisterState({{Register::B, 0b10000000}});
   ExecuteInstruction(static_cast<unsigned short>(0xCB00));
-  EXPECT_REGISTER({{Register::B, 0}, {Register::FZ, 1}});
+  EXPECT_REGISTER({{Register::B, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RLCnC) {
   SetRegisterState({{Register::C, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB01)));
-  EXPECT_REGISTER({{Register::C, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::C, 0b00101011}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RLCnD) {
   SetRegisterState({{Register::D, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB02)));
-  EXPECT_REGISTER({{Register::D, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::D, 0b00101011}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RLCnE) {
   SetRegisterState({{Register::E, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB03)));
-  EXPECT_REGISTER({{Register::E, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::E, 0b00101011}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RLCnH) {
   SetRegisterState({{Register::H, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB04)));
-  EXPECT_REGISTER({{Register::H, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::H, 0b00101011}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RLCnL) {
   SetRegisterState({{Register::L, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB05)));
-  EXPECT_REGISTER({{Register::L, 0b00101010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::L, 0b00101011}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RLCnHL) {
@@ -1633,7 +1633,7 @@ TEST_F(OpcodeHandlersTest, RLCnHL) {
   SetMemoryState({{0xC015, 0b10010101}});
   EXPECT_EQ(16, ExecuteInstruction(static_cast<unsigned short>(0xCB06)));
   EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FC, 1}, {Register::FZ, 0}});
-  EXPECT_MEMORY({{0xC015, 0b00101010}});
+  EXPECT_MEMORY({{0xC015, 0b00101011}});
 }
 
 TEST_F(OpcodeHandlersTest, RLnA) {
@@ -1689,43 +1689,43 @@ TEST_F(OpcodeHandlersTest, RLnHL) {
 TEST_F(OpcodeHandlersTest, RRCnA) {
   SetRegisterState({{Register::A, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB0F)));
-  EXPECT_REGISTER({{Register::A, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::A, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RRCnB) {
   SetRegisterState({{Register::B, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB08)));
-  EXPECT_REGISTER({{Register::B, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::B, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RRCnC) {
   SetRegisterState({{Register::C, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB09)));
-  EXPECT_REGISTER({{Register::C, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::C, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RRCnD) {
   SetRegisterState({{Register::D, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB0A)));
-  EXPECT_REGISTER({{Register::D, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::D, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RRCnE) {
   SetRegisterState({{Register::E, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB0B)));
-  EXPECT_REGISTER({{Register::E, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::E, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RRCnH) {
   SetRegisterState({{Register::H, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB0C)));
-  EXPECT_REGISTER({{Register::H, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::H, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RRCnL) {
   SetRegisterState({{Register::L, 0b10010101}});
   EXPECT_EQ(8, ExecuteInstruction(static_cast<unsigned short>(0xCB0D)));
-  EXPECT_REGISTER({{Register::L, 0b01001010}, {Register::FC, 1}, {Register::FZ, 0}});
+  EXPECT_REGISTER({{Register::L, 0b11001010}, {Register::FC, 1}, {Register::FZ, 0}});
 }
 
 TEST_F(OpcodeHandlersTest, RRCnHL) {
@@ -1733,7 +1733,7 @@ TEST_F(OpcodeHandlersTest, RRCnHL) {
   SetMemoryState({{0xC015, 0b10010101}});
   EXPECT_EQ(16, ExecuteInstruction(static_cast<unsigned short>(0xCB0E)));
   EXPECT_REGISTER({{Register::HL, 0xC015}, {Register::FC, 1}});
-  EXPECT_MEMORY({{0xC015, 0b01001010}});
+  EXPECT_MEMORY({{0xC015, 0b11001010}});
 }
 
 TEST_F(OpcodeHandlersTest, RRnA) {
