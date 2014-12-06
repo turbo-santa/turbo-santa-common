@@ -2,6 +2,7 @@
 #define TURBO_SANTA_COMMON_BACK_END_TURBO_SANTA_H_
 
 #include <functional>
+#include <memory>
 
 namespace back_end {
 namespace clocktroller {
