@@ -1200,8 +1200,7 @@ int Return(handlers::ExecutorContext* context) {
     FunctionCall call = context->call_stack->Pop();
     string message = "Should have returned to: address = " + Hex(call.address) + " frame = " + std::to_string(call.timestamp);
     context->frame_factory->SetEvent(message);
-    LOG(ERROR) << message;
-    return -1; // Tell the executor that shit broke.
+    LOG(WARNING) << message;
   } else {
     context->call_stack->Pop();
   }
