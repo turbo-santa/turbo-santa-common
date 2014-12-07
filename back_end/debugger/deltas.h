@@ -28,6 +28,7 @@ struct RegisterDelta {
   };
 
   RegisterName name;
+  std::string GetName();
   unsigned short old_value;
   unsigned short new_value;
 };

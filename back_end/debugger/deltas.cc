@@ -4,6 +4,39 @@ namespace back_end {
 namespace debugger {
 using std::vector;
 
+std::string RegisterDelta::GetName() {
+  switch(name) {
+    case(A):
+      return "A";
+    case(FZ):
+      return "FZ";
+    case(FN):
+      return "FN";
+    case(FH):
+      return "FH";
+    case(FC):
+      return "FC";
+    case(B):
+      return "B";
+    case(C):
+      return "C";
+    case(D):
+      return "D";
+    case(E):
+      return "E";
+    case(H):
+      return "H";
+    case(L):
+      return "L";
+    case(PC):
+      return "PC";
+    case(SP):
+      return "SP";
+    default:
+      return "Dafuck";
+  }
+}
+
 vector<RegisterDelta> RegisterProducer::RetrieveDelta() {
   vector<RegisterDelta> deltas;
 
