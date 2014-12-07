@@ -16,7 +16,6 @@ class GreatLibrary {
  public:
   void SubmitFrame(Frame frame) {
     history_frame_list_.push_back(frame);
-    LOG(INFO) << "Frame submitted";
   }
   const Frame& first_frame() { return history_frame_list_.front(); }
   const Frame& last_frame() { return history_frame_list_.back(); }
