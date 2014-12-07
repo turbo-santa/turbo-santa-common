@@ -1182,6 +1182,7 @@ int Restart(handlers::ExecutorContext* context) {
   }
 
   GB_CPU* cpu = context->cpu;
+  context->call_stack->Push({context->frame_factory->current_timestamp(), cpu->rPC});
   PushRegister(context->memory_mapper, cpu, &cpu->rPC);
 
   LOG(INFO) << "Restarting at address: " << std::hex << instruction_ptr;
