@@ -15,6 +15,8 @@ typedef std::function<ConstFrameIterator(GreatLibrary*)> Librarian;
 ConstFrameIterator MostRecentOldAddress(ConstFrameIterator iterator);
 ConstFrameIterator MostRecentOldAddress(GreatLibrary* library);
 
+ConstFrameIterator LastTimeExecuted(ConstFrameIterator iterator);
+
 } // namespace debugger
 } // namespace back_end
 
