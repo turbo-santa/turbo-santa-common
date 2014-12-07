@@ -1,4 +1,5 @@
 #include "back_end/debugger/deltas.h"
+#include <string>
 
 namespace back_end {
 namespace debugger {
