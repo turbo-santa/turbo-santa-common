@@ -6,6 +6,7 @@
 #include <map>
 #include <memory>
 
+#include "back_end/debugger/call_stack.h"
 #include "back_end/debugger/deltas.h"
 #include "back_end/debugger/frames.h"
 #include "back_end/graphics/graphics_controller.h"
@@ -52,6 +53,7 @@ class OpcodeExecutor {
     debugger::RegisterProducer register_producer_;
     debugger::PCProducer pc_producer_;
     debugger::FrameFactory frame_factory_;
+    debugger::CallStack call_stack_;
 
     friend class test_harness::TestHarness;
     friend class back_end::clocktroller::ClocktrollerTest;
@@ -64,14 +66,18 @@ struct ExecutorContext {
                   memory::MemoryMapper* memory_mapper_, 
                   registers::GB_CPU* cpu_,
                   unsigned char magic_,
-                  debugger::FrameFactory* frame_factory_) : 
+                  debugger::FrameFactory* frame_factory_,
+                  unsigned short instruction_address_,
+                  debugger::CallStack* call_stack_) : 
       interrupt_master_enable(interrupt_master_enable_),
       instruction_ptr(instruction_ptr_),
       opcode(opcode_),
       memory_mapper(memory_mapper_), 
       cpu(cpu_),
       magic(magic_),
-      frame_factory(frame_factory_) {}
+      frame_factory(frame_factory_),
+      instruction_address(instruction_address_),
+      call_stack(call_stack_) {}
 
   ExecutorContext(ExecutorContext* context) : 
       interrupt_master_enable(context->interrupt_master_enable),
@@ -80,7 +86,9 @@ struct ExecutorContext {
       memory_mapper(context->memory_mapper),
       cpu(context->cpu),
       magic(context->magic),
-      frame_factory(context->frame_factory) {}
+      frame_factory(context->frame_factory),
+      instruction_address(context->instruction_address),
+      call_stack(context->call_stack) {}
 
   bool* interrupt_master_enable;
   unsigned short* instruction_ptr;
@@ -89,6 +97,8 @@ struct ExecutorContext {
   registers::GB_CPU* cpu;
   unsigned char magic;
   debugger::FrameFactory* frame_factory;
+  unsigned short instruction_address;
+  debugger::CallStack* call_stack;
 };
 
 

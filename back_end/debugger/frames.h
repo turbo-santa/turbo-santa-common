@@ -66,7 +66,8 @@ class FrameFactory {
   void SetEvent(std::string event) { current_frame_.set_event(event); }
   void SetInstructionName(std::string instruction) { current_frame_.set_str_instruction(instruction); }
   void SetRawInstruction(unsigned short instruction) { current_frame_.set_raw_instruction(instruction); }
-  void setRawParameters(unsigned short instruction) { current_frame_.set_raw_parameters(instruction); }
+  void SetRawParameters(unsigned short instruction) { current_frame_.set_raw_parameters(instruction); }
+  long current_timestamp() { return current_timestamp_; }
  private:
   GreatLibrary* great_library_;
   RegisterProducer* register_producer_;
