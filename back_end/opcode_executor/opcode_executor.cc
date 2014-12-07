@@ -118,6 +118,7 @@ int OpcodeExecutor::ReadInstruction() {
     pc_producer_.Clear();
   }
 
+  frame_factory_.SetRawInstruction(opcode);
   frame_factory_.SubmitFrame();
 
   return context.opcode->clock_cycles;

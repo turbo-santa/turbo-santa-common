@@ -1338,7 +1338,8 @@ int LoadAN8BitLiteral(handlers::ExecutorContext* context) {
 int LoadNA(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  *opcode.reg1 = (unsigned char)context->cpu->flag_struct.rA;
+  unsigned char* reg1 = (unsigned char*)opcode.reg1;
+  *reg1 = (unsigned char)context->cpu->flag_struct.rA;
   
   PrintInstruction(context->frame_factory, "LD", RegisterName8(opcode.reg1, context->cpu), "A");
   return instruction_ptr;

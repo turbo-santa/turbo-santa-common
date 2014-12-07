@@ -102,6 +102,7 @@ void printFrame(Frame& frame) {
   cout << "Timestamp: " << dec << frame.timestamp() << endl;
   cout << "Instruction executed before: " << frame.pc_delta().visited_before << endl;
   cout << "Instruction: " << frame.str_instruction() << endl;
+  cout << "Raw: " << hex << frame.raw_instruction() << endl;
   cout << "PC from " << hex << frame.pc_delta().old_value << " to " << hex << frame.pc_delta().new_value << endl;
 }
 
@@ -198,7 +199,7 @@ int main(int argc, char* argv[]) {
   Clocktroller clocktroller(&terminal_screen, &great_library, rom.data(), rom.size());
   LOG(INFO) << "Clocktroller built";
 
-  // initscr();
+  initscr();
   clocktroller.Setup();
   clocktroller.Start();
   clocktroller.WaitForThreads();
