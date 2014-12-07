@@ -78,6 +78,8 @@ class PCProducer {
     previous_value_ = *current_value_;
     return ret_val;
   }
+
+  void Clear() { filter_.Clear(); }
   
  private:
   BloonFilter filter_;

@@ -15,6 +15,8 @@ class BloonFilter {
     filter_.insert(address);
     return filter_.end() != iter;
   }
+
+  void Clear() { filter_.clear(); }
  private:
   std::unordered_set<unsigned short> filter_;
 };

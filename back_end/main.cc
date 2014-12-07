@@ -94,7 +94,8 @@ vector<unsigned char> ReadROM(string file_name) {
 }
 
 void ViewHistory(GreatLibrary* great_library) {
-  auto iterator = back_end::debugger::MostRecentOldAddress(great_library);
+  auto iterator = great_library->end();
+  iterator--;
   cout << "Size of GreatLibrary = " << great_library->last_frame().timestamp() << endl;
   while (true) {
     switch(getchar()) {
@@ -108,6 +109,9 @@ void ViewHistory(GreatLibrary* great_library) {
         break;
       case 'l':
         iterator = back_end::debugger::LastTimeExecuted(iterator);
+        break;
+      case 'h':
+        iterator = back_end::debugger::MostRecentOldAddress(iterator);
         break;
       default:
         break;

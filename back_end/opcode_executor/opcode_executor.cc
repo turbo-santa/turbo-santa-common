@@ -106,6 +106,10 @@ int OpcodeExecutor::ReadInstruction() {
 
   graphics_controller_.Tick(opcode_struct.clock_cycles);
 
+  if (opcode_address == 0x100 && memory_mapper_.interrupt_flag()) {
+    pc_producer_.Clear();
+  }
+
   frame_factory_.SubmitFrame();
 
   return context.opcode->clock_cycles;
