@@ -10,10 +10,10 @@ namespace debugger {
 
 class BloonFilter {
  public:
-  bool AddAndCheckIfNew(unsigned short address) {
+  bool AddAndCheckIfVisited(unsigned short address) {
     auto iter = filter_.find(address);
     filter_.insert(address);
-    return filter_.end() == iter;
+    return filter_.end() != iter;
   }
  private:
   std::unordered_set<unsigned short> filter_;

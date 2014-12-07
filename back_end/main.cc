@@ -111,7 +111,8 @@ void ViewHistory(GreatLibrary* great_library) {
     }
     const Frame& frame = *iterator;
     cout << frame.event() << endl;
-    cout << frame.timestamp() << endl;
+    cout << std::dec << frame.timestamp() << endl;
+    cout << "Instruction executed before: " << frame.pc_delta().visited_before << endl;
     cout << frame.str_instruction() << endl;
     cout << "PC from " << hex << frame.pc_delta().old_value << " to " << hex << frame.pc_delta().new_value << endl;
     // cout << "Register deltas: " << frame.register_deltas() << endl;

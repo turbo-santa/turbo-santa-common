@@ -4,7 +4,7 @@ namespace back_end {
 namespace debugger {
 
 ConstFrameIterator MostRecentOldAddress(ConstFrameIterator iterator) {
-  for (; !iterator->pc_delta().visited_before; iterator++) {}
+  for (; !iterator->pc_delta().visited_before; iterator--) {}
   return iterator;
 }
 
