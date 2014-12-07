@@ -84,6 +84,8 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
     LOG(INFO) << "Writing to 0xff85, value = " << std::hex << 0x0000 + value;
   }
 
+  memory_producer_.MemoryWrite(address, Read(address), value);
+
   if (mbc_->InRange(address)) {
     mbc_->Write(address, value);
   } else if (video_ram_->InRange(address)) {

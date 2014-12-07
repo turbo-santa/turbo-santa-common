@@ -1,4 +1,3 @@
-#                                               -*- Autoconf -*-
 # Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.68])
@@ -11,7 +10,7 @@ AC_LANG([C++])
 
 # CXX='g++-4.8'
 CPPFLAGS='-I${top_srcdir} -I${top_srcdir}/third_party/gtest/include'
-CXXFLAGS='-std=c++11 -O2' # -pg for profiling.
+CXXFLAGS='-std=c++11' # -O2' # -pg for profiling.
 CFLAGS=''
 LDFLAGS='-L/usr/local/lib'
 LIBS='-lglog -lncurses'
@@ -51,6 +50,7 @@ AC_CONFIG_FILES([Makefile
                  back_end/memory/Makefile
                  back_end/opcode_executor/Makefile
                  back_end/clocktroller/Makefile
+                 back_end/debugger/Makefile
                  test_harness/Makefile])
 
 AC_CONFIG_SUBDIRS([third_party/gtest])

@@ -1,5 +1,6 @@
 #include "back_end/config.h"
 
+#include "back_end/debugger/great_library.h"
 #include "back_end/opcode_executor/opcode_executor.h"
 #include "back_end/memory/interrupt_flag.h"
 #include "back_end/opcode_executor/opcode_handlers.h"
@@ -10,6 +11,7 @@ namespace back_end {
 namespace handlers {
 
 using std::unique_ptr;
+using debugger::GreatLibrary;
 using graphics::Screen;
 using graphics::ScreenRaster;
 using opcodes::CreateOpcodeMap;
@@ -24,18 +26,31 @@ class NullScreen : public Screen {
 }; 
 
 OpcodeExecutor::OpcodeExecutor() :
-    graphics_controller_(&memory_mapper_, new NullScreen()) {
+    graphics_controller_(&memory_mapper_, new NullScreen()),
+    register_producer_(&cpu_),
+    pc_producer_(&cpu_.rPC),
+    frame_factory_(new GreatLibrary(),
+                   &register_producer_,
+                   memory_mapper_.memory_producer(),
+                   &pc_producer_) {
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
 }
 
-OpcodeExecutor::OpcodeExecutor(Screen* screen, unsigned char* rom, long rom_size) : 
-    memory_mapper_(rom, rom_size, true), graphics_controller_(&memory_mapper_, screen) {
+OpcodeExecutor::OpcodeExecutor(Screen* screen, GreatLibrary* great_library, unsigned char* rom, long rom_size) : 
+    memory_mapper_(rom, rom_size, true), 
+    graphics_controller_(&memory_mapper_, screen),
+    register_producer_(&cpu_),
+    pc_producer_(&cpu_.rPC),
+    frame_factory_(great_library,
+                   &register_producer_,
+                   memory_mapper_.memory_producer(),
+                   &pc_producer_) {
   cpu_.rPC = 0x0000;
   opcode_map = CreateOpcodeMap(&cpu_);
 }
 
-unsigned int OpcodeExecutor::ReadInstruction() {
+int OpcodeExecutor::ReadInstruction() {
   HandleInterrupts(); // Before a fetch we must check for and handle interrupts.
   unsigned short opcode_address = cpu_.rPC;
   unsigned short instruction_ptr = cpu_.rPC;
@@ -61,7 +76,8 @@ unsigned int OpcodeExecutor::ReadInstruction() {
   Opcode opcode_struct;
   auto opcode_iter = opcode_map.find(opcode);
   if (opcode_iter == opcode_map.end()) {
-    LOG(FATAL) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
+    LOG(ERROR) << "Opcode instruction, " << std::hex << opcode << ", does not exist. Next value is " << std::hex << next_byte;
+    return -1; // Let the clocktroller know that we cannot continue.
   } else {
     LOG(INFO) << "Fetched opcode: " << std::hex << opcode << " address: " << std::hex << opcode_address;
     LOG(INFO) << "A is " << std::hex << std::hex << 0x0000 + cpu_.flag_struct.rA;
@@ -75,7 +91,8 @@ unsigned int OpcodeExecutor::ReadInstruction() {
                           &opcode_struct,
                           &memory_mapper_,
                           &cpu_,
-                          magic);
+                          magic,
+                          &frame_factory_);
   // XXX(Brendan): A hack to poke tetris.
   // if (opcode_address == 0x034c && opcode_struct.opcode_name == 0xf0) {
   //   LOG(INFO) << "TETRIS HACK!!!!";
@@ -88,6 +105,8 @@ unsigned int OpcodeExecutor::ReadInstruction() {
   cpu_.rPC = opcode_struct.handler(&context);
 
   graphics_controller_.Tick(opcode_struct.clock_cycles);
+
+  frame_factory_.SubmitFrame();
 
   return context.opcode->clock_cycles;
 }

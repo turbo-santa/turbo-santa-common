@@ -12,7 +12,7 @@
 
 namespace back_end {
 namespace clocktroller {
-    
+using debugger::GreatLibrary;
 using graphics::Screen;
 using handlers::OpcodeExecutor;
 using std::chrono::microseconds;
@@ -30,19 +30,13 @@ void LaunchClockLoop(Clocktroller* member) {
   member->ClockLoop();
 }
 
-Clocktroller::Clocktroller(Screen* screen, unsigned char* rom, long length, bool setup) :
-    executor(new OpcodeExecutor(screen, rom, length)), start_(false) {
-  raw_rom = rom;
+Clocktroller::Clocktroller(Screen* screen, GreatLibrary* great_library, unsigned char* rom, long length, bool setup) : 
+    executor(new OpcodeExecutor(screen, great_library, rom, length)), start_(false) {
+  raw_rom = nullptr;
   MAX_INSTRUCTIONS = 2500000;
   if (setup) {
     Setup();
   }
-}
-
-Clocktroller::Clocktroller(Screen* screen, unsigned char* rom, long length) :
-    executor(new OpcodeExecutor(screen, rom, length)), start_(false) {
-  raw_rom = rom;
-  MAX_INSTRUCTIONS = 2500000;
 }
 
 Clocktroller::Clocktroller(unsigned char* rom, long length) : start_(false) {
@@ -116,18 +110,22 @@ void Clocktroller::ClockLoop() {
 }
 
 void Clocktroller::HandleLoop() {
-  LOG(INFO) << "Handle Loop Spinning Up";
-  std::chrono::milliseconds dur(50);
-  while (!start_) {
-    std::this_thread::sleep_for(dur);
-  }
-  while(should_run && MAX_INSTRUCTIONS-- > 0) {
-    //         execution_lock.lock();
-    
-    clock_cycles = executor->ReadInstruction();
-    
-    //         execution_lock.unlock();
-  }
+    LOG(INFO) << "Handle Loop Spinning Up";
+    std::chrono::milliseconds dur(50);
+    while (!start_) {
+        std::this_thread::sleep_for(dur);
+    }
+    while(should_run && MAX_INSTRUCTIONS-- > 0) {
+//         execution_lock.lock();
+
+        clock_cycles = executor->ReadInstruction();
+
+        if (clock_cycles == -1) {
+          should_run = false;
+        }
+
+//         execution_lock.unlock();
+    }
 }
   
 } // namespace clocktroller

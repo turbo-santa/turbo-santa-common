@@ -1,10 +1,10 @@
-SUBDIRS = memory opcode_executor clocktroller graphics
+SUBDIRS = memory opcode_executor clocktroller graphics debugger
 
 noinst_LTLIBRARIES = libback_end.la
 
 libback_end_la_SOURCES = TurboSanta.cc
 
-libback_end_la_LIBADD = memory/libmemory.la opcode_executor/libopcode_executor.la clocktroller/libclocktroller.la graphics/libgraphics.la
+libback_end_la_LIBADD = memory/libmemory.la opcode_executor/libopcode_executor.la clocktroller/libclocktroller.la graphics/libgraphics.la debugger/libdebugger.la
 
 bin_PROGRAMS = turbo_test
 

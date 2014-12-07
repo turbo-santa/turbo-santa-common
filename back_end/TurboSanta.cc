@@ -1,8 +1,10 @@
 #include "TurboSanta.h"
 #include "back_end/clocktroller/clocktroller.h"
+#include "back_end/debugger/great_library.h"
 #include "back_end/graphics/screen.h"
 
 using back_end::clocktroller::Clocktroller;
+using back_end::debugger::GreatLibrary;
 using back_end::graphics::Screen;
 using back_end::graphics::ScreenRaster;
 using std::unique_ptr;
@@ -28,7 +30,8 @@ TurboSanta::~TurboSanta() {}
 
 void TurboSanta::init(unsigned char* rom, int length, void(*videoCallback)(const signed char* bitmap, int length)) {
   turbo_screen = unique_ptr<Screen>(new TurboScreen(videoCallback));
-  clocktroller = unique_ptr<Clocktroller>(new Clocktroller(turbo_screen.get(), rom, length, true));
+  // TODO(Brendan): This great library never gets deallocated. Fix it.
+  clocktroller = unique_ptr<Clocktroller>(new Clocktroller(turbo_screen.get(), new GreatLibrary(), rom, length, true));
 }
 
 void TurboSanta::handleInput(unsigned char) {}

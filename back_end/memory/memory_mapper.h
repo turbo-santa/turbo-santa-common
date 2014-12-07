@@ -5,6 +5,7 @@
 
 #include <memory>
 
+#include "back_end/debugger/deltas.h"
 #include "back_end/graphics/dma_transfer.h"
 #include "back_end/graphics/graphics_flags.h"
 #include "back_end/memory/echo_segment.h"
@@ -53,6 +54,7 @@ class MemoryMapper {
   graphics::GraphicsFlags* graphics_flags() { return graphics_flags_.get(); }
   VRAMSegment* vram_segment() { return video_ram_.get(); }
   OAMSegment* oam_segment() { return sprite_attribute_table_.get(); }
+  debugger::MemoryProducer* memory_producer() { return &memory_producer_; }
 
   static const int kMaxSize = 0x10000;
 
@@ -76,6 +78,8 @@ class MemoryMapper {
   std::unique_ptr<NullMemorySegment> io_ports_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xff00, 0xff7f));
   std::unique_ptr<RAMSegment> high_ram_ = std::unique_ptr<RAMSegment>(new RAMSegment(0xff80, 0xfffe));
   std::unique_ptr<InterruptEnable> interrupt_enable_ = std::unique_ptr<InterruptEnable>(new InterruptEnable()); // 0xffff
+
+  debugger::MemoryProducer memory_producer_;
 
   friend class test_harness::TestHarness;
   friend class back_end::clocktroller::ClocktrollerTest;
