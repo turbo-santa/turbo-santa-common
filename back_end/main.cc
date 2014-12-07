@@ -106,6 +106,9 @@ void ViewHistory(GreatLibrary* great_library) {
       case 'p':
         iterator--;
         break;
+      case 'l':
+        iterator = back_end::debugger::LastTimeExecuted(iterator);
+        break;
       default:
         break;
     }

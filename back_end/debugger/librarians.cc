@@ -12,5 +12,11 @@ ConstFrameIterator MostRecentOldAddress(GreatLibrary* library) {
   return MostRecentOldAddress(library->end());
 }
 
+ConstFrameIterator LastTimeExecuted(ConstFrameIterator iterator) {
+  unsigned short current_address = iterator->pc_delta().old_value;
+  for (iterator--; current_address != iterator->pc_delta().old_value; iterator--) {}
+  return iterator;
+}
+
 } // namespace debugger
 } // namespace back_end

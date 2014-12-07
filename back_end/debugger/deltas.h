@@ -74,14 +74,14 @@ class PCProducer {
  public:
   PCProducer(unsigned short* current_value) : current_value_(current_value) {}
   virtual PCDelta RetrieveDelta() {
-    PCDelta ret_val = {filter_.AddAndCheckIfVisited(*current_value_), previous_value_, *current_value_};
+    PCDelta ret_val = {filter_.AddAndCheckIfVisited(previous_value_), previous_value_, *current_value_};
     previous_value_ = *current_value_;
     return ret_val;
   }
   
  private:
   BloonFilter filter_;
-  unsigned short previous_value_;
+  unsigned short previous_value_ = 0;
   unsigned short* current_value_;
 };
 
