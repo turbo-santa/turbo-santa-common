@@ -177,9 +177,6 @@ void ViewHistory(GreatLibrary* great_library) {
           cout << "Memory address " << md.address << " changed " << hex << md.old_value + 0x0000 << " => " << hex << md.new_value + 0x0000 << endl;
         }
         break;
-      case 'h':
-        iterator = back_end::debugger::MostRecentOldAddress(iterator);
-        break;
       default:
         break;
     }
