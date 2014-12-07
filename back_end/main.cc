@@ -11,6 +11,7 @@
 
 #include "back_end/clocktroller/clocktroller.h"
 #include "back_end/debugger/frames.h"
+#include "back_end/debugger/deltas.h"
 #include "back_end/debugger/great_library.h"
 #include "back_end/debugger/librarians.h"
 #include "back_end/graphics/screen.h"
@@ -18,10 +19,13 @@
 using std::cout;
 using std::endl;
 using std::hex;
+using std::dec;
 using std::string;
 using std::vector;
 using back_end::clocktroller::Clocktroller;
 using back_end::debugger::Frame;
+using back_end::debugger::RegisterDelta;
+using back_end::debugger::MemoryDelta;
 using back_end::debugger::GreatLibrary;
 using back_end::graphics::Screen;
 using back_end::graphics::ScreenRaster;
@@ -93,22 +97,85 @@ vector<unsigned char> ReadROM(string file_name) {
   return rom;
 }
 
+void printFrame(Frame& frame) {
+  cout << "Event: " << frame.event() << endl;
+  cout << "Timestamp: " << dec << frame.timestamp() << endl;
+  cout << "Instruction executed before: " << frame.pc_delta().visited_before << endl;
+  cout << "Instruction: " << frame.str_instruction() << endl;
+  cout << "PC from " << hex << frame.pc_delta().old_value << " to " << hex << frame.pc_delta().new_value << endl;
+}
+
 void ViewHistory(GreatLibrary* great_library) {
   auto iterator = great_library->end();
   iterator--;
   cout << "Size of GreatLibrary = " << great_library->last_frame().timestamp() << endl;
+  cout << "q quits" << endl;
+  cout << "n increments frame" << endl;
+  cout << "p decrements frame" << endl;
+  cout << "j X jumps to frame X" << endl;
+  cout << "l jumps to last instance of frame" << endl;
+  cout << "h jumps to last instance of repeated frame" << endl;
+  cout << "i prints out frame info" << endl;
+  cout << "r prints out register changes" << endl;
+  cout << "m prints out memory changes" << endl;
+
+  long timestamp = iterator->timestamp();
   while (true) {
-    switch(getchar()) {
+    string nextline;
+    getline(std::cin, nextline);
+    if (nextline.size() == 0) continue;
+    switch(nextline.at(0)) {
       case 'q':
+        cout << "Quitting" << endl;
         return;
       case 'n':
         iterator++;
+        cout << "Incremented to frame " << dec << iterator->timestamp() << endl;
         break;
       case 'p':
         iterator--;
+        cout << "Decremented to frame " << dec << iterator->timestamp() << endl;
         break;
+      case 'j':
+        {
+          int new_timestamp = atoi(nextline.substr(2).c_str());
+          if (new_timestamp > great_library->last_frame().timestamp()) {
+            cout << "Dat frame too big yo" << endl;
+            break;
+          }
+          int change = new_timestamp - timestamp;
+          if (change > 0) {
+            for (int i = 0; i < change; i++) {
+              iterator++;
+            }
+          } else {
+            for (int i = 0; i > change; i--) {
+              iterator--;
+            }
+          }
+          cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
+          break;
+        }
       case 'l':
         iterator = back_end::debugger::LastTimeExecuted(iterator);
+        cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
+        break;
+      case 'h':
+        iterator = back_end::debugger::MostRecentOldAddress(iterator);
+        cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
+        break;
+      case 'i':
+        printFrame((Frame&)*iterator);
+        break;
+      case 'r':
+        for (RegisterDelta rd : iterator->register_deltas()) {
+          cout << "Register " << rd.GetName() << " changed " << hex << rd.old_value << " => " << hex << rd.new_value << endl;
+        }
+        break;
+      case 'm':
+        for (MemoryDelta md : iterator->memory_deltas()) {
+          cout << "Memory address " << md.address << " changed " << hex << md.old_value + 0x0000 << " => " << hex << md.new_value + 0x0000 << endl;
+        }
         break;
       case 'h':
         iterator = back_end::debugger::MostRecentOldAddress(iterator);
@@ -117,13 +184,7 @@ void ViewHistory(GreatLibrary* great_library) {
         break;
     }
     const Frame& frame = *iterator;
-    cout << frame.event() << endl;
-    cout << std::dec << frame.timestamp() << endl;
-    cout << "Instruction executed before: " << frame.pc_delta().visited_before << endl;
-    cout << frame.str_instruction() << endl;
-    cout << "PC from " << hex << frame.pc_delta().old_value << " to " << hex << frame.pc_delta().new_value << endl;
-    // cout << "Register deltas: " << frame.register_deltas() << endl;
-    // cout << "Memory deltas: " << frame.memory_deltas() << endl;
+    timestamp = frame.timestamp();
   }
 }
 
