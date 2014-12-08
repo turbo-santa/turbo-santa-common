@@ -3,18 +3,12 @@
 
 namespace back_end {
 namespace memory {
-class MemoryMapper;
-}
-}
-
-namespace back_end {
-namespace memory {
 class JoypadMemory : public SingleAddressSegment {
  public:
-    JoypadMemory(MemoryMapper* mapper) : SingleAddressSegment(0xff00), mapper_(mapper) {}
+    JoypadMemory() : SingleAddressSegment(0xff00) {}
     
     virtual unsigned char Read(unsigned short address) {
-      unsigned char value = mapper_->Read(address);
+      unsigned char value = inputMap;
       
       if (value >> 4 == 0) {
         // Directional Keys selected
@@ -22,16 +16,16 @@ class JoypadMemory : public SingleAddressSegment {
       } else if (value >> 5 == 0) {
         // Buttons selected
         return (value & 0xf0) | (inputMap & 0x0f);
+      } else {
+        LOG(FATAL) << "Tried to read joypad input with neither directional or buttons selected";
       }
     }
 
     virtual void Write(unsigned short address, unsigned char value) {
-      unsigned char current_value = mapper_->Read(address);
       // the user can only write to bits 4 and 5 0b00110000 = 0x30
-      mapper_->Write(address, (value & 0x30) | current_value);
+      inputMap = (value & 0x30) | inputMap;
     }
  private:
-    MemoryMapper* mapper_;
     // 4 msb = directional (down, up, left, right)
     // 4 lsb = buttons (start, select, b, a)
     unsigned char inputMap = 0;
