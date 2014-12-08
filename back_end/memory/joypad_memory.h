@@ -12,13 +12,17 @@ class JoypadMemory : public SingleAddressSegment {
       
       if (value >> 4 == 0) {
         // Directional Keys selected
+        LOG(INFO) << "Reading JoypadInput - Directional Keys selected";
         return (value & 0xf0) | ((inputMap & 0xf0) >> 4);
-      } else if (value >> 5 == 0) {
-        // Buttons selected
-        return (value & 0xf0) | (inputMap & 0x0f);
       } else {
-        LOG(FATAL) << "Tried to read joypad input with neither directional or buttons selected";
+      //} else if (value >> 5 == 0) {
+        // Buttons selected
+        LOG(INFO) << "Reading JoypadInput - Buttons selected";
+        return (value & 0xf0) | (inputMap & 0x0f);
       }
+      // } else {
+      //   LOG(FATAL) << "Tried to read joypad input with neither directional or buttons selected";
+      // }
     }
 
     virtual void Write(unsigned short address, unsigned char value) {
