@@ -56,6 +56,14 @@ class TileReflectedY : public Tile {
 
 void GraphicsController::Tick(unsigned int number_of_cycles) {
   LCDStatus* lcd_status = graphics_flags()->lcd_status();
+  if (time_ > (time_ + number_of_cycles) % kLargePeriod) {
+    graphics_flags()->ly_coordinate()->set_flag(graphics_flags()->ly_compare()->flag());
+    lcd_status->set_coincidence_flag(true);
+    if (lcd_status->coincidence_interrupt()) {
+      interrupt_flag()->set_lcd_stat(true);
+    }
+  }
+
   time_ += number_of_cycles;
   time_ %= kLargePeriod;
   // Mode 1.
