@@ -34,7 +34,9 @@ void TurboSanta::init(unsigned char* rom, int length, void(*videoCallback)(const
   clocktroller = unique_ptr<Clocktroller>(new Clocktroller(turbo_screen.get(), new GreatLibrary(), rom, length, true));
 }
 
-void TurboSanta::handleInput(unsigned char) {}
+void TurboSanta::handleInput(unsigned char inputMap) {
+  clocktroller->HandleInput(inputMap);
+}
 
 void TurboSanta::launch() {
   clocktroller->Start();

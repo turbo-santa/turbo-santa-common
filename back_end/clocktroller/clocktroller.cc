@@ -84,6 +84,10 @@ void Clocktroller::WaitForThreads() {
   clock_thread.join();
 }
 
+void Clocktroller::HandleInput(unsigned char inputMap) {
+  executor->HandleInput(inputMap);
+}
+
 void Clocktroller::ClockLoop() {
   clock_t start = clock();
   clock_t elapsed;

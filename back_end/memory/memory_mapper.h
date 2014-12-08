@@ -49,6 +49,8 @@ class MemoryMapper {
 
   void Disable();
 
+  void HandleInput(unsigned char inputMap);
+
   InternalROMFlag* internal_rom_flag() { return internal_rom_flag_.get(); }
   InterruptFlag* interrupt_flag() { return interrupt_flag_.get(); }
   InterruptEnable* interrupt_enable() { return interrupt_enable_.get(); }
@@ -76,7 +78,7 @@ class MemoryMapper {
   std::unique_ptr<graphics::GraphicsFlags> graphics_flags_ = std::unique_ptr<graphics::GraphicsFlags>(new graphics::GraphicsFlags());
   std::unique_ptr<graphics::DMATransfer> dma_transfer_ = std::unique_ptr<graphics::DMATransfer>(new graphics::DMATransfer(this));
   std::unique_ptr<InternalROMFlag> internal_rom_flag_ = std::unique_ptr<InternalROMFlag>(new InternalROMFlag()); // 0xff50
-  std::unique_ptr<JoypadMemory> joypad_ = std::unique_ptr<JoypadMemory>(new JoypadMemory()); // 0xff00
+  std::unique_ptr<JoypadMemory> joypad_ = std::unique_ptr<JoypadMemory>(new JoypadMemory(this)); // 0xff00
   std::unique_ptr<NullMemorySegment> io_ports_ = std::unique_ptr<NullMemorySegment>(new NullMemorySegment(0xff01, 0xff7f));
   std::unique_ptr<RAMSegment> high_ram_ = std::unique_ptr<RAMSegment>(new RAMSegment(0xff80, 0xfffe));
   std::unique_ptr<InterruptEnable> interrupt_enable_ = std::unique_ptr<InterruptEnable>(new InterruptEnable()); // 0xffff

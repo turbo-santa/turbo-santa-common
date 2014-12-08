@@ -102,14 +102,14 @@ int OpcodeExecutor::ReadInstruction() {
                           &load_ly_to_a_,
                           &last_instruction_was_ldhan_);
   // XXX(Brendan): A hack to poke tetris.
-  // if (opcode_address == 0x034c && opcode_struct.opcode_name == 0xf0) {
-  //   LOG(INFO) << "TETRIS HACK!!!!";
-  //   memory_mapper_.Write(0xff80, 0x00);
-  // }
-  // if (opcode_address == 0x36c && opcode_struct.opcode_name == 0xf0) {
-  //   LOG(INFO) << "TETRIS HACK!!!!";
-  //   memory_mapper_.Write(0xff85, 0xff);
-  // }
+  if (opcode_address == 0x034c && opcode_struct.opcode_name == 0xf0) {
+    LOG(INFO) << "TETRIS HACK!!!!";
+    memory_mapper_.Write(0xff80, 0x00);
+  }
+  if (opcode_address == 0x36c && opcode_struct.opcode_name == 0xf0) {
+    LOG(INFO) << "TETRIS HACK!!!!";
+    memory_mapper_.Write(0xff85, 0xff);
+  }
   int handler_result = opcode_struct.handler(&context);
   if (handler_result == -1) {
     frame_factory_.SubmitFrame();
@@ -173,6 +173,10 @@ bool OpcodeExecutor::CheckInterrupts() {
       (interrupt_flag->timer() && interrupt_enable->timer()) ||
       (interrupt_flag->serial() && interrupt_enable->serial()) ||
       (interrupt_flag->joypad() && interrupt_enable->joypad());
+}
+
+void OpcodeExecutor::HandleInput(unsigned char inputMap) {
+  memory_mapper_.HandleInput(inputMap);
 }
 
 } // namespace handlers

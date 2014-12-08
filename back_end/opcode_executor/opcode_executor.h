@@ -38,7 +38,7 @@ class OpcodeExecutor {
                    unsigned char* rom,
                    long rom_size);
     int ReadInstruction();
-
+    void HandleInput(unsigned char inputMap);
   private:
     bool CheckInterrupts();
     void HandleInterrupts();

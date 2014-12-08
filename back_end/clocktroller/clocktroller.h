@@ -31,6 +31,7 @@ class Clocktroller {
         void Resume();
         void Terminate();
         void WaitForThreads();
+        void HandleInput(unsigned char inputMap);
         // TODO(Diego): You need to clean this up when you are done. I do not
         // think there is any good reason not to put this in a unique_ptr.
         handlers::OpcodeExecutor* executor; // TODO: This needs to be private. 

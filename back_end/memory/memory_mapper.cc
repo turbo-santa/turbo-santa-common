@@ -29,6 +29,10 @@ void MemoryMapper::Enable() {
 void MemoryMapper::Disable() {
 }
 
+void MemoryMapper::HandleInput(unsigned char inputMap) {
+  joypad_->SetValue(inputMap);
+}
+
 unsigned char MemoryMapper::Read(unsigned short address) {
   if (address == 0xff80) {
     LOG(INFO) << "Reading from 0xff80, value = " << std::hex << 0x0000 + high_ram_->Read(address);
