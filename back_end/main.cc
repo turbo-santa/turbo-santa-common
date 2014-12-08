@@ -117,8 +117,9 @@ void ViewHistory(GreatLibrary* great_library) {
   cout << "l jumps to last instance of frame" << endl;
   cout << "h jumps to last instance of repeated frame" << endl;
   cout << "i prints out frame info" << endl;
-  cout << "r prints out register changes" << endl;
   cout << "m prints out memory changes" << endl;
+  cout << "r prints out register changes" << endl;
+  cout << "g X gets the current value of a register (This is jank)" << endl;
 
   long timestamp = iterator->timestamp();
   while (true) {
@@ -173,6 +174,23 @@ void ViewHistory(GreatLibrary* great_library) {
           cout << "Register " << rd.GetName() << " changed " << hex << rd.old_value << " => " << hex << rd.new_value << endl;
         }
         break;
+      case 'g':
+        {
+          string register_name = nextline.substr(2);
+          bool finished = false;
+
+          for (auto temp_iter = iterator; temp_iter->timestamp() > 0; temp_iter--) {
+            for (RegisterDelta rd: temp_iter->register_deltas()) {
+              if (rd.GetName() == register_name) {
+                cout << "Register " << rd.GetName() << ": " << hex << rd.new_value << endl;
+                finished = true;
+                break;
+              }
+            }
+            if (finished) break;
+          }
+          break;
+        }
       case 'm':
         for (MemoryDelta md : iterator->memory_deltas()) {
           cout << "Memory address " << md.address << " changed " << hex << md.old_value + 0x0000 << " => " << hex << md.new_value + 0x0000 << endl;

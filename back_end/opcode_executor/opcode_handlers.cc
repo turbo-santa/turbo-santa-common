@@ -1038,12 +1038,18 @@ int JumpHL(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int JumpRelative(handlers::ExecutorContext* context) {
+int JumpRelativeImpl(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   instruction_ptr += 1 + static_cast<char>(GetParameterValue(context->memory_mapper, instruction_ptr));
+
   LOG(INFO) << "Jumping to " << std::hex << instruction_ptr;
-  
+
+  return instruction_ptr;
+}
+
+int JumpRelative(handlers::ExecutorContext* context) {
+  int instruction_ptr = JumpRelativeImpl(context);
   PrintInstruction(context->frame_factory, "JR", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr;
 }
@@ -1055,26 +1061,26 @@ int JumpRelativeConditional(handlers::ExecutorContext* context) {
     case 0x20:
       PrintInstruction(context->frame_factory, "JR", "NZ", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
-        return JumpRelative(context);
+        return JumpRelativeImpl(context);
       }
       return instruction_ptr + 1; // Have to account for the 8-bit parameter 
                                   // whether we use it or not.
     case 0x28:
       PrintInstruction(context->frame_factory, "JR", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
-        return JumpRelative(context);
+        return JumpRelativeImpl(context);
       }
       return instruction_ptr + 1;
     case 0x30:
       PrintInstruction(context->frame_factory, "JR", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
-        return JumpRelative(context);
+        return JumpRelativeImpl(context);
       }
       return instruction_ptr + 1;
     case 0x38:
       PrintInstruction(context->frame_factory, "JR", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
-        return JumpRelative(context);
+        return JumpRelativeImpl(context);
       }
   }
   LOG(INFO) << "Not jumping";
