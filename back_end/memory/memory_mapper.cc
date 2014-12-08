@@ -65,6 +65,8 @@ unsigned char MemoryMapper::Read(unsigned short address) {
     return dma_transfer_->Read(address);
   } else if (internal_rom_flag_->InRange(address)) {
     return internal_rom_flag_->Read(address);
+  } else if (joypad_->InRange(address)) {
+    return joypad_->Read(address);
   } else if (io_ports_->InRange(address)) {
     return io_ports_->Read(address);
   } else if (high_ram_->InRange(address)) {
@@ -110,6 +112,8 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
     dma_transfer_->Write(address, value);
   } else if (internal_rom_flag_->InRange(address)) {
     internal_rom_flag_->Write(address, value);
+  } else if (joypad_->InRange(address)) {
+    joypad_->Write(address, value);
   } else if (io_ports_->InRange(address)) {
     io_ports_->Write(address, value);
   } else if (high_ram_->InRange(address)) {
