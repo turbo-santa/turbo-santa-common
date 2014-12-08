@@ -131,13 +131,29 @@ void ViewHistory(GreatLibrary* great_library) {
         cout << "Quitting" << endl;
         return;
       case 'n':
-        iterator++;
-        cout << "Incremented to frame " << dec << iterator->timestamp() << endl;
-        break;
+        {
+          int times = 1;
+          if (nextline.size() > 2) {
+            times = atoi(nextline.substr(2).c_str());
+          }
+          for (int i = 0; i < times; i++) {
+            iterator++;
+          }
+          cout << "Incremented to frame " << dec << iterator->timestamp() << endl;
+          break;
+        }
       case 'p':
-        iterator--;
-        cout << "Decremented to frame " << dec << iterator->timestamp() << endl;
-        break;
+        {
+          int times = 1;
+          if (nextline.size() > 2) {
+            times = atoi(nextline.substr(2).c_str());
+          }
+          for (int i = 0; i < times; i++) {
+            iterator--;
+          }
+          cout << "Decremented to frame " << dec << iterator->timestamp() << endl;
+          break;
+        }
       case 'j':
         {
           int new_timestamp = atoi(nextline.substr(2).c_str());
