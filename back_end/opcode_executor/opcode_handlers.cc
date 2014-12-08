@@ -1,5 +1,6 @@
 #include "back_end/config.h"
 
+#include "back_end/debugger/call_stack.h"
 #include "back_end/debugger/frames.h"
 #include "back_end/opcode_executor/opcode_handlers.h"
 #include "back_end/opcode_executor/opcode_executor.h"
@@ -11,6 +12,7 @@ namespace back_end {
 namespace handlers {
 
 using debugger::FrameFactory;
+using debugger::FunctionCall;
 using opcodes::Opcode;
 using registers::GB_CPU;
 using memory::MemoryMapper;
@@ -452,7 +454,6 @@ int Inc8Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   unsigned char* reg = (unsigned char*) opcode.reg1;
-  unsigned char fourth_bit = NthBit(*reg, 3);
   bool half_carry = DoesHalfCarry8(*reg, 1);
   ++(*reg);
   
@@ -543,7 +544,6 @@ int AddSPLiteral(handlers::ExecutorContext* context) {
 int Inc16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned short* reg = (unsigned short*) opcode.reg1;
   ++(*opcode.reg1);
   // No flags are affected by this instruction
   PrintInstruction(context->frame_factory, "INC", RegisterName16(opcode.reg1, context->cpu));
@@ -553,7 +553,6 @@ int Inc16Bit(handlers::ExecutorContext* context) {
 int Dec16Bit(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
-  unsigned short* reg = (unsigned short*) opcode.reg1;
   --(*opcode.reg1);
   // No flags are affected by this instruction
   PrintInstruction(context->frame_factory, "DEC", RegisterName16(opcode.reg1, context->cpu));
@@ -1117,6 +1116,7 @@ int Call(handlers::ExecutorContext* context) {
 
   unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
   *rPC += 2; // Must take the parameter into account.
+  context->call_stack->Push({context->frame_factory->current_timestamp(), *rPC});
   PushRegister(context->memory_mapper, cpu, rPC);
 
   LOG(INFO) << "Calling address: " << std::hex << address;
@@ -1182,6 +1182,7 @@ int Restart(handlers::ExecutorContext* context) {
   }
 
   GB_CPU* cpu = context->cpu;
+  context->call_stack->Push({context->frame_factory->current_timestamp(), cpu->rPC});
   PushRegister(context->memory_mapper, cpu, &cpu->rPC);
 
   LOG(INFO) << "Restarting at address: " << std::hex << instruction_ptr;
@@ -1195,6 +1196,14 @@ int Return(handlers::ExecutorContext* context) {
   Opcode opcode = *context->opcode;
   PopRegister(context->memory_mapper, context->cpu, &context->cpu->rPC);
   PrintInstruction(context->frame_factory, "RET");
+  if (!context->call_stack->PeekCheck(context->cpu->rPC)) {
+    FunctionCall call = context->call_stack->Pop();
+    string message = "Should have returned to: address = " + Hex(call.address) + " frame = " + std::to_string(call.timestamp);
+    context->frame_factory->SetEvent(message);
+    LOG(WARNING) << message;
+  } else {
+    context->call_stack->Pop();
+  }
   return context->cpu->rPC;
 }
 

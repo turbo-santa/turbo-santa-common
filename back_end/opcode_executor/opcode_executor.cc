@@ -92,7 +92,9 @@ int OpcodeExecutor::ReadInstruction() {
                           &memory_mapper_,
                           &cpu_,
                           magic,
-                          &frame_factory_);
+                          &frame_factory_,
+                          opcode_address,
+                          &call_stack_);
   // XXX(Brendan): A hack to poke tetris.
   // if (opcode_address == 0x034c && opcode_struct.opcode_name == 0xf0) {
   //   LOG(INFO) << "TETRIS HACK!!!!";
@@ -102,7 +104,13 @@ int OpcodeExecutor::ReadInstruction() {
   //   LOG(INFO) << "TETRIS HACK!!!!";
   //   memory_mapper_.Write(0xff85, 0xff);
   // }
-  cpu_.rPC = opcode_struct.handler(&context);
+  int handler_result = opcode_struct.handler(&context);
+  if (handler_result == -1) {
+    frame_factory_.SubmitFrame();
+    return -1;
+  } else {
+    cpu_.rPC = handler_result;
+  }
 
   graphics_controller_.Tick(opcode_struct.clock_cycles);
 
@@ -121,6 +129,7 @@ int OpcodeExecutor::ReadInstruction() {
 // 3) Push PC (as if CALL was performed), set PC to interrupt address, disable IME
 void OpcodeExecutor::HandleInterrupts() {
   if (interrupt_master_enable_ && CheckInterrupts()) {
+    call_stack_.Push({frame_factory_.current_timestamp(), cpu_.rPC});
     handlers::PushRegister(&memory_mapper_, &cpu_, &cpu_.rPC);
     interrupt_master_enable_ = false;
 
