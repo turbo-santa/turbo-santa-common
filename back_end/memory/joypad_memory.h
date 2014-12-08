@@ -18,7 +18,7 @@ class JoypadMemory : public SingleAddressSegment {
     virtual void Write(unsigned short address, unsigned char value);
     void SetValue(unsigned char value);
  private:
-    int i = 0;
+    unsigned char ReadButtons();
     // 4 msb = directional (down, up, left, right)
     // 4 lsb = buttons (start, select, b, a)
     unsigned char inputMap_ = 0;

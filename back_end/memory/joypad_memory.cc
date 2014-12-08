@@ -5,7 +5,7 @@ namespace back_end {
 namespace memory {
 
 JoypadMemory::JoypadMemory(MemoryMapper* mapper) : SingleAddressSegment(0xff00), mapper_(mapper) {}
-    
+
 unsigned char JoypadMemory::Read(unsigned short address) {
   if ((joypad_select_ & 1) == 0) {
     // Directional Keys selected
@@ -14,13 +14,15 @@ unsigned char JoypadMemory::Read(unsigned short address) {
   } else if ((joypad_select_ >> 1) == 0) {
     // Buttons selected
     LOG(WARNING) << "Reading JoypadInput - Buttons selected";
-    goto ButtonsSelected;
+    return ReadButtons();
   } else {
     LOG(WARNING) << "Tried to read joypad input with neither directional or buttons selected";
-    goto ButtonsSelected;
+    return ReadButtons();
   }
-  ButtonsSelected:
-    return (joypad_select_ << 4) | (inputMap_ & 0x0f);// | (i++ % 2 == 0) ? 0x08 : 0);
+}
+
+unsigned char JoypadMemory::ReadButtons() {
+  return (joypad_select_ << 4) | (inputMap_ & 0x0f);
 }
 
 void JoypadMemory::Write(unsigned short address, unsigned char value) {
