@@ -400,8 +400,12 @@ int Xor8BitLiteral(handlers::ExecutorContext* context) {
 }
 
 int Cp8Bit(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
   Opcode* opcode = context->opcode;
+  if(*context->last_instruction_was_ldhan == true) {
+    context->cpu->flag_struct.rA = *opcode->reg1;
+  }
+
+  int instruction_ptr = *context->instruction_ptr;
   unsigned char result = context->cpu->flag_struct.rA - *opcode->reg1;
   SetZFlag(result, context->cpu);
   SetNFlag(true, context->cpu); // Performed subtraction.
@@ -1434,6 +1438,9 @@ int LoadHAN(handlers::ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   Opcode opcode = *context->opcode;
   MemoryMapper* memory_mapper = context->memory_mapper;
+  if(GetParameterValue(memory_mapper, instruction_ptr) == 0x44) {
+    *context->load_ly_to_a = true;
+  }
   context->cpu->flag_struct.rA = memory_mapper->Read(0xFF00 + GetParameterValue(memory_mapper, instruction_ptr));
   
   PrintInstruction(context->frame_factory, "LD", "A", "(0xff00 + " + Hex(GetParameterValue(memory_mapper, instruction_ptr)) + ")");

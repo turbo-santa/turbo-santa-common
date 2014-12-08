@@ -85,6 +85,10 @@ int OpcodeExecutor::ReadInstruction() {
     LOG(INFO) << "HL is " << std::hex << std::hex << 0x0000 + cpu_.rHL;
     opcode_struct = opcode_iter->second;
   }
+  if (load_ly_to_a_) {
+    last_instruction_was_ldhan_ = true;
+  }
+  load_ly_to_a_ = false;
 
   ExecutorContext context(&interrupt_master_enable_,
                           &cpu_.rPC,
@@ -94,7 +98,9 @@ int OpcodeExecutor::ReadInstruction() {
                           magic,
                           &frame_factory_,
                           opcode_address,
-                          &call_stack_);
+                          &call_stack_,
+                          &load_ly_to_a_,
+                          &last_instruction_was_ldhan_);
   // XXX(Brendan): A hack to poke tetris.
   // if (opcode_address == 0x034c && opcode_struct.opcode_name == 0xf0) {
   //   LOG(INFO) << "TETRIS HACK!!!!";

@@ -55,6 +55,10 @@ class OpcodeExecutor {
     debugger::FrameFactory frame_factory_;
     debugger::CallStack call_stack_;
 
+    bool load_ly_to_a_ = false;
+    bool last_instruction_was_ldhan_ = false;
+
+
     friend class test_harness::TestHarness;
     friend class back_end::clocktroller::ClocktrollerTest;
 };
@@ -68,7 +72,9 @@ struct ExecutorContext {
                   unsigned char magic_,
                   debugger::FrameFactory* frame_factory_,
                   unsigned short instruction_address_,
-                  debugger::CallStack* call_stack_) : 
+                  debugger::CallStack* call_stack_,
+                  bool* load_ly_to_a_,
+                  bool* last_instruction_was_ldhan_) : 
       interrupt_master_enable(interrupt_master_enable_),
       instruction_ptr(instruction_ptr_),
       opcode(opcode_),
@@ -77,7 +83,9 @@ struct ExecutorContext {
       magic(magic_),
       frame_factory(frame_factory_),
       instruction_address(instruction_address_),
-      call_stack(call_stack_) {}
+      call_stack(call_stack_),
+      load_ly_to_a(load_ly_to_a_),
+      last_instruction_was_ldhan(last_instruction_was_ldhan_) {}
 
   ExecutorContext(ExecutorContext* context) : 
       interrupt_master_enable(context->interrupt_master_enable),
@@ -88,7 +96,9 @@ struct ExecutorContext {
       magic(context->magic),
       frame_factory(context->frame_factory),
       instruction_address(context->instruction_address),
-      call_stack(context->call_stack) {}
+      call_stack(context->call_stack),
+      load_ly_to_a(context->load_ly_to_a),
+      last_instruction_was_ldhan(context->last_instruction_was_ldhan){}
 
   bool* interrupt_master_enable;
   unsigned short* instruction_ptr;
@@ -99,6 +109,8 @@ struct ExecutorContext {
   debugger::FrameFactory* frame_factory;
   unsigned short instruction_address;
   debugger::CallStack* call_stack;
+  bool* load_ly_to_a;
+  bool* last_instruction_was_ldhan;
 };
 
 
