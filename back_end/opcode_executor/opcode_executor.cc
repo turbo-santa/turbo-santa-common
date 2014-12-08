@@ -110,13 +110,14 @@ int OpcodeExecutor::ReadInstruction() {
   //   LOG(INFO) << "TETRIS HACK!!!!";
   //   memory_mapper_.Write(0xff85, 0xff);
   // }
-  // int handler_result = opcode_struct.handler(&context);
-  // if (handler_result == -1) {
-  //   frame_factory_.SubmitFrame();
-  //   return -1;
-  // } else {
-  //   cpu_.rPC = handler_result;
-  // }
+  
+  int handler_result = opcode_struct.handler(&context);
+  if (handler_result == -1) {
+    frame_factory_.SubmitFrame();
+    return -1;
+  } else {
+    cpu_.rPC = handler_result;
+  }
 
   graphics_controller_.Tick(opcode_struct.clock_cycles);
 
