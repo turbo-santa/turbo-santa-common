@@ -1,12 +1,12 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_FLAGS_H_
 #define TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_FLAGS_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <glog/logging.h>
 
-#include "back_end/memory/flags.h"
-#include "back_end/memory/memory_segment.h"
+#include "backend/memory/flags.h"
+#include "backend/memory/memory_segment.h"
 
 namespace back_end {
 namespace graphics {

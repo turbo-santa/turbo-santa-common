@@ -1,7 +1,7 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_TEST_H
 #define TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_TEST_H
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include "test_harness/test_harness.h"
 #include "test_harness/test_harness_utils.h"

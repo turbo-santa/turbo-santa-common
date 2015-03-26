@@ -1,11 +1,11 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_DEBUGGER_LIBRARIANS_H_
 #define TURBO_SANTA_COMMON_BACK_END_DEBUGGER_LIBRARIANS_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <functional>
-#include "back_end/debugger/frames.h"
-#include "back_end/debugger/great_library.h"
+#include "backend/debugger/frames.h"
+#include "backend/debugger/great_library.h"
 
 namespace back_end {
 namespace debugger {

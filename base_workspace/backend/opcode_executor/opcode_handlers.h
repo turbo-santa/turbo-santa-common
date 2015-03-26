@@ -1,13 +1,13 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <memory>
 
-#include "back_end/memory/memory_mapper.h"
-#include "back_end/opcode_executor/opcodes.h"
-#include "back_end/opcode_executor/registers.h"
+#include "backend/memory/memory_mapper.h"
+#include "backend/opcode_executor/opcodes.h"
+#include "backend/opcode_executor/registers.h"
 
 namespace back_end {
 namespace handlers {

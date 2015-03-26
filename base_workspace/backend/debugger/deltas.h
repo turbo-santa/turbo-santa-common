@@ -1,11 +1,11 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_DEBUGGER_DELTAS_H_
 #define TURBO_SANTA_COMMON_BACK_END_DEBUGGER_DELTAS_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <vector>
-#include "back_end/debugger/bloon_filter.h"
-#include "back_end/opcode_executor/registers.h"
+#include "backend/debugger/bloon_filter.h"
+#include "backend/opcode_executor/registers.h"
 
 namespace back_end {
 namespace debugger {

@@ -1,4 +1,4 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 #include <curses.h>
 
 #include <algorithm>
@@ -9,12 +9,12 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "back_end/clocktroller/clocktroller.h"
-#include "back_end/debugger/frames.h"
-#include "back_end/debugger/deltas.h"
-#include "back_end/debugger/great_library.h"
-#include "back_end/debugger/librarians.h"
-#include "back_end/graphics/screen.h"
+#include "backend/clocktroller/clocktroller.h"
+#include "backend/debugger/frames.h"
+#include "backend/debugger/deltas.h"
+#include "backend/debugger/great_library.h"
+#include "backend/debugger/librarians.h"
+#include "backend/graphics/screen.h"
 
 using std::cout;
 using std::endl;

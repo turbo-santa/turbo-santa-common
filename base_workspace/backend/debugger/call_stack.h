@@ -1,7 +1,7 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_DEBUGGER_CALL_STACK_H_
 #define TURBO_SANTA_COMMON_BACK_END_DEBUGGER_CALL_STACK_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <stack>
 

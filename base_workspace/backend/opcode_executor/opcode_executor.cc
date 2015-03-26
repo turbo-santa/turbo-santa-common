@@ -1,10 +1,10 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 
-#include "back_end/debugger/great_library.h"
-#include "back_end/opcode_executor/opcode_executor.h"
-#include "back_end/memory/interrupt_flag.h"
-#include "back_end/opcode_executor/opcode_handlers.h"
-#include "back_end/opcode_executor/registers.h"
+#include "backend/debugger/great_library.h"
+#include "backend/opcode_executor/opcode_executor.h"
+#include "backend/memory/interrupt_flag.h"
+#include "backend/opcode_executor/opcode_handlers.h"
+#include "backend/opcode_executor/registers.h"
 #include <glog/logging.h>
 
 namespace back_end {

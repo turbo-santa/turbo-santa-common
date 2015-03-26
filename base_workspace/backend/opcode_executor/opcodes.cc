@@ -1,6 +1,6 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 
-#include "back_end/opcode_executor/opcodes.h"
+#include "backend/opcode_executor/opcodes.h"
 
 namespace back_end {
 namespace opcodes {

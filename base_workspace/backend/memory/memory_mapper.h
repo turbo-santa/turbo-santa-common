@@ -1,21 +1,21 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_MAPPER_H_
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_MAPPER_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <memory>
 
-#include "back_end/debugger/deltas.h"
-#include "back_end/graphics/dma_transfer.h"
-#include "back_end/graphics/graphics_flags.h"
-#include "back_end/memory/echo_segment.h"
-#include "back_end/memory/internal_rom.h"
-#include "back_end/memory/interrupt_flag.h"
-#include "back_end/memory/mbc.h"
-#include "back_end/memory/memory_segment.h"
-#include "back_end/memory/ram_segment.h"
-#include "back_end/memory/vram_segment.h"
-#include "back_end/memory/joypad_memory.h"
+#include "backend/debugger/deltas.h"
+#include "backend/graphics/dma_transfer.h"
+#include "backend/graphics/graphics_flags.h"
+#include "backend/memory/echo_segment.h"
+#include "backend/memory/internal_rom.h"
+#include "backend/memory/interrupt_flag.h"
+#include "backend/memory/mbc.h"
+#include "backend/memory/memory_segment.h"
+#include "backend/memory/ram_segment.h"
+#include "backend/memory/vram_segment.h"
+#include "backend/memory/joypad_memory.h"
 
 namespace test_harness {
 class TestHarness;

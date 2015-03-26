@@ -1,16 +1,16 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_
 #define TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <atomic>
 #include <memory>
 #include <mutex>
 #include <thread>
 
-#include "back_end/debugger/great_library.h"
-#include "back_end/graphics/screen.h"
-#include "back_end/graphics/graphics_controller.h"
+#include "backend/debugger/great_library.h"
+#include "backend/graphics/screen.h"
+#include "backend/graphics/graphics_controller.h"
 
 namespace back_end {
 namespace handlers {

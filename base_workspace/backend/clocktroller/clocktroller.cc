@@ -1,10 +1,10 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <chrono>
 #include <mutex>
 #include <time.h>
-#include "back_end/opcode_executor/opcode_executor.h"
-#include "clocktroller.h"
+#include "backend/opcode_executor/opcode_executor.h"
+#include "backend/clocktroller/clocktroller.h"
 #include <glog/logging.h>
 
 #include <iostream>

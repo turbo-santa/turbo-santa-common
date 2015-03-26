@@ -1,6 +1,6 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 
-#include "back_end/memory/mbc.h"
+#include "backend/memory/mbc.h"
 
 #include <stdio.h>
 #include <glog/logging.h>

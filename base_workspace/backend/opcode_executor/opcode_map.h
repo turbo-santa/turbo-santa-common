@@ -1,14 +1,14 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_MAP_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_MAP_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <vector>
 #include <map>
 
-#include "back_end/opcode_executor/opcodes.h"
-#include "back_end/opcode_executor/opcode_handlers.h"
-#include "back_end/opcode_executor/registers.h"
+#include "backend/opcode_executor/opcodes.h"
+#include "backend/opcode_executor/opcode_handlers.h"
+#include "backend/opcode_executor/registers.h"
 
 namespace back_end {
 namespace opcodes {

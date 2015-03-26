@@ -1,10 +1,10 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 
-#include "back_end/debugger/call_stack.h"
-#include "back_end/debugger/frames.h"
-#include "back_end/opcode_executor/opcode_handlers.h"
-#include "back_end/opcode_executor/opcode_executor.h"
-#include "back_end/opcode_executor/opcodes.h"
+#include "backend/debugger/call_stack.h"
+#include "backend/debugger/frames.h"
+#include "backend/opcode_executor/opcode_handlers.h"
+#include "backend/opcode_executor/opcode_executor.h"
+#include "backend/opcode_executor/opcodes.h"
 #include <glog/logging.h>
 #include <ncurses.h>
 

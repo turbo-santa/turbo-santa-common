@@ -2,11 +2,11 @@
 
 #include <memory>
 #include <string>
-#include "back_end/opcode_executor/opcode_handlers.h"
-#include "back_end/opcode_executor/opcode_executor.h"
-#include "back_end/opcode_executor/registers.h"
-#include "back_end/memory/memory_mapper.h"
-#include "back_end/memory/mbc.h"
+#include "backend/opcode_executor/opcode_handlers.h"
+#include "backend/opcode_executor/opcode_executor.h"
+#include "backend/opcode_executor/registers.h"
+#include "backend/memory/memory_mapper.h"
+#include "backend/memory/mbc.h"
 
 namespace test_harness {
 using std::string;

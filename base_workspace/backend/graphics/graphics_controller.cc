@@ -1,6 +1,6 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 
-#include "back_end/graphics/graphics_controller.h"
+#include "backend/graphics/graphics_controller.h"
 
 #include <ncurses.h>
 

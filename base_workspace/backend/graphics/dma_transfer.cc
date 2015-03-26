@@ -1,6 +1,7 @@
-#include "back_end/graphics/dma_transfer.h"
+#include "backend/graphics/dma_transfer.h"
 
-#include "back_end/memory/memory_mapper.h"
+#include <glog/logging.h>
+#include "backend/memory/memory_mapper.h"
 
 namespace back_end {
 namespace graphics {

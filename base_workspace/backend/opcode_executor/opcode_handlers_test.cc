@@ -1,11 +1,11 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <vector>
-#include "back_end/opcode_executor/opcode_handlers.h"
-#include "back_end/opcode_executor/opcode_executor.h"
-#include "back_end/opcode_executor/opcodes.h"
-#include "test_harness/test_harness.h"
-#include "test_harness/test_harness_utils.h"
+#include "backend/opcode_executor/opcode_handlers.h"
+#include "backend/opcode_executor/opcode_executor.h"
+#include "backend/opcode_executor/opcodes.h"
+#include "testharness/test_harness.h"
+#include "testharness/test_harness_utils.h"
 
 #include "third_party/gtest/include/gtest/gtest.h"
 

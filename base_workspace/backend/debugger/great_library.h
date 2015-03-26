@@ -1,13 +1,13 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_DEBUGGER_GREAT_LIBRARY_H_
 #define TURBO_SANTA_COMMON_BACK_END_DEBUGGER_GREAT_LIBRARY_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <list>
 #include <string>
 #include <glog/logging.h>
-#include "back_end/debugger/frames.h"
-#include "back_end/opcode_executor/opcode_executor.h"
+#include "backend/debugger/frames.h"
+#include "backend/opcode_executor/opcode_executor.h"
 
 namespace back_end {
 namespace debugger {

@@ -1,21 +1,21 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <map>
 #include <memory>
 
-#include "back_end/debugger/call_stack.h"
-#include "back_end/debugger/deltas.h"
-#include "back_end/debugger/frames.h"
-#include "back_end/graphics/graphics_controller.h"
-#include "back_end/graphics/screen.h"
-#include "back_end/memory/memory_mapper.h"
-#include "back_end/opcode_executor/opcode_handlers.h"
-#include "back_end/opcode_executor/opcodes.h"
-#include "back_end/opcode_executor/opcode_map.h"
-#include "back_end/opcode_executor/registers.h"
+#include "backend/debugger/call_stack.h"
+#include "backend/debugger/deltas.h"
+#include "backend/debugger/frames.h"
+#include "backend/graphics/graphics_controller.h"
+#include "backend/graphics/screen.h"
+#include "backend/memory/memory_mapper.h"
+#include "backend/opcode_executor/opcode_handlers.h"
+#include "backend/opcode_executor/opcodes.h"
+#include "backend/opcode_executor/opcode_map.h"
+#include "backend/opcode_executor/registers.h"
 
 namespace test_harness {
 class TestHarness;

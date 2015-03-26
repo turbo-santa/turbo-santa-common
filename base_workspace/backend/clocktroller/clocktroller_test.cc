@@ -1,8 +1,8 @@
-#include "back_end/config.h"
+#include "backend/config.h"
 
-#include "clocktroller_test.h"
-#include "clocktroller.h"
-#include "back_end/opcode_executor/registers.h"
+#include "backend/clocktroller/clocktroller_test.h"
+#include "backend/clocktroller/clocktroller.h"
+#include "backend/opcode_executor/registers.h"
 #include "third_party/gtest/include/gtest/gtest.h"
 #include <glog/logging.h>
 #include <vector>

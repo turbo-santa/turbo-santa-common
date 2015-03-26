@@ -1,5 +1,5 @@
-#include "back_end/memory/joypad_memory.h"
-#include "back_end/memory/memory_mapper.h"
+#include "backend/memory/joypad_memory.h"
+#include "backend/memory/memory_mapper.h"
 
 namespace back_end {
 namespace memory {

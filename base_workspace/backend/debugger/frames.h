@@ -1,13 +1,13 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_DEBUGGER_FRAMES_H_
 #define TURBO_SANTA_COMMON_BACK_END_DEBUGGER_FRAMES_H_
 
-#include "back_end/config.h"
+#include "backend/config.h"
 
 #include <list>
 #include <string>
 #include <utility>
 #include <vector>
-#include "back_end/debugger/deltas.h"
+#include "backend/debugger/deltas.h"
 
 namespace back_end {
 namespace debugger {
