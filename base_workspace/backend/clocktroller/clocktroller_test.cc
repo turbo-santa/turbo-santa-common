@@ -3,8 +3,8 @@
 #include "backend/clocktroller/clocktroller_test.h"
 #include "backend/clocktroller/clocktroller.h"
 #include "backend/opcode_executor/registers.h"
-#include "third_party/gtest/include/gtest/gtest.h"
-#include <glog/logging.h>
+#include "submodules/googletest/include/gtest/gtest.h"
+#include "submodules/glog/src/glog/logging.h"
 #include <vector>
 
 namespace back_end {

@@ -3,9 +3,8 @@
 
 #include "backend/config.h"
 
-#include <glog/logging.h>
-
 #include "backend/memory/memory_segment.h"
+#include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {
 namespace memory {

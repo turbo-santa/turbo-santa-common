@@ -5,8 +5,8 @@
 #include <string>
 #include <vector>
 #include "backend/opcode_executor/opcode_executor.h"
+#include "submodules/googletest/include/gtest/gtest.h"
 #include "test_harness/test_harness_utils.h"
-#include "third_party/gtest/include/gtest/gtest.h"
 
 namespace test_harness {
 

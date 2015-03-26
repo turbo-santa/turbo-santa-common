@@ -5,7 +5,7 @@
 #include "backend/opcode_executor/opcode_handlers.h"
 #include "backend/opcode_executor/opcode_executor.h"
 #include "backend/opcode_executor/opcodes.h"
-#include <glog/logging.h>
+#include "submodules/glog/src/glog/logging.h"
 #include <ncurses.h>
 
 namespace back_end {

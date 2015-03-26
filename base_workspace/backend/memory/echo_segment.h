@@ -5,7 +5,7 @@
 
 #include "backend/memory/memory_segment.h"
 #include "backend/memory/ram_segment.h"
-#include <glog/logging.h>
+#include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {
 namespace memory {

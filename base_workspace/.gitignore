@@ -2,4 +2,10 @@ examples
 tools
 third_party
 
+bazel-base_workspace
+bazel-bin
+bazel-genfiles
+bazel-out
+bazel-testlogs
+
 *.pyc

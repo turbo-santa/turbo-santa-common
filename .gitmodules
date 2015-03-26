@@ -1,6 +1,8 @@
 [submodule "base_workspace/submodules/googletest"]
 	path = base_workspace/submodules/googletest
-	url = https://github.com/bjh83/googletest.git
+  url = https://github.com/bjh83/googletest.git
+  ignore = dirty
 [submodule "base_workspace/submodules/glog"]
 	path = base_workspace/submodules/glog
-	url = https://github.com/google/glog.git
+  url = https://github.com/google/glog.git
+  ignore = dirty

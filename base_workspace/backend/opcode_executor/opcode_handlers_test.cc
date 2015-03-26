@@ -4,12 +4,10 @@
 #include "backend/opcode_executor/opcode_handlers.h"
 #include "backend/opcode_executor/opcode_executor.h"
 #include "backend/opcode_executor/opcodes.h"
-#include "testharness/test_harness.h"
-#include "testharness/test_harness_utils.h"
-
-#include "third_party/gtest/include/gtest/gtest.h"
-
-#include <glog/logging.h>
+#include "submodules/googletest/include/gtest/gtest.h"
+#include "submodules/glog/src/glog/logging.h"
+#include "test_harness/test_harness.h"
+#include "test_harness/test_harness_utils.h"
 
 namespace back_end {
 namespace handlers {
