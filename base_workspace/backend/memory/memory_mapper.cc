@@ -13,7 +13,7 @@ MemorySegment* Lookup(const vector<MemorySegment*>& segments, unsigned short add
       return segment;
     }
   }
-  LOG(FATAL) << "Address out of range";
+  LOG(FATAL) << "Address out of range: 0x" << std::hex << address;
 }
 } // namespace
 
@@ -27,6 +27,7 @@ void MemoryMapper::RegisterModule(const Module& module) {
       // The interrupt enable flag, address 0xffff, does not lie within the
       // usual flag address space.
       memory_segments_.push_back(flag);
+      LOG(INFO) << "Adding interrupt enable.";
     } else {
       flag_container_.add_flag(flag);
     }

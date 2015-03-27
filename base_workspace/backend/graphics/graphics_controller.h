@@ -32,12 +32,20 @@ class GraphicsController : public memory::Module {
   void Tick(unsigned int number_of_cycles);
 
  private:
+  enum PreviousMode {
+    MODE_0,
+    MODE_1,
+    MODE_2,
+    MODE_3,
+  };
+
   // TODO(Brendan): Finish implementing interrupt_flag.
   GraphicsFlags graphics_flags_;
   memory::VRAMSegment vram_segment_;
   memory::OAMSegment oam_segment_;
   Screen* screen_;
   memory::PrimaryFlags* primary_flags_;
+  PreviousMode previous_mode_;
   memory::InterruptFlag* interrupt_flag() { return primary_flags_->interrupt_flag(); }
 
   void SetLCDSTATInterrupt() { interrupt_flag()->set_lcd_stat(true); }

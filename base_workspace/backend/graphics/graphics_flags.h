@@ -61,14 +61,31 @@ class ScrollX : public memory::Flag {
 };
 
 // Specifies the Y coordinate currently being rendered to the screen.
-class LYCoordinate: public memory::Flag {
+class LYCoordinate : public memory::Flag {
  public:
   LYCoordinate() : memory::Flag(0xff44) {}
   // LY is a READ ONLY register.
-  // TODO(Brendan): Writing should reset the counter.
-  virtual void Write(unsigned short, unsigned char) {}
+  virtual void Write(unsigned short, unsigned char) {
+    set_flag(0);
+    has_reset_ = 0;
+  }
 
   virtual void set_flag(unsigned char value) { Flag::set_flag(value); }
+
+  bool has_reset() { return has_reset_; }
+
+  void clear_reset() { has_reset_ = false; }
+
+  void Increment() { 
+    if (flag() >= 153) {
+      set_flag(0);
+    } else {
+      set_flag(flag() + 1);
+    }
+  }
+
+ private:
+  bool has_reset_ = false;
 };
 
 // Specifies the Y coordinate to for which to set the cooincident bit in LCD STAT.

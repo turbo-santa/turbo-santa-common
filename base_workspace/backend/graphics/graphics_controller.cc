@@ -264,12 +264,19 @@ void GraphicsController::Init() {
 
 void GraphicsController::Tick(unsigned int number_of_cycles) {
   LCDStatus* lcd_status = graphics_flags_.lcd_status();
-  if (time_ > (time_ + number_of_cycles) % kLargePeriod) {
-    graphics_flags_.ly_coordinate()->set_flag(graphics_flags_.ly_compare()->flag());
+  LYCoordinate* ly_coordinate = graphics_flags_.ly_coordinate();
+  LYCompare* ly_compare = graphics_flags_.ly_compare();
+
+  if (ly_coordinate->flag() == ly_compare->flag()) {
     lcd_status->set_coincidence_flag(true);
     if (lcd_status->coincidence_interrupt()) {
       interrupt_flag()->set_lcd_stat(true);
     }
+  }
+
+  if (ly_coordinate->has_reset()) {
+    time_ = 0;
+    ly_coordinate->clear_reset();
   }
 
   time_ += number_of_cycles;
@@ -283,7 +290,7 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
     if (lcd_status->v_blank_interrupt()) {
       SetLCDSTATInterrupt();
     }
-    LOG(INFO) << "Mode 1";
+    previous_mode_ = MODE_1;
   // Mode 0.
   } else if (time_ % kSmallPeriod > kHBlankLowerBound) {
     lcd_status->set_mode(LCDStatus::H_BLANK);
@@ -292,19 +299,16 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
     if (lcd_status->h_blank_interrupt()) {
       SetLCDSTATInterrupt();
     }
-    LOG(INFO) << "Mode 0";
+    previous_mode_ = MODE_0;
   // Mode 3.
   } else if (time_ % kSmallPeriod > kVRAMOAMLockedLowerBound) {
     lcd_status->set_mode(LCDStatus::VRAM_OAM_LOCKED);
     DisableOAM();
     DisableVRAM();
-    if (graphics_flags_.lcd_control()->lcd_display_enable()) {
-      LOG(INFO) << "Drawing...";
+    if (graphics_flags_.lcd_control()->lcd_display_enable() && previous_mode_ != MODE_3) {
       Draw(&graphics_flags_, &oam_segment_, &vram_segment_, screen_);
-    } else {
-      LOG(INFO) << "LCD disabled.";
     }
-    LOG(INFO) << "Mode 3";
+    previous_mode_ = MODE_3;
   // Mode 2.
   } else if (time_ % kSmallPeriod > kOAMLockedLowerBound) {
     lcd_status->set_mode(LCDStatus::OAM_LOCKED);
@@ -313,7 +317,10 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
     if (lcd_status->oam_interrupt()) {
       SetLCDSTATInterrupt();
     }
-    LOG(INFO) << "Mode 2";
+    if (previous_mode_ != MODE_2) {
+      ly_coordinate->Increment();
+    }
+    previous_mode_ = MODE_2;
   }
 }
 

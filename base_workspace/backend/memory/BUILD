@@ -129,6 +129,7 @@ cc_library(
   hdrs = ["primary_flags.h"],
   deps = [
     "//backend:config",
+    "//submodules:glog",
     ":interrupt_flag",
     ":module",
   ],

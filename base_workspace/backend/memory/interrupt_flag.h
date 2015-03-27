@@ -29,13 +29,11 @@ class InterruptBase : public Flag {
     return bit_value != 0;
   }
 
-  unsigned short address_;
   unsigned char value_ = 0x00;
 
  public:
   InterruptBase(unsigned short address) : Flag(address) {}
 
-  virtual bool InRange(unsigned short address) { return address == address_; }
   virtual unsigned char Read(unsigned short) { return value_; }
   virtual void Write(unsigned short, unsigned char value) { 
     value_ = value;
@@ -56,7 +54,7 @@ class InterruptBase : public Flag {
   virtual void set_timer(bool value) { set_value_bit(2, value); }
   virtual void set_serial(bool value) { set_value_bit(3, value); }
   virtual void set_joypad(bool value) { set_value_bit(4, value); }
-  virtual void Clear() { Write(address_, 0x00); }
+  virtual void Clear() { Write(address(), 0x00); }
 };
 
 class InterruptFlag : public InterruptBase {
