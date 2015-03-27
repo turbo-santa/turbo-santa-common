@@ -5,52 +5,42 @@
 
 #include <atomic>
 #include <memory>
-#include <mutex>
 #include <thread>
-
-#include "backend/debugger/great_library.h"
-#include "backend/graphics/screen.h"
 #include "backend/graphics/graphics_controller.h"
-
-namespace back_end {
-namespace handlers {
-class OpcodeExecutor;
-} // namespace handlers
-} // namespace back_end
+#include "backend/graphics/screen.h"
+#include "backend/opcode_executor/opcode_executor.h"
+#include "backend/memory/default_module.h"
+#include "backend/memory/mbc_module.h"
+#include "backend/memory/memory_mapper.h"
+#include "backend/memory/primary_flags.h"
 
 namespace back_end {
 namespace clocktroller {
 
 class Clocktroller {
-    public:
-        Clocktroller(graphics::Screen* screen, debugger::GreatLibrary* great_library, unsigned char* rom, long length, bool setup = false);
-        Clocktroller(unsigned char* rom, long length);
-        void Setup();
-        void Start();
-        void Pause();
-        void Resume();
-        void Terminate();
-        void WaitForThreads();
-        void HandleInput(unsigned char inputMap);
-        // TODO(Diego): You need to clean this up when you are done. I do not
-        // think there is any good reason not to put this in a unique_ptr.
-        handlers::OpcodeExecutor* executor; // TODO: This needs to be private. 
-                                            // The only other class that references it is ClocktrollerTest.
-    private:
-        void HandleLoop();
-        void ClockLoop();
-        bool should_run = 1;
-        std::atomic<bool> start_;
-        unsigned char* raw_rom;
-        std::mutex execution_lock;
-        std::thread handler_thread;
-        std::thread clock_thread;
-        int clock_cycles;
+ public:
+  Clocktroller(graphics::Screen* screen) : screen_(screen) {}
+  void Init(unsigned char* rom, long length);
+  void Run();
+  void Pause() { is_paused_ = true; }
+  void Kill() { is_dead_ = true; }
+  void Wait() { thread_.join(); }
 
-    friend void LaunchHandleLoop(Clocktroller*);
-    friend void LaunchClockLoop(Clocktroller*);
-    friend class ClocktrollerTest;
+ private:
+  memory::PrimaryFlags primary_flags_;
+  memory::DefaultModule default_module_;
+  memory::MBCModule mbc_;
+  graphics::Screen* screen_;
+  std::unique_ptr<handlers::OpcodeExecutor> opcode_executor_;
+  std::unique_ptr<graphics::GraphicsController> graphics_controller_;
+  bool is_running_;
+  std::atomic<bool> is_paused_;
+  std::atomic<bool> is_dead_;
+  std::thread thread_;
+
+  void ExecutionLoop();
 };
+
 } // namespace clocktroller
 } // namespace back_end
 #endif // TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_

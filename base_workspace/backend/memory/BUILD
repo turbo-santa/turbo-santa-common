@@ -21,6 +21,7 @@ cc_library(
     "//submodules:glog",
     ":memory_segment",
   ],
+  visibility = ["//backend/graphics:__pkg__"]
 )
 
 cc_library(
@@ -62,6 +63,7 @@ cc_library(
     "//submodules:glog",
     ":memory_segment",
   ],
+  visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -76,21 +78,74 @@ cc_library(
 )
 
 cc_library(
+  name = "default_module",
+  hdrs = ["default_module.h"],
+  deps = [
+    "//backend:config",
+    ":echo_segment",
+    ":memory_segment",
+    ":module",
+    ":ram_segment",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
+  name = "flag_container",
+  hdrs = ["flag_container.h"],
+  deps = [
+    "//backend:config",
+    ":flags",
+    ":memory_segment",
+  ],
+)
+
+cc_library(
+  name = "mbc_module",
+  hdrs = ["mbc_module.h"],
+  deps = [
+    "//backend:config",
+    ":internal_rom",
+    ":mbc",
+    ":memory_segment",
+    ":module",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
+  name = "module",
+  hdrs = ["module.h"],
+  deps = [
+    "//backend:config",
+    ":memory_segment",
+    ":flags",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
+  name = "primary_flags",
+  hdrs = ["primary_flags.h"],
+  deps = [
+    "//backend:config",
+    ":interrupt_flag",
+    ":module",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
   name = "memory_mapper",
   hdrs = ["memory_mapper.h"],
   srcs = ["memory_mapper.cc"],
   deps = [
     "//backend:config",
-    "//backend/graphics:dma_transfer",
-    "//backend/graphics:graphics_flags",
     "//submodules:glog",
-    ":echo_segment",
-    ":internal_rom",
-    ":interrupt_flag",
-    ":mbc",
+    ":flags",
+    ":flag_container",
     ":memory_segment",
-    ":ram_segment",
-    ":vram_segment",
+    ":module",
   ],
   visibility = ["//visibility:public"],
 )

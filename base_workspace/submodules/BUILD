@@ -36,5 +36,6 @@ cc_library(
   srcs = [
     "glog/.libs/libglog.a",
   ],
+  linkopts = ["-pthread"],
   linkstatic = 1,
 )

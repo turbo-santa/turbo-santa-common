@@ -18,6 +18,9 @@ cc_library(
   hdrs = ["opcode_executor.h"],
   srcs = ["opcode_executor.cc"],
   deps = [
+    "//backend/memory:interrupt_flag",
+    "//backend/memory:memory_mapper",
+    "//backend/memory:primary_flags",
     "//backend:config",
     "//submodules:glog",
     ":opcode_map",

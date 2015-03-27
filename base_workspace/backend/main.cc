@@ -10,11 +10,11 @@
 #include <string.h>
 
 #include "backend/clocktroller/clocktroller.h"
-#include "backend/debugger/frames.h"
-#include "backend/debugger/deltas.h"
-#include "backend/debugger/great_library.h"
-#include "backend/debugger/librarians.h"
-#include "backend/graphics/screen.h"
+// #include "backend/debugger/frames.h"
+// #include "backend/debugger/deltas.h"
+// #include "backend/debugger/great_library.h"
+// #include "backend/debugger/librarians.h"
+// #include "backend/graphics/screen.h"
 
 using std::cout;
 using std::endl;
@@ -23,10 +23,10 @@ using std::dec;
 using std::string;
 using std::vector;
 using back_end::clocktroller::Clocktroller;
-using back_end::debugger::Frame;
-using back_end::debugger::RegisterDelta;
-using back_end::debugger::MemoryDelta;
-using back_end::debugger::GreatLibrary;
+// using back_end::debugger::Frame;
+// using back_end::debugger::RegisterDelta;
+// using back_end::debugger::MemoryDelta;
+// using back_end::debugger::GreatLibrary;
 using back_end::graphics::Screen;
 using back_end::graphics::ScreenRaster;
 
@@ -80,7 +80,7 @@ vector<unsigned char> ReadROM(string file_name) {
   vector<unsigned char> rom;
   FILE* file = fopen(file_name.c_str(), "r");
   if (file == nullptr) {
-    LOG(FATAL) << "Cannot read file: " << strerror(errno);
+    LOG(FATAL) << "Cannot read file " << file_name << ": " << strerror(errno);
   }
 
   const int buffer_size = 1024;
@@ -97,128 +97,128 @@ vector<unsigned char> ReadROM(string file_name) {
   return rom;
 }
 
-void printFrame(Frame& frame) {
-  cout << "Event: " << frame.event() << endl;
-  cout << "Timestamp: " << dec << frame.timestamp() << endl;
-  cout << "Instruction executed before: " << frame.pc_delta().visited_before << endl;
-  cout << "Instruction: " << frame.str_instruction() << endl;
-  cout << "Raw: " << hex << frame.raw_instruction() << endl;
-  cout << "PC from " << hex << frame.pc_delta().old_value << " to " << hex << frame.pc_delta().new_value << endl;
-}
+// void printFrame(Frame& frame) {
+//   cout << "Event: " << frame.event() << endl;
+//   cout << "Timestamp: " << dec << frame.timestamp() << endl;
+//   cout << "Instruction executed before: " << frame.pc_delta().visited_before << endl;
+//   cout << "Instruction: " << frame.str_instruction() << endl;
+//   cout << "Raw: " << hex << frame.raw_instruction() << endl;
+//   cout << "PC from " << hex << frame.pc_delta().old_value << " to " << hex << frame.pc_delta().new_value << endl;
+// }
 
-void ViewHistory(GreatLibrary* great_library) {
-  auto iterator = great_library->end();
-  iterator--;
-  cout << "Size of GreatLibrary = " << great_library->last_frame().timestamp() << endl;
-  cout << "q quits" << endl;
-  cout << "n increments frame" << endl;
-  cout << "p decrements frame" << endl;
-  cout << "j X jumps to frame X" << endl;
-  cout << "l jumps to last instance of frame" << endl;
-  cout << "h jumps to last instance of repeated frame" << endl;
-  cout << "i prints out frame info" << endl;
-  cout << "m prints out memory changes" << endl;
-  cout << "r prints out register changes" << endl;
-  cout << "g X gets the current value of a register (This is jank)" << endl;
-
-  long timestamp = iterator->timestamp();
-  while (true) {
-    string nextline;
-    getline(std::cin, nextline);
-    if (nextline.size() == 0) continue;
-    switch(nextline.at(0)) {
-      case 'q':
-        cout << "Quitting" << endl;
-        return;
-      case 'n':
-        {
-          int times = 1;
-          if (nextline.size() > 2) {
-            times = atoi(nextline.substr(2).c_str());
-          }
-          for (int i = 0; i < times; i++) {
-            iterator++;
-          }
-          cout << "Incremented to frame " << dec << iterator->timestamp() << endl;
-          break;
-        }
-      case 'p':
-        {
-          int times = 1;
-          if (nextline.size() > 2) {
-            times = atoi(nextline.substr(2).c_str());
-          }
-          for (int i = 0; i < times; i++) {
-            iterator--;
-          }
-          cout << "Decremented to frame " << dec << iterator->timestamp() << endl;
-          break;
-        }
-      case 'j':
-        {
-          int new_timestamp = atoi(nextline.substr(2).c_str());
-          if (new_timestamp > great_library->last_frame().timestamp()) {
-            cout << "Dat frame too big yo" << endl;
-            break;
-          }
-          int change = new_timestamp - timestamp;
-          if (change > 0) {
-            for (int i = 0; i < change; i++) {
-              iterator++;
-            }
-          } else {
-            for (int i = 0; i > change; i--) {
-              iterator--;
-            }
-          }
-          cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
-          break;
-        }
-      case 'l':
-        iterator = back_end::debugger::LastTimeExecuted(iterator);
-        cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
-        break;
-      case 'h':
-        iterator = back_end::debugger::MostRecentOldAddress(iterator);
-        cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
-        break;
-      case 'i':
-        printFrame((Frame&)*iterator);
-        break;
-      case 'r':
-        for (RegisterDelta rd : iterator->register_deltas()) {
-          cout << "Register " << rd.GetName() << " changed " << hex << rd.old_value << " => " << hex << rd.new_value << endl;
-        }
-        break;
-      case 'g':
-        {
-          string register_name = nextline.substr(2);
-          bool finished = false;
-
-          for (auto temp_iter = iterator; temp_iter->timestamp() > 0; temp_iter--) {
-            for (RegisterDelta rd: temp_iter->register_deltas()) {
-              if (rd.GetName() == register_name) {
-                cout << "Register " << rd.GetName() << ": " << hex << rd.new_value << endl;
-                finished = true;
-                break;
-              }
-            }
-            if (finished) break;
-          }
-          break;
-        }
-      case 'm':
-        for (MemoryDelta md : iterator->memory_deltas()) {
-          cout << "Memory address " << md.address << " changed " << hex << md.old_value + 0x0000 << " => " << hex << md.new_value + 0x0000 << endl;
-        }
-        break;
-      default:
-        break;
-    }
-    const Frame& frame = *iterator;
-    timestamp = frame.timestamp();
-  }
-}
+// void ViewHistory(GreatLibrary* great_library) {
+//   auto iterator = great_library->end();
+//   iterator--;
+//   cout << "Size of GreatLibrary = " << great_library->last_frame().timestamp() << endl;
+//   cout << "q quits" << endl;
+//   cout << "n increments frame" << endl;
+//   cout << "p decrements frame" << endl;
+//   cout << "j X jumps to frame X" << endl;
+//   cout << "l jumps to last instance of frame" << endl;
+//   cout << "h jumps to last instance of repeated frame" << endl;
+//   cout << "i prints out frame info" << endl;
+//   cout << "m prints out memory changes" << endl;
+//   cout << "r prints out register changes" << endl;
+//   cout << "g X gets the current value of a register (This is jank)" << endl;
+// 
+//   long timestamp = iterator->timestamp();
+//   while (true) {
+//     string nextline;
+//     getline(std::cin, nextline);
+//     if (nextline.size() == 0) continue;
+//     switch(nextline.at(0)) {
+//       case 'q':
+//         cout << "Quitting" << endl;
+//         return;
+//       case 'n':
+//         {
+//           int times = 1;
+//           if (nextline.size() > 2) {
+//             times = atoi(nextline.substr(2).c_str());
+//           }
+//           for (int i = 0; i < times; i++) {
+//             iterator++;
+//           }
+//           cout << "Incremented to frame " << dec << iterator->timestamp() << endl;
+//           break;
+//         }
+//       case 'p':
+//         {
+//           int times = 1;
+//           if (nextline.size() > 2) {
+//             times = atoi(nextline.substr(2).c_str());
+//           }
+//           for (int i = 0; i < times; i++) {
+//             iterator--;
+//           }
+//           cout << "Decremented to frame " << dec << iterator->timestamp() << endl;
+//           break;
+//         }
+//       case 'j':
+//         {
+//           int new_timestamp = atoi(nextline.substr(2).c_str());
+//           if (new_timestamp > great_library->last_frame().timestamp()) {
+//             cout << "Dat frame too big yo" << endl;
+//             break;
+//           }
+//           int change = new_timestamp - timestamp;
+//           if (change > 0) {
+//             for (int i = 0; i < change; i++) {
+//               iterator++;
+//             }
+//           } else {
+//             for (int i = 0; i > change; i--) {
+//               iterator--;
+//             }
+//           }
+//           cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
+//           break;
+//         }
+//       case 'l':
+//         iterator = back_end::debugger::LastTimeExecuted(iterator);
+//         cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
+//         break;
+//       case 'h':
+//         iterator = back_end::debugger::MostRecentOldAddress(iterator);
+//         cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
+//         break;
+//       case 'i':
+//         printFrame((Frame&)*iterator);
+//         break;
+//       case 'r':
+//         for (RegisterDelta rd : iterator->register_deltas()) {
+//           cout << "Register " << rd.GetName() << " changed " << hex << rd.old_value << " => " << hex << rd.new_value << endl;
+//         }
+//         break;
+//       case 'g':
+//         {
+//           string register_name = nextline.substr(2);
+//           bool finished = false;
+// 
+//           for (auto temp_iter = iterator; temp_iter->timestamp() > 0; temp_iter--) {
+//             for (RegisterDelta rd: temp_iter->register_deltas()) {
+//               if (rd.GetName() == register_name) {
+//                 cout << "Register " << rd.GetName() << ": " << hex << rd.new_value << endl;
+//                 finished = true;
+//                 break;
+//               }
+//             }
+//             if (finished) break;
+//           }
+//           break;
+//         }
+//       case 'm':
+//         for (MemoryDelta md : iterator->memory_deltas()) {
+//           cout << "Memory address " << md.address << " changed " << hex << md.old_value + 0x0000 << " => " << hex << md.new_value + 0x0000 << endl;
+//         }
+//         break;
+//       default:
+//         break;
+//     }
+//     const Frame& frame = *iterator;
+//     timestamp = frame.timestamp();
+//   }
+// }
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
@@ -227,17 +227,17 @@ int main(int argc, char* argv[]) {
   }
 
   TerminalScreen terminal_screen;
-  GreatLibrary great_library;
+//   GreatLibrary great_library;
   vector<unsigned char> rom = ReadROM(argv[1]);
   LOG(INFO) << "Finished reading rom";
-  Clocktroller clocktroller(&terminal_screen, &great_library, rom.data(), rom.size());
+  Clocktroller clocktroller(&terminal_screen);
   LOG(INFO) << "Clocktroller built";
 
   initscr();
-  clocktroller.Setup();
-  clocktroller.Start();
-  clocktroller.WaitForThreads();
+  clocktroller.Init(rom.data(), rom.size());
+  clocktroller.Run();
+  clocktroller.Wait();
   endwin();
-  ViewHistory(&great_library);
+//   ViewHistory(&great_library);
   return 0;
 };

@@ -135,6 +135,20 @@ class ObjectPalette1 : public ObjectPalette {
 // map.
 class GraphicsFlags : public memory::MemorySegment {
  public:
+  GraphicsFlags() {
+    flags_.push_back(&lcd_control_);
+    flags_.push_back(&lcd_status_);
+    flags_.push_back(&scroll_y_);
+    flags_.push_back(&scroll_x_);
+    flags_.push_back(&ly_coordinate_);
+    flags_.push_back(&ly_compare_);
+    flags_.push_back(&window_y_position_);
+    flags_.push_back(&window_x_position_);
+    flags_.push_back(&background_palette_);
+    flags_.push_back(&object_palette_0_);
+    flags_.push_back(&object_palette_1_);
+  }
+
   virtual bool InRange(unsigned short address) {
     return lcd_control_.InRange(address) ||
         lcd_status_.InRange(address) ||
@@ -229,6 +243,8 @@ class GraphicsFlags : public memory::MemorySegment {
     }
   }
 
+  const std::vector<memory::Flag*>& flags() const { return flags_; }
+
   LCDControl* lcd_control() { return &lcd_control_; }
   LCDStatus* lcd_status() { return &lcd_status_; }
   ScrollX* scroll_x() { return &scroll_x_; }
@@ -241,6 +257,7 @@ class GraphicsFlags : public memory::MemorySegment {
   MonochromePalette* object_palette_0() { return &object_palette_0_; }
   MonochromePalette* object_palette_1() { return &object_palette_1_; }
  private:
+  std::vector<memory::Flag*> flags_;
   LCDControl lcd_control_;
   LCDStatus lcd_status_;
   ScrollY scroll_y_;

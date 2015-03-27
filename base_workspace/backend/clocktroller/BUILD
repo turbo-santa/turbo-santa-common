@@ -6,10 +6,15 @@ cc_library(
   ],
   deps = [
     "//backend:config",
+    "//backend/graphics:graphics_controller",
+    "//backend/graphics:screen",
+    "//backend/memory:default_module",
+    "//backend/memory:mbc_module",
+    "//backend/memory:memory_mapper",
+    "//backend/memory:primary_flags",
     "//backend/opcode_executor",
-    "//backend/opcode_executor:opcodes",
-    "//backend/opcode_executor:registers",
   ],
+  visibility = ["//visibility:public"],
 )
 
 cc_test(

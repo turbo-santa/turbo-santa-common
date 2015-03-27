@@ -4,9 +4,14 @@ cc_library(
   srcs = ["graphics_controller.cc"],
   deps = [
     "//backend:config",
+    "//backend/memory:interrupt_flag",
+    "//backend/memory:module",
+    "//backend/memory:primary_flags",
+    "//backend/memory:vram_segment",
     ":graphics_flags",
     ":screen",
   ],
+  visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -16,6 +21,7 @@ cc_library(
     "//backend:config",
     "//submodules:glog",
   ],
+  visibility = ["//visibility:public"],
 )
 
 cc_library(

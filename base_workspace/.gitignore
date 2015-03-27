@@ -8,4 +8,7 @@ bazel-genfiles
 bazel-out
 bazel-testlogs
 
+roms/
+
 *.pyc
+*.zip

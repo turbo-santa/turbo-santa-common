@@ -1,137 +1,59 @@
-#include "backend/config.h"
-
-#include <chrono>
-#include <mutex>
-#include <time.h>
-#include "backend/opcode_executor/opcode_executor.h"
 #include "backend/clocktroller/clocktroller.h"
-#include <glog/logging.h>
 
-#include <iostream>
-#include <fstream>
+#include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {
 namespace clocktroller {
-using debugger::GreatLibrary;
-using graphics::Screen;
+
+using std::unique_ptr;
+using graphics::GraphicsController;
+using memory::MemoryMapper;
 using handlers::OpcodeExecutor;
-using std::chrono::microseconds;
 
-static const double kClockRate = 8388000; // 8.388 MHz
-static const microseconds kZero(0);
+void Clocktroller::Init(unsigned char* rom, long length) {
+  unique_ptr<MemoryMapper> memory_mapper = unique_ptr<MemoryMapper>(new MemoryMapper());
 
-int MAX_INSTRUCTIONS; // TODO(Diego): get rid of this hack
+  primary_flags_.Init();
+  memory_mapper->RegisterModule(primary_flags_);
 
-void LaunchHandleLoop(Clocktroller* member) {
-  member->HandleLoop();
+  default_module_.Init();
+  memory_mapper->RegisterModule(default_module_);
+
+  mbc_.Init(rom, length);
+  memory_mapper->RegisterModule(mbc_);
+
+  graphics_controller_ = unique_ptr<GraphicsController>(new GraphicsController(screen_, &primary_flags_));
+  graphics_controller_->Init();
+  memory_mapper->RegisterModule(*graphics_controller_);
+
+  opcode_executor_ = unique_ptr<OpcodeExecutor>(new OpcodeExecutor(std::move(memory_mapper), &primary_flags_));
 }
 
-void LaunchClockLoop(Clocktroller* member) {
-  member->ClockLoop();
-}
-
-Clocktroller::Clocktroller(Screen* screen, GreatLibrary* great_library, unsigned char* rom, long length, bool setup) : 
-    executor(new OpcodeExecutor(screen, great_library, rom, length)), start_(false) {
-  raw_rom = nullptr;
-  MAX_INSTRUCTIONS = 2500000;
-  if (setup) {
-    Setup();
+void Clocktroller::Run() {
+  is_paused_ = false;
+  is_dead_ = false;
+  if (!is_running_) {
+    thread_ = std::thread([this]() { this->ExecutionLoop(); });
   }
+  is_running_ = true;
 }
 
-Clocktroller::Clocktroller(unsigned char* rom, long length) : start_(false) {
-  LOG(INFO) << "Creating OpcodeExecutor";
-  executor = new OpcodeExecutor();
-  raw_rom = rom;
-  MAX_INSTRUCTIONS = length;
-}
-
-void Clocktroller::Setup() {
-  LOG(INFO) << "Launching Handle Thread";
-  handler_thread = std::thread(LaunchHandleLoop, this);
-  LOG(INFO) << "Handle Thread Launched";
-  LOG(INFO) << "Launching Clock Thread";
-  clock_thread = std::thread(LaunchClockLoop, this);
-  LOG(INFO) << "Clock Thread Launched";
-}
-
-void Clocktroller::Start() {
-  start_ = true;
-}
-
-void Clocktroller::Pause() {
-  should_run = 0;
-  handler_thread.join();
-  clock_thread.join();
-}
-
-void Clocktroller::Resume() {
-  if (!should_run) {
-    should_run = true;
-    std::thread handler_thread(LaunchHandleLoop, this);
-    std::thread clock_thread(LaunchClockLoop, this);
-  }
-}
-
-void Clocktroller::Terminate() {
-  should_run = 0;
-  handler_thread.join();
-  clock_thread.join();
-}
-
-void Clocktroller::WaitForThreads() {
-  handler_thread.join();
-  clock_thread.join();
-}
-
-void Clocktroller::HandleInput(unsigned char inputMap) {
-  executor->HandleInput(inputMap);
-}
-
-void Clocktroller::ClockLoop() {
-  clock_t start = clock();
-  clock_t elapsed;
-  LOG(INFO) << "Clock Loop Spinning Up";
-  std::chrono::milliseconds dur(50);
-  while (!start_) {
-    std::this_thread::sleep_for(dur);
-  }
-  while(should_run && MAX_INSTRUCTIONS > 0) {
-    //        if (execution_lock.try_lock()) {
-    elapsed = clock() - start;
-    
-    std::chrono::microseconds wait_time(static_cast<long>(1000 * 1 / (kClockRate / clock_cycles) - (elapsed / CLOCKS_PER_SEC)));
-    if (wait_time < kZero) {
-      wait_time = kZero;
+void Clocktroller::ExecutionLoop() {
+  for (;;) {
+    if (!is_paused_) {
+      if (is_dead_) {
+        return;
+      }
+      int ticks = opcode_executor_->ReadInstruction();
+      if (ticks < 0) {
+        LOG(ERROR) << "Clock clock cycles were negative.";
+        is_dead_ = true;
+      } else {
+        graphics_controller_->Tick(ticks);
+      }
     }
-    
-    // std::this_thread::sleep_for(wait_time);
-    start = clock();
-    //             execution_lock.unlock();
-    //        }
-    
   }
 }
 
-void Clocktroller::HandleLoop() {
-    LOG(INFO) << "Handle Loop Spinning Up";
-    std::chrono::milliseconds dur(50);
-    while (!start_) {
-        std::this_thread::sleep_for(dur);
-    }
-    while(should_run && MAX_INSTRUCTIONS-- > 0) {
-//         execution_lock.lock();
-
-        clock_cycles = executor->ReadInstruction();
-
-        if (clock_cycles == -1) {
-          should_run = false;
-        }
-
-//         execution_lock.unlock();
-    }
-}
-  
 } // namespace clocktroller
 } // namespace back_end
-

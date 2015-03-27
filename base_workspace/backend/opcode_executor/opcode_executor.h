@@ -5,62 +5,38 @@
 
 #include <map>
 #include <memory>
-
-#include "backend/debugger/call_stack.h"
-#include "backend/debugger/deltas.h"
-#include "backend/debugger/frames.h"
-#include "backend/graphics/graphics_controller.h"
-#include "backend/graphics/screen.h"
+#include "backend/memory/interrupt_flag.h"
 #include "backend/memory/memory_mapper.h"
-#include "backend/opcode_executor/opcode_handlers.h"
+#include "backend/memory/primary_flags.h"
 #include "backend/opcode_executor/opcodes.h"
 #include "backend/opcode_executor/opcode_map.h"
 #include "backend/opcode_executor/registers.h"
-
-namespace test_harness {
-class TestHarness;
-} // namespace test_harness
-
-namespace back_end {
-namespace clocktroller {
-class ClocktrollerTest;
-} // namespace clocktroller
-} // namespace back_end
 
 namespace back_end {
 namespace handlers {
 
 class OpcodeExecutor {
-  public: 
-    OpcodeExecutor();
-    OpcodeExecutor(graphics::Screen* screen,
-                   debugger::GreatLibrary* great_library,
-                   unsigned char* rom,
-                   long rom_size);
-    int ReadInstruction();
-    void HandleInput(unsigned char inputMap);
-  private:
-    bool CheckInterrupts();
-    void HandleInterrupts();
+ public:
+  OpcodeExecutor(std::unique_ptr<memory::MemoryMapper> memory_mapper, 
+                 memory::PrimaryFlags* primary_flags) :
+      memory_mapper_(std::move(memory_mapper)),
+      interrupt_enable_(primary_flags->interrupt_enable()),
+      interrupt_flag_(primary_flags->interrupt_flag()) {}
+
+  int ReadInstruction();
+
+ private:
+  bool CheckInterrupts();
+  void HandleInterrupts();
     
-    memory::MemoryMapper memory_mapper_;
-    graphics::GraphicsController graphics_controller_;
-    registers::GB_CPU cpu_;
-    std::map<unsigned short, opcodes::Opcode> opcode_map;
-    // This is a special flag/register that can only be set or unset and can
-    // only be accessed by the user using the EI, DI or RETI instructions.
-    bool interrupt_master_enable_ = false;
-    debugger::RegisterProducer register_producer_;
-    debugger::PCProducer pc_producer_;
-    debugger::FrameFactory frame_factory_;
-    debugger::CallStack call_stack_;
-
-    bool load_ly_to_a_ = false;
-    bool last_instruction_was_ldhan_ = false;
-
-
-    friend class test_harness::TestHarness;
-    friend class back_end::clocktroller::ClocktrollerTest;
+  registers::GB_CPU cpu_;
+  std::unique_ptr<memory::MemoryMapper> memory_mapper_;
+  std::map<unsigned short, opcodes::Opcode> opcode_map_ = opcodes::CreateOpcodeMap(&cpu_);
+  // This is a special flag/register that can only be set or unset and can
+  // only be accessed by the user using the EI, DI or RETI instructions.
+  bool interrupt_master_enable_ = false;
+  memory::InterruptEnable* interrupt_enable_;
+  memory::InterruptFlag* interrupt_flag_;
 };
 
 struct ExecutorContext {
@@ -70,22 +46,14 @@ struct ExecutorContext {
                   memory::MemoryMapper* memory_mapper_, 
                   registers::GB_CPU* cpu_,
                   unsigned char magic_,
-                  debugger::FrameFactory* frame_factory_,
-                  unsigned short instruction_address_,
-                  debugger::CallStack* call_stack_,
-                  bool* load_ly_to_a_,
-                  bool* last_instruction_was_ldhan_) : 
+                  unsigned short instruction_address_) :
       interrupt_master_enable(interrupt_master_enable_),
       instruction_ptr(instruction_ptr_),
       opcode(opcode_),
       memory_mapper(memory_mapper_), 
       cpu(cpu_),
       magic(magic_),
-      frame_factory(frame_factory_),
-      instruction_address(instruction_address_),
-      call_stack(call_stack_),
-      load_ly_to_a(load_ly_to_a_),
-      last_instruction_was_ldhan(last_instruction_was_ldhan_) {}
+      instruction_address(instruction_address_) {}
 
   ExecutorContext(ExecutorContext* context) : 
       interrupt_master_enable(context->interrupt_master_enable),
@@ -94,11 +62,7 @@ struct ExecutorContext {
       memory_mapper(context->memory_mapper),
       cpu(context->cpu),
       magic(context->magic),
-      frame_factory(context->frame_factory),
-      instruction_address(context->instruction_address),
-      call_stack(context->call_stack),
-      load_ly_to_a(context->load_ly_to_a),
-      last_instruction_was_ldhan(context->last_instruction_was_ldhan){}
+      instruction_address(context->instruction_address) {}
 
   bool* interrupt_master_enable;
   unsigned short* instruction_ptr;
@@ -106,13 +70,8 @@ struct ExecutorContext {
   memory::MemoryMapper* memory_mapper;
   registers::GB_CPU* cpu;
   unsigned char magic;
-  debugger::FrameFactory* frame_factory;
   unsigned short instruction_address;
-  debugger::CallStack* call_stack;
-  bool* load_ly_to_a;
-  bool* last_instruction_was_ldhan;
 };
-
 
 } // namespace handlers
 } // namespace back_end

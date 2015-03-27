@@ -3,12 +3,12 @@
 
 #include "backend/config.h"
 
-#include "backend/memory/memory_segment.h"
+#include "backend/memory/flags.h"
 #include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {
 namespace memory {
-class InterruptBase : public MemorySegment {
+class InterruptBase : public Flag {
  private:
   void set_value_bit(int bit, bool value) {
     if (value) {
@@ -33,7 +33,7 @@ class InterruptBase : public MemorySegment {
   unsigned char value_ = 0x00;
 
  public:
-  InterruptBase(unsigned short address) : address_(address) {}
+  InterruptBase(unsigned short address) : Flag(address) {}
 
   virtual bool InRange(unsigned short address) { return address == address_; }
   virtual unsigned char Read(unsigned short) { return value_; }
