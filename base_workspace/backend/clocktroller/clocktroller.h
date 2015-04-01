@@ -13,6 +13,7 @@
 #include "backend/memory/mbc_module.h"
 #include "backend/memory/memory_mapper.h"
 #include "backend/memory/primary_flags.h"
+#include "backend/memory/unimplemented_module.h"
 
 namespace back_end {
 namespace clocktroller {
@@ -30,6 +31,7 @@ class Clocktroller {
   memory::PrimaryFlags primary_flags_;
   memory::DefaultModule default_module_;
   memory::MBCModule mbc_;
+  memory::UnimplementedModule unimplemented_module_;
   graphics::Screen* screen_;
   std::unique_ptr<handlers::OpcodeExecutor> opcode_executor_;
   std::unique_ptr<graphics::GraphicsController> graphics_controller_;

@@ -12,6 +12,7 @@ cc_library(
     "//backend/memory:mbc_module",
     "//backend/memory:memory_mapper",
     "//backend/memory:primary_flags",
+    "//backend/memory:unimplemented_module",
     "//backend/opcode_executor",
   ],
   visibility = ["//visibility:public"],

@@ -13,6 +13,9 @@ using handlers::OpcodeExecutor;
 void Clocktroller::Init(unsigned char* rom, long length) {
   unique_ptr<MemoryMapper> memory_mapper = unique_ptr<MemoryMapper>(new MemoryMapper());
 
+  unimplemented_module_.Init();
+  memory_mapper->RegisterModule(unimplemented_module_);
+
   primary_flags_.Init();
   memory_mapper->RegisterModule(primary_flags_);
 

@@ -114,6 +114,17 @@ cc_library(
 )
 
 cc_library(
+  name = "unimplemented_module",
+  hdrs = ["unimplemented_module.h"],
+  deps = [
+    "//backend:config",
+    ":flags",
+    ":module",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
   name = "module",
   hdrs = ["module.h"],
   deps = [
