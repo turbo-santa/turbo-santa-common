@@ -29,7 +29,7 @@ unique_ptr<vector<unsigned char>> ReadROM(string file_name) {
     amount_read = fread(buffer.data(), 1, buffer_size, file);
     // TODO(Brendan): Should not copy the entire buffer since buffer may not be
     // entirely filled.
-    rom->insert(rom->end(), buffer.begin(), buffer.end());
+    rom->insert(rom->end(), buffer.begin(), buffer.begin() + amount_read);
   } while (amount_read == buffer_size);
 
   fclose(file);
@@ -44,6 +44,7 @@ int main(int argc, char* argv[]) {
 
   unique_ptr<vector<uint8_t>> rom = ReadROM(argv[1]);
   Decompiler decompiler(std::move(rom));
+  decompiler.AddPathStart(0);
   decompiler.Decompile();
 
   std::filebuf fb;

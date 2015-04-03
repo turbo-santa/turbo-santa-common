@@ -19,6 +19,7 @@ namespace decompiler {
 class Decompiler {
  public:
   Decompiler(std::unique_ptr<std::vector<uint8_t>> rom) :
+      rom_size_(rom->size()),
       rom_reader_(std::move(rom)) {}
 
   void AddPathStart(uint16_t address) { code_paths_.push(address); }
@@ -28,6 +29,7 @@ class Decompiler {
   void PrintToStream(std::ostream* out_stream);
 
  private:
+  size_t rom_size_;
   ROMReader rom_reader_;
   std::map<uint16_t, Instruction> address_opcode_map_;
   std::map<uint16_t, const Instruction*> allocation_map_;

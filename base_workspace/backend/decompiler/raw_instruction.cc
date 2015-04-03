@@ -23,7 +23,7 @@ ValueWidth operator+(ValueWidth left, ValueWidth right) {
     case ValueWidth::BIT_8:
       switch (right) {
         case ValueWidth::BIT_0:
-          return ValueWidth::BIT_0;
+          return ValueWidth::BIT_8;
         case ValueWidth::BIT_8:
           return ValueWidth::BIT_16;
         case ValueWidth::BIT_16:
@@ -34,7 +34,7 @@ ValueWidth operator+(ValueWidth left, ValueWidth right) {
     case ValueWidth::BIT_16:
       switch (right) {
         case ValueWidth::BIT_0:
-          return ValueWidth::BIT_8;
+          return ValueWidth::BIT_16;
         case ValueWidth::BIT_8:
           return ValueWidth::BIT_24;
         case ValueWidth::BIT_16:

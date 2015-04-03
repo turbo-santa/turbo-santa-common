@@ -1,5 +1,6 @@
 #include "backend/decompiler/rom_reader.h"
 
+#include <iomanip>
 #include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {
@@ -25,13 +26,13 @@ const RawInstructionBase& ROMReader::raw_instruction(uint16_t address, ValueWidt
       raw_instruction_8bit_.set_ptr(rom_->data() + address);
       return raw_instruction_8bit_;
     case ValueWidth::BIT_16:
-      if (address + 2 >= rom_->size()) {
+      if (address + 1 >= rom_->size()) {
         LOG(FATAL) << "Instruction should be 16 bits wide but only one byte remains.";
       }
       raw_instruction_16bit_.set_ptr(rom_->data() + address);
       return raw_instruction_16bit_;
     case ValueWidth::BIT_24:
-      if (address + 3 >= rom_->size()) {
+      if (address + 2 >= rom_->size()) {
         LOG(FATAL) << "Instruction should be 24 bits wide but fewer remain.";
       }
       raw_instruction_24bit_.set_ptr(rom_->data() + address);
@@ -51,7 +52,8 @@ Instruction ROMReader::Read(uint16_t address) {
 
   auto iter = instruction_map_.find(opcode);
   if (iter == instruction_map_.end()) {
-    LOG(FATAL) << "Opcode value, 0x" << std::hex << opcode << ", does not exist.";
+    LOG(FATAL) << "Opcode value, 0x" << std::hex << opcode << ", does not exist, "
+        << "address = 0x" << std::setfill('0') << std::setw(4) << std::hex << address;
   }
   const InstructionFactory& factory = iter->second;
   return factory.Build(raw_instruction(address, factory.total_width()));

@@ -101,15 +101,19 @@ class InstructionFactory {
       is_jump_(is_jump),
       instr_width_(instr_width) {}
 
-  InstructionFactory(const InstructionFactory& factory) :
+  InstructionFactory(InstructionFactory&& factory) :
       opcode_(factory.opcode()),
       instruction_(factory.instruction()),
+      left_param_factory_(std::move(factory.left_param_factory_)),
+      right_param_factory_(std::move(factory.right_param_factory_)),
       is_jump_(factory.is_jump()),
       instr_width_(factory.instr_width()) {}
 
-  void operator=(const InstructionFactory& factory) {
+  void operator=(InstructionFactory&& factory) {
     opcode_ = factory.opcode();
     instruction_ = factory.instruction();
+    left_param_factory_ = std::move(factory.left_param_factory_);
+    right_param_factory_ = std::move(factory.right_param_factory_);
     is_jump_ = factory.is_jump();
     instr_width_ = factory.instr_width();
   }
@@ -129,7 +133,15 @@ class InstructionFactory {
   uint16_t instruction() const { return instruction_; }
   bool is_jump() const { return is_jump_; }
   ValueWidth instr_width() const { return instr_width_; }
-  ValueWidth param_width() const { return left_param_factory_->width() + right_param_factory_->width(); }
+  ValueWidth param_width() const {
+    if (!left_param_factory_) {
+      LOG(FATAL) << "Left ParameterFactory is null, instruction = 0x" << std::hex << instruction();
+    }
+    if (!right_param_factory_) {
+      LOG(FATAL) << "Right ParameterFactory is null, instruction = 0x" << std::hex << instruction();
+    }
+    return left_param_factory_->width() + right_param_factory_->width();
+  }
   ValueWidth total_width() const { return instr_width_ + param_width(); }
 
  private:

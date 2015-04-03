@@ -36,7 +36,7 @@ cc_library(
   srcs = [
     "glog/.libs/libglog.a",
   ],
-  defines = ["GOOGLE_STRIP_LOG=1"],
+  # defines = ["GOOGLE_STRIP_LOG=1"],
   linkopts = ["-pthread"],
   linkstatic = 1,
 )
