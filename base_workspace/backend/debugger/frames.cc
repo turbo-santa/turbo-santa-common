@@ -1,8 +1,8 @@
 #include "backend/debugger/frames.h"
 
 #include <utility>
-#include <glog/logging.h>
 #include "backend/debugger/great_library.h"
+#include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {
 namespace debugger {
