@@ -49,5 +49,18 @@ cc_library(
     ":instruction_map",
     ":raw_instruction",
   ],
+)
+
+cc_library(
+  name = "decompiler",
+  hdrs = ["decompiler.h"],
+  srcs = ["decompiler.cc"],
+  deps = [
+    "//backend:config",
+    "//submodules:glog",
+    ":instruction",
+    ":instruction_map",
+    ":rom_reader",
+  ],
   visibility = ["//visibility:public"],
 )

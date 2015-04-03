@@ -17,6 +17,8 @@ std::map<uint16_t, InstructionFactory> CreateInstructionMap();
 
 std::map<Opcode, std::string> CreateNameMap();
 
+std::map<Register, std::string> CreateRegisterMap();
+
 } // namespace decompiler
 } // namespace decompiler
 

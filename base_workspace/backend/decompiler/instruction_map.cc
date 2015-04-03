@@ -529,5 +529,31 @@ std::map<Opcode, std::string> CreateNameMap() {
   };
 }
 
+std::map<Register, std::string> CreateRegisterMap() {
+  return {
+    {A, "A"},
+    {B, "B"},
+    {C, "C"},
+    {D, "D"},
+    {E, "E"},
+    {H, "H"},
+    {L, "L"},
+    {AF, "AF"},
+    {BC, "BC"},
+    {DE, "DE"},
+    {HL, "HL"},
+    {PC, "PC"},
+    {SP, "SP"},
+    {ZF, "Z"},
+    {NF, "N"},
+    {HF, "H"},
+    {CF, "C"},
+    {ZN, "NZ"},
+    {NN, "NN"},
+    {HN, "NH"},
+    {CN, "NC"},
+  };
+}
+
 } // namespace decompiler
 } // namespace decompiler

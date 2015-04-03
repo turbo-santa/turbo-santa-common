@@ -119,7 +119,12 @@ class InstructionFactory {
   virtual Instruction Build(const RawInstructionBase& raw_instruction) const {
     Parameter left = left_param_factory_->Build(raw_instruction);
     Parameter right = right_param_factory_->Build(raw_instruction);
-    return Instruction(opcode_, instruction_, left, right, is_jump_);
+    return Instruction(opcode_,
+                       instruction_,
+                       left,
+                       right,
+                       is_jump_,
+                       to_width_bytes(total_width()));
   }
 
   Opcode opcode() const { return opcode_; }

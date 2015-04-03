@@ -16,11 +16,13 @@ namespace decompiler {
 
 class ROMReader {
  public:
+  ROMReader(std::unique_ptr<std::vector<uint8_t>> rom) : rom_(std::move(rom)) {}
+
   Instruction Read(uint16_t address);
 
  private:
   std::map<uint16_t, InstructionFactory> instruction_map_ = CreateInstructionMap();
-  std::unique_ptr<std::vector<unsigned char>> rom_;
+  std::unique_ptr<std::vector<uint8_t>> rom_;
   RawInstruction8Bit raw_instruction_8bit_;
   RawInstruction16Bit raw_instruction_16bit_;
   RawInstruction24Bit raw_instruction_24bit_;

@@ -17,6 +17,19 @@ enum class ValueWidth {
   BIT_24,
 };
 
+uint16_t to_width_bytes(ValueWidth width) {
+  switch (width) {
+    case ValueWidth::BIT_0:
+      return 0;
+    case ValueWidth::BIT_8:
+      return 1;
+    case ValueWidth::BIT_16:
+      return 2;
+    case ValueWidth::BIT_24:
+      return 3;
+  }
+}
+
 ValueWidth operator+(ValueWidth left, ValueWidth right) {
   switch (left) {
     case ValueWidth::BIT_0:
@@ -108,7 +121,7 @@ class RawInstruction : public RawInstructionBase {
   }
 
   uint16_t instr_16bit() const { 
-    return (static_cast<uint16_t>(value_(1)) << 8) + value_(0);
+    return (static_cast<uint16_t>(value_[1]) << 8) + value_[0];
   }
 
   uint8_t param_8bit() const { 
