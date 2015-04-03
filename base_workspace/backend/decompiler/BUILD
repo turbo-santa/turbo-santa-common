@@ -7,12 +7,14 @@ cc_library(
 cc_library(
   name = "raw_instruction",
   hdrs = ["raw_instruction.h"],
+  srcs = ["raw_instruction.cc"],
   deps = ["//submodules:glog"],
 )
 
 cc_library(
   name = "instruction_factory",
   hdrs = ["instruction_factory.h"],
+  srcs = ["instruction_factory.cc"],
   deps = [
     ":instruction",
     ":raw_instruction",
@@ -55,4 +57,13 @@ cc_library(
     ":rom_reader",
   ],
   visibility = ["//visibility:public"],
+)
+
+cc_binary(
+  name = "decompile",
+  srcs = ["main.cc"],
+  deps = [
+    "//submodules:glog",
+    ":decompiler",
+  ],
 )

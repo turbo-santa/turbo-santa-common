@@ -21,6 +21,8 @@ class Decompiler {
   Decompiler(std::unique_ptr<std::vector<uint8_t>> rom) :
       rom_reader_(std::move(rom)) {}
 
+  void AddPathStart(uint16_t address) { code_paths_.push(address); }
+
   void Decompile();
 
   void PrintToStream(std::ostream* out_stream);

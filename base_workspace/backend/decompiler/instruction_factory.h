@@ -148,50 +148,22 @@ InstructionFactory instr(Opcode opcode,
                   std::unique_ptr<ParameterFactory> right_param = 
                     std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
                   bool is_jump = false,
-                  ValueWidth width = ValueWidth::BIT_8) {
-  return InstructionFactory(opcode,
-                            instruction,
-                            std::move(left_param),
-                            std::move(right_param),
-                            is_jump,
-                            width);
-}
+                  ValueWidth width = ValueWidth::BIT_8);
 
 InstructionFactory instr(Opcode opcode, 
                   uint16_t instruction, 
                   std::unique_ptr<ParameterFactory> left_param,
                   std::unique_ptr<ParameterFactory> right_param,
-                  ValueWidth width) {
-  return InstructionFactory(opcode,
-                            instruction,
-                            std::move(left_param),
-                            std::move(right_param),
-                            false,
-                            width);
-}
+                  ValueWidth width);
 
 InstructionFactory instr(Opcode opcode, 
                   uint16_t instruction, 
                   std::unique_ptr<ParameterFactory> left_param,
-                  ValueWidth width) {
-  return InstructionFactory(opcode,
-                            instruction,
-                            std::move(left_param),
-                            std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
-                            false,
-                            width);
-}
+                  ValueWidth width);
 
 InstructionFactory instr(Opcode opcode, 
                   uint16_t instruction, 
-                  ValueWidth width) {
-  return InstructionFactory(opcode,
-                            instruction,
-                            std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
-                            std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
-                            false,
-                            width);
-}
+                  ValueWidth width);
 
 InstructionFactory jump(Opcode opcode, 
                   uint16_t instruction, 
@@ -199,38 +171,19 @@ InstructionFactory jump(Opcode opcode,
                     std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
                   std::unique_ptr<ParameterFactory> right_param = 
                     std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
-                  ValueWidth width = ValueWidth::BIT_8) {
-  return InstructionFactory(opcode,
-                            instruction,
-                            std::move(left_param),
-                            std::move(right_param),
-                            true,
-                            width);
-}
+                  ValueWidth width = ValueWidth::BIT_8);
 
-std::unique_ptr<ParameterFactory> val(Register reg) {
-  return std::unique_ptr<ParameterFactory>(new RegisterParameterFactory(reg, false));
-}
+std::unique_ptr<ParameterFactory> val(Register reg);
 
-std::unique_ptr<ParameterFactory> val(ValueWidth width) {
-  return std::unique_ptr<ParameterFactory>(new ValueParameterFactory(width, false));
-}
+std::unique_ptr<ParameterFactory> val(ValueWidth width);
 
-std::unique_ptr<ParameterFactory> ptr(Register reg) {
-  return std::unique_ptr<ParameterFactory>(new RegisterParameterFactory(reg, true));
-}
+std::unique_ptr<ParameterFactory> ptr(Register reg);
 
-std::unique_ptr<ParameterFactory> ptr(ValueWidth width) {
-  return std::unique_ptr<ParameterFactory>(new ValueParameterFactory(width, true));
-}
+std::unique_ptr<ParameterFactory> ptr(ValueWidth width);
 
-std::unique_ptr<ParameterFactory> bit() {
-  return std::unique_ptr<ParameterFactory>(new BitParameterFactory());
-}
+std::unique_ptr<ParameterFactory> bit();
 
-std::unique_ptr<ParameterFactory> con(uint16_t value) {
-  return std::unique_ptr<ParameterFactory>(new ConstantParameterFactory(value));
-}
+std::unique_ptr<ParameterFactory> con(uint16_t value);
 
 } // namespace decompiler
 } // namespace decompiler
