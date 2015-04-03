@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACKEND_INSTRUCTION_FACTORY_H_
 #define TURBO_SANTA_COMMON_BACKEND_INSTRUCTION_FACTORY_H_
 
-#include "backend/config.h"
-
 #include <cstdint>
 #include <memory>
 #include <string>

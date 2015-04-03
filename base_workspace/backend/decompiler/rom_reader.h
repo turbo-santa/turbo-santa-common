@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACKEND_ROM_READER_H_
 #define TURBO_SANTA_COMMON_BACKEND_ROM_READER_H_
 
-#include "backend/config.h"
-
 #include <map>
 #include <memory>
 #include <vector>

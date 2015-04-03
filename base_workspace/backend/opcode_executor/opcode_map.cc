@@ -1,5 +1,3 @@
-#include "backend/config.h"
-
 #include "backend/opcode_executor/opcode_map.h"
 
 #include <map>

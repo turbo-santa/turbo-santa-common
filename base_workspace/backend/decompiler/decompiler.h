@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACKEND_DECOMPILER_H_
 #define TURBO_SANTA_COMMON_BACKEND_DECOMPILER_H_
 
-#include "backend/config.h"
-
 #include <cstdint>
 #include <map>
 #include <memory>

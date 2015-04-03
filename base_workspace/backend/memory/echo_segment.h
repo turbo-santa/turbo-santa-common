@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_ECHO_SEGMENT_H_
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_ECHO_SEGMENT_H_
 
-#include "backend/config.h"
-
 #include "backend/memory/memory_segment.h"
 #include "backend/memory/ram_segment.h"
 #include "submodules/glog/src/glog/logging.h"

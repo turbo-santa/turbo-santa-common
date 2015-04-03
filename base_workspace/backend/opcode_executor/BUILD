@@ -1,7 +1,6 @@
 cc_library(
   name = "registers",
   hdrs = ["registers.h"],
-  deps = ["//backend:config"],
   visibility = ["//visibility:public"],
 )
 
@@ -9,7 +8,6 @@ cc_library(
   name = "opcodes",
   hdrs = ["opcodes.h"],
   srcs = ["opcodes.cc"],
-  deps = ["//backend:config"],
   visibility = ["//visibility:public"],
 )
 
@@ -21,7 +19,6 @@ cc_library(
     "//backend/memory:interrupt_flag",
     "//backend/memory:memory_mapper",
     "//backend/memory:primary_flags",
-    "//backend:config",
     "//submodules:glog",
     ":opcode_map",
     ":opcodes",
@@ -41,7 +38,6 @@ cc_library(
     "opcode_handlers.cc",
   ],
   deps = [
-    "//backend:config",
     "//backend/memory:memory_mapper",
     "//submodules:glog",
     ":opcodes",
@@ -53,7 +49,6 @@ cc_test(
   name = "opcode_handlers_test",
   srcs = ["opcode_handlers_test.cc"],
   deps = [
-    "//backend:config",
     "//submodules:glog",
     "//test_harness",
     ":opcode_map",

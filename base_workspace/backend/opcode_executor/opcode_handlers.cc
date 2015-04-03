@@ -1,7 +1,3 @@
-#include "backend/config.h"
-
-#include "backend/debugger/call_stack.h"
-#include "backend/debugger/frames.h"
 #include "backend/opcode_executor/opcode_handlers.h"
 #include "backend/opcode_executor/opcode_executor.h"
 #include "backend/opcode_executor/opcodes.h"
@@ -11,8 +7,6 @@
 namespace back_end {
 namespace handlers {
 
-using debugger::FrameFactory;
-using debugger::FunctionCall;
 using opcodes::Opcode;
 using registers::GB_CPU;
 using memory::MemoryMapper;
@@ -93,20 +87,20 @@ string RegisterName16(void* reg, GB_CPU* cpu) {
   }
 }
 
-void PrintInstruction(FrameFactory* frame_factory, string instruction) {
-  LOG(INFO) << "Instruction: " << instruction;
-  frame_factory->SetInstructionName(instruction);
-}
-
-void PrintInstruction(FrameFactory* frame_factory, string instruction, string arg1) {
-  LOG(INFO) << "Instruction: " << instruction << " " << arg1;
-  frame_factory->SetInstructionName(instruction + " " + arg1);
-}
-
-void PrintInstruction(FrameFactory* frame_factory, string instruction, string arg1, string arg2) {
-  LOG(INFO) << "Instruction: " << instruction << " " << arg1 << "," << arg2;
-  frame_factory->SetInstructionName(instruction + " " + arg1 + " " + arg2);
-}
+// void PrintInstruction(FrameFactory* frame_factory, string instruction) {
+//   LOG(INFO) << "Instruction: " << instruction;
+//   frame_factory->SetInstructionName(instruction);
+// }
+// 
+// void PrintInstruction(FrameFactory* frame_factory, string instruction, string arg1) {
+//   LOG(INFO) << "Instruction: " << instruction << " " << arg1;
+//   frame_factory->SetInstructionName(instruction + " " + arg1);
+// }
+// 
+// void PrintInstruction(FrameFactory* frame_factory, string instruction, string arg1, string arg2) {
+//   LOG(INFO) << "Instruction: " << instruction << " " << arg1 << "," << arg2;
+//   frame_factory->SetInstructionName(instruction + " " + arg1 + " " + arg2);
+// }
 
 // ALU.
 bool DoesOverflow(unsigned int left, unsigned int right, int bit) {

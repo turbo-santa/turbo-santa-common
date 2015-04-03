@@ -1,5 +1,3 @@
-#include "backend/config.h"
-
 #include "backend/graphics/graphics_controller.h"
 
 #include <ncurses.h>

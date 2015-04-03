@@ -3,7 +3,6 @@ cc_library(
   hdrs = ["graphics_controller.h"],
   srcs = ["graphics_controller.cc"],
   deps = [
-    "//backend:config",
     "//backend/memory:interrupt_flag",
     "//backend/memory:module",
     "//backend/memory:primary_flags",
@@ -17,20 +16,14 @@ cc_library(
 cc_library(
   name = "screen",
   hdrs = ["screen.h"],
-  deps = [
-    "//backend:config",
-    "//submodules:glog",
-  ],
+  deps = ["//submodules:glog"],
   visibility = ["//visibility:public"],
 )
 
 cc_library(
   name = "graphics_flags",
   hdrs = ["graphics_flags.h"],
-  deps = [
-    "//backend:config",
-    "//submodules:glog",
-  ],
+  deps = ["//submodules:glog"],
   visibility = ["//visibility:public"],
 )
 
@@ -39,7 +32,6 @@ cc_library(
   hdrs = ["dma_transfer.h"],
   srcs = ["dma_transfer.cc"],
   deps = [
-    "//backend:config",
     "//backend/memory:memory_mapper",
     "//submodules:glog",
   ],

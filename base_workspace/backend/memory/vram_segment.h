@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_VRAM_SEGMENT_H_
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_VRAM_SEGMENT_H_
 
-#include "backend/config.h"
-
 #include <vector>
 
 #include "backend/memory/memory_segment.h"

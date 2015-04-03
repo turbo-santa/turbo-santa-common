@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_
 #define TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_
 
-#include "backend/config.h"
-
 #include <atomic>
 #include <memory>
 #include <thread>

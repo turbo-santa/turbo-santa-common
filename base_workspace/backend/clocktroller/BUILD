@@ -5,7 +5,6 @@ cc_library(
     ":clocktroller.cc",
   ],
   deps = [
-    "//backend:config",
     "//backend/graphics:graphics_controller",
     "//backend/graphics:screen",
     "//backend/memory:default_module",
@@ -25,7 +24,6 @@ cc_test(
     "clocktroller_test.cc",
   ],
   deps = [
-    "//backend:config",
     "//backend/opcode_executor:registers",
     "//submodules:glog",
     "//submodules:googletest",

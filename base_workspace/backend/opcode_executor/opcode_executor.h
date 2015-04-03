@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
 #define TURBO_SANTA_COMMON_BACK_END_OPCODE_PARSER_H_
 
-#include "backend/config.h"
-
 #include <map>
 #include <memory>
 #include "backend/memory/interrupt_flag.h"

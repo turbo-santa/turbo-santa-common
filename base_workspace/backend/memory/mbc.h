@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_MBC_H_
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_MBC_H_
 
-#include "backend/config.h"
-
 #include <memory>
 #include <vector>
 

@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
 #define TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
 
-#include "backend/config.h"
-
 namespace back_end {
 namespace registers {
 

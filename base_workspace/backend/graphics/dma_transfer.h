@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_GRAPHICS_DMA_TRANSFER_H_
 #define TURBO_SANTA_COMMON_BACK_END_GRAPHICS_DMA_TRANSFER_H_
 
-#include "backend/config.h"
-
 #include "backend/memory/memory_segment.h"
 
 namespace back_end {

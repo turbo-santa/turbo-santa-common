@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACKEND_RAW_INSTRUCTION_H_
 #define TURBO_SANTA_COMMON_BACKEND_RAW_INSTRUCTION_H_
 
-#include "backend/config.h"
-
 #include <cstdint>
 #include <array>
 #include "submodules/glog/src/glog/logging.h"

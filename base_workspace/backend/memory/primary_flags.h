@@ -1,8 +1,6 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_MEMORY_PRIMARY_FLAGS_H_
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_PRIMARY_FLAGS_H_
 
-#include "backend/config.h"
-
 #include "backend/memory/interrupt_flag.h"
 #include "backend/memory/module.h"
 #include "submodules/glog/src/glog/logging.h"

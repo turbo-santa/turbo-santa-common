@@ -1,5 +1,3 @@
-#include "backend/config.h"
-
 #include "backend/memory/mbc.h"
 
 #include <stdio.h>

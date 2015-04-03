@@ -1,4 +1,3 @@
-#include "backend/config.h"
 #include <curses.h>
 
 #include <algorithm>
