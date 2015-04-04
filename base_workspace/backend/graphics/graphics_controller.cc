@@ -106,17 +106,6 @@ void WriteToScreen(GraphicsFlags* graphics_flags, Screen* screen, vector<unsigne
   ScreenRaster raster;
   const int y_offset = graphics_flags->scroll_y()->flag();
   const int x_offset = graphics_flags->scroll_x()->flag();
-  // TODO(Brendan): This is a hack to get the boot ROM working. Graphics
-  // should probably have portions of code executed ever clock cycle.
-  if (graphics_flags->ly_coordinate()->flag() == 0x93) {
-    graphics_flags->ly_coordinate()->set_flag(0x91);
-  } else if (graphics_flags->ly_coordinate()->flag() == 0x94) {
-    graphics_flags->ly_coordinate()->set_flag(0x93);
-  } else if (graphics_flags->ly_coordinate()->flag() == 0x90) {
-    graphics_flags->ly_coordinate()->set_flag(0x94);
-  } else {
-    graphics_flags->ly_coordinate()->set_flag(0x90);
-  }
   for (int y = 0; y < ScreenRaster::kScreenHeight; y++) {
     for (int x = 0; x < ScreenRaster::kScreenWidth; x++) {
       raster.Set(y, x, (*screen_buffer_)[(x + x_offset) + (y + y_offset) * kScreenBufferSize]);
@@ -303,7 +292,9 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
     lcd_status->set_mode(LCDStatus::VRAM_OAM_LOCKED);
     DisableOAM();
     DisableVRAM();
-    if (graphics_flags_.lcd_control()->lcd_display_enable() && previous_mode_ != MODE_3) {
+    if (graphics_flags_.lcd_control()->lcd_display_enable() 
+        && previous_mode_ != MODE_3
+        && ly_coordinate->flag() == 0) {
       Draw(&graphics_flags_, &oam_segment_, &vram_segment_, screen_);
     }
     previous_mode_ = MODE_3;

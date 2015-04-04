@@ -74,7 +74,8 @@ class LYCoordinate : public memory::Flag {
 
   void clear_reset() { has_reset_ = false; }
 
-  void Increment() { 
+  void Increment() {
+    LOG(INFO) << "LY Coordinate: Increment called, current value = 0x" << std::hex << (0x0000 + flag());
     if (flag() >= 153) {
       set_flag(0);
     } else {
