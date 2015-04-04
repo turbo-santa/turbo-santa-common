@@ -8,6 +8,7 @@
 #include "backend/graphics/screen.h"
 #include "backend/opcode_executor/opcode_executor.h"
 #include "backend/memory/default_module.h"
+#include "backend/memory/dma_transfer.h"
 #include "backend/memory/mbc_module.h"
 #include "backend/memory/memory_mapper.h"
 #include "backend/memory/primary_flags.h"
@@ -29,6 +30,7 @@ class Clocktroller {
   memory::PrimaryFlags primary_flags_;
   memory::DefaultModule default_module_;
   memory::MBCModule mbc_;
+  memory::DMATransferModule dma_transfer_module_;
   memory::UnimplementedModule unimplemented_module_;
   graphics::Screen* screen_;
   std::unique_ptr<handlers::OpcodeExecutor> opcode_executor_;

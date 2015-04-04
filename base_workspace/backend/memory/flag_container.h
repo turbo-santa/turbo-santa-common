@@ -37,7 +37,7 @@ class FlagContainer : public ContiguousMemorySegment {
   std::vector<Flag*> flags_;
 
   // Inclusive lower bound of this memory segment.
-  virtual unsigned short lower_address_bound() { return 0xff01; } 
+  virtual unsigned short lower_address_bound() { return 0xff00; } 
 
   // Inclusive upper bound of this memory segment.
   virtual unsigned short upper_address_bound() { return 0xff7f; }

@@ -22,6 +22,9 @@ void Clocktroller::Init(unsigned char* rom, long length) {
   default_module_.Init();
   memory_mapper->RegisterModule(default_module_);
 
+  dma_transfer_module_.Init(memory_mapper.get());
+  memory_mapper->RegisterModule(dma_transfer_module_);
+
   mbc_.Init(rom, length);
   memory_mapper->RegisterModule(mbc_);
 

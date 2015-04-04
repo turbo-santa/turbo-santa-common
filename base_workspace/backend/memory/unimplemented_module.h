@@ -39,7 +39,6 @@ class UnimplementedFlag : public Flag {
 class UnimplementedModule : public Module {
  public:
   void Init() {
-    add_flag(&dma_transfer_);
     add_flag(&sound_ch_1_sweep_);
     add_flag(&sound_ch_1_sound_length_);
     add_flag(&sound_ch_1_volume_); 
@@ -87,7 +86,7 @@ class UnimplementedModule : public Module {
   }
 
  private:
-  UnimplementedFlag dma_transfer_ =              UnimplementedFlag(0xff46, "DMA Transfer");
+//  UnimplementedFlag dma_transfer_ =              UnimplementedFlag(0xff46, "DMA Transfer");
   UnimplementedFlag sound_ch_1_sweep_ =          UnimplementedFlag(0xff10, "Sound - CH 1 - Sweep");
   UnimplementedFlag sound_ch_1_sound_length_ =   UnimplementedFlag(0xff11, "Sound - CH 1 - Length/Wave Duty");
   UnimplementedFlag sound_ch_1_volume_ =         UnimplementedFlag(0xff12, "Sound - CH 1 - Volume");
