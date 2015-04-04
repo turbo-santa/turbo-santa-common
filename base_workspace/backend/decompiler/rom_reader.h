@@ -16,7 +16,7 @@ class ROMReader {
  public:
   ROMReader(std::unique_ptr<std::vector<uint8_t>> rom) : rom_(std::move(rom)) {}
 
-  Instruction Read(uint16_t address);
+  bool Read(uint16_t address, Instruction* instruction);
 
  private:
   std::map<uint16_t, InstructionFactory> instruction_map_ = CreateInstructionMap();

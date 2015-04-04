@@ -44,7 +44,7 @@ class Decompiler {
   std::map<Opcode, std::string> opcode_map_ = CreateNameMap();
   std::map<Register, std::string> register_map_ = CreateRegisterMap();
 
-  void DecompileInstructionAt(uint16_t address);
+  bool DecompileInstructionAt(uint16_t address);
   void AddInstruction(uint16_t address, Instruction instruction);
   std::string PrintInstruction(uint16_t address);
 };

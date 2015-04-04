@@ -48,10 +48,9 @@ bool GetJumpAddress(const Instruction& instruction, uint16_t* address) {
 bool IsJumpConditionalOrCall(const Instruction& instruction) {
   if (instruction.opcode == Opcode::CALL) {
     return true;
-  } else if ((instruction.opcode == Opcode::RET
-      || instruction.opcode == Opcode::RETI)
-      && instruction.arg1.type == ArgumentType::EMPTY) {
-    return false;
+  } else if (instruction.opcode == Opcode::RET
+             && instruction.arg1.type != ArgumentType::EMPTY) {
+    return true;
   } else if (instruction.arg2.type == ArgumentType::EMPTY) {
     return false;
   } else {
@@ -98,16 +97,17 @@ string JumpToString(const map<Opcode, string>& opcode_map,
                     const map<Register, string>& register_map,
                     const Instruction& instruction,
                     uint16_t address) {
+  address += 2;
   stringstream stream;
   stream << opcode_map.at(instruction.opcode);
   if (instruction.arg1.type == ArgumentType::REGISTER) {
     stream << " " << ArgumentToString(register_map, instruction.arg1);
   } else if (GetJumpAddress(instruction, &address)) {
-    stream << " " << CreateLabel(address + 2);
+    stream << " " << CreateLabel(address);
   }
   if (instruction.arg2.type != ArgumentType::EMPTY
       && GetJumpAddress(instruction, &address)) {
-    stream << ", " << CreateLabel(address + 2);
+    stream << ", " << CreateLabel(address);
   }
   return stream.str();
 }
@@ -141,7 +141,10 @@ void Decompiler::Decompile() {
   while (!code_paths_.empty()) {
     uint16_t next_address = code_paths_.top();
     code_paths_.pop();
-    DecompileInstructionAt(next_address);
+    if (!DecompileInstructionAt(next_address)) {
+      LOG(ERROR) << "Was not able to finish decompiling.";
+      return;
+    }
   }
   LOG(INFO) << "Decompilation complete.";
 }
@@ -152,10 +155,10 @@ void Decompiler::PrintToStream(ostream* out_stream) {
   }
 }
 
-void Decompiler::DecompileInstructionAt(uint16_t address) {
+bool Decompiler::DecompileInstructionAt(uint16_t address) {
   if (address_opcode_map_.find(address) != address_opcode_map_.end()) {
     // We have already decompiled this part.
-    return;
+    return true;
   }
   if (allocation_map_.find(address) != allocation_map_.end()) {
     auto iter = address_opcode_map_.end();
@@ -164,11 +167,15 @@ void Decompiler::DecompileInstructionAt(uint16_t address) {
       existing_address--;
       iter = address_opcode_map_.find(existing_address);
     }
-    LOG(FATAL) << "Attempted to decompile instruction at 0x" 
+    LOG(ERROR) << "Attempted to decompile instruction at 0x" 
         << std::hex << address << ", but decompiled opcode starting at "
         << std::hex << existing_address << " occupies this address.";
+    return false;
   }
-  Instruction instruction = rom_reader_.Read(address);
+  Instruction instruction;
+  if (!rom_reader_.Read(address, &instruction)) {
+    return false;
+  }
   AddInstruction(address, instruction);
   if (instruction.is_jump) {
     uint16_t jump_address = address + instruction.instruction_width_bytes;
@@ -179,13 +186,14 @@ void Decompiler::DecompileInstructionAt(uint16_t address) {
     if (!IsJumpConditionalOrCall(instruction)) {
       // Jump is not conditional or a call so the address after this instruction 
       // may not belong to any valid code path.
-      return;
+      return true;
     }
   }
   uint16_t next_address = address + instruction.instruction_width_bytes;
   if (next_address < rom_size_) {
     code_paths_.push(next_address);
   }
+  return true;
 }
 
 void Decompiler::AddInstruction(uint16_t address, Instruction instruction) {

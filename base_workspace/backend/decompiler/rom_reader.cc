@@ -40,7 +40,7 @@ const RawInstructionBase& ROMReader::raw_instruction(uint16_t address, ValueWidt
   }
 }
 
-Instruction ROMReader::Read(uint16_t address) {
+bool ROMReader::Read(uint16_t address, Instruction* instruction) {
   uint16_t opcode;
   if (address >= rom_->size()) {
     LOG(FATAL) << "Attempted illegal access of ROM at: 0x" << std::hex << address;
@@ -52,11 +52,13 @@ Instruction ROMReader::Read(uint16_t address) {
 
   auto iter = instruction_map_.find(opcode);
   if (iter == instruction_map_.end()) {
-    LOG(FATAL) << "Opcode value, 0x" << std::hex << opcode << ", does not exist, "
+    LOG(ERROR) << "Opcode value, 0x" << std::hex << opcode << ", does not exist, "
         << "address = 0x" << std::setfill('0') << std::setw(4) << std::hex << address;
+    return false;
   }
   const InstructionFactory& factory = iter->second;
-  return factory.Build(raw_instruction(address, factory.total_width()));
+  *instruction = factory.Build(raw_instruction(address, factory.total_width()));
+  return true;
 }
 
 } // namespace decompiler
