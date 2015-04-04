@@ -59,11 +59,19 @@ cc_library(
   visibility = ["//visibility:public"],
 )
 
+cc_library(
+  name = "decompiler_factory",
+  hdrs = ["decompiler_factory.h"],
+  deps = [":decompiler"],
+  visibility = ["//visibility:public"],
+)
+
 cc_binary(
   name = "decompile",
   srcs = ["main.cc"],
   deps = [
     "//submodules:glog",
     ":decompiler",
+    ":decompiler_factory",
   ],
 )

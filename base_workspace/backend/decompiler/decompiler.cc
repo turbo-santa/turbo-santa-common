@@ -134,7 +134,9 @@ string InstructionToString(const map<Opcode, string>& opcode_map,
 
 void Decompiler::Decompile() {
   LOG(INFO) << "Decompiling...";
-  LOG(INFO) << "ROM size = " << std::hex << rom_size_;
+  if (rom_type_ != 0x00) {
+    LOG(WARNING) << "ROM has an MBC which is not currently supported.";
+  }
   while (!code_paths_.empty()) {
     uint16_t next_address = code_paths_.top();
     code_paths_.pop();
@@ -169,7 +171,7 @@ void Decompiler::DecompileInstructionAt(uint16_t address) {
   AddInstruction(address, instruction);
   if (instruction.is_jump) {
     uint16_t jump_address = address + instruction.instruction_width_bytes;
-    if (GetJumpAddress(instruction, &jump_address)) {
+    if (GetJumpAddress(instruction, &jump_address) && jump_address < rom_size_) {
       code_paths_.push(jump_address);
       addresses_jumped_to_.insert(jump_address);
     }
