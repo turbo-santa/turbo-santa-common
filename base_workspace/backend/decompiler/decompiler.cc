@@ -103,10 +103,11 @@ string JumpToString(const map<Opcode, string>& opcode_map,
   if (instruction.arg1.type == ArgumentType::REGISTER) {
     stream << " " << ArgumentToString(register_map, instruction.arg1);
   } else if (GetJumpAddress(instruction, &address)) {
-    stream << " " << CreateLabel(address);
+    stream << " " << CreateLabel(address + 2);
   }
-  if (instruction.arg2.type != ArgumentType::EMPTY) {
-    stream << ", " << CreateLabel(address);
+  if (instruction.arg2.type != ArgumentType::EMPTY
+      && GetJumpAddress(instruction, &address)) {
+    stream << ", " << CreateLabel(address + 2);
   }
   return stream.str();
 }
