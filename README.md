@@ -42,6 +42,6 @@ Compile the submodules:
 Now all you have to do is build Turbo Santa:
 
     $ cd .. # After typing this you should be in base_workspace
-    $ blazel build //backend:turbo
+    $ bazel build //backend:turbo
 
 If everything works correctly you just build the Turbo Santa backend!
