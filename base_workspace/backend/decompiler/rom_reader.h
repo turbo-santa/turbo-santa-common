@@ -8,19 +8,20 @@
 #include "backend/decompiler/instruction_factory.h"
 #include "backend/decompiler/instruction_map.h"
 #include "backend/decompiler/raw_instruction.h"
+#include "backend/decompiler/rom_bridge.h"
 
 namespace back_end {
 namespace decompiler {
 
 class ROMReader {
  public:
-  ROMReader(std::unique_ptr<std::vector<uint8_t>> rom) : rom_(std::move(rom)) {}
+  ROMReader(const ROMBridge& rom) : rom_(rom) {}
 
   bool Read(uint16_t address, Instruction* instruction);
 
  private:
   std::map<uint16_t, InstructionFactory> instruction_map_ = CreateInstructionMap();
-  std::unique_ptr<std::vector<uint8_t>> rom_;
+  const ROMBridge& rom_;
   RawInstruction8Bit raw_instruction_8bit_;
   RawInstruction16Bit raw_instruction_16bit_;
   RawInstruction24Bit raw_instruction_24bit_;

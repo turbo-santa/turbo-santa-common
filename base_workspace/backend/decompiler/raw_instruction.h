@@ -37,7 +37,7 @@ class RawInstructionBase {
 template <uint8_t LEN>
 class RawInstruction : public RawInstructionBase {
  public:
-  void set_ptr(uint8_t* ptr) {
+  void set_ptr(const uint8_t* ptr) {
     for (size_t i = 0; i < value_.size(); i++) {
       value_[i] = ptr[i];
     }

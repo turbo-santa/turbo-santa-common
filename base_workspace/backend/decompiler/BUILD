@@ -34,6 +34,12 @@ cc_library(
 )
 
 cc_library(
+  name = "rom_bridge",
+  hdrs = ["rom_bridge.h"],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
   name = "rom_reader",
   hdrs = ["rom_reader.h"],
   srcs = ["rom_reader.cc"],
@@ -43,7 +49,9 @@ cc_library(
     ":instruction_factory",
     ":instruction_map",
     ":raw_instruction",
+    ":rom_bridge",
   ],
+  visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -54,6 +62,7 @@ cc_library(
     "//submodules:glog",
     ":instruction",
     ":instruction_map",
+    ":rom_bridge",
     ":rom_reader",
   ],
   visibility = ["//visibility:public"],
@@ -62,7 +71,10 @@ cc_library(
 cc_library(
   name = "decompiler_factory",
   hdrs = ["decompiler_factory.h"],
-  deps = [":decompiler"],
+  deps = [
+    ":decompiler",
+    ":rom_bridge",
+  ],
   visibility = ["//visibility:public"],
 )
 
@@ -73,5 +85,6 @@ cc_binary(
     "//submodules:glog",
     ":decompiler",
     ":decompiler_factory",
+    ":rom_bridge",
   ],
 )

@@ -2,9 +2,11 @@
 #define TURBO_SANTA_COMMON_BACKEND_DECOMPILER_FACTORY_H_
 
 #include <cstdint>
+#include <functional>
 #include <memory>
 #include <vector>
 #include "backend/decompiler/decompiler.h"
+#include "backend/decompiler/rom_bridge.h"
 
 namespace back_end {
 namespace decompiler {
@@ -21,7 +23,7 @@ class DecompilerFactory {
     if (decompiler_type_ == FORMATTED_ROM) {
       rom_type = rom_->at(0x0147);
     }
-    Decompiler decompiler(std::move(rom_), rom_type);
+    Decompiler decompiler(*rom_, rom_type);
     switch (decompiler_type_) {
       case FORMATTED_ROM:
         // Restart vectors.
@@ -49,11 +51,11 @@ class DecompilerFactory {
     return decompiler;
   }
 
-  void set_rom(std::unique_ptr<std::vector<uint8_t>> rom) { rom_ = std::move(rom); }
+  void set_rom(const ROMBridge* rom) { rom_ = rom; }
   void set_type(DecompilerType type) { decompiler_type_ = type; }
 
  private:
-  std::unique_ptr<std::vector<uint8_t>> rom_;
+  const ROMBridge* rom_;
   DecompilerType decompiler_type_;
 };
 

@@ -11,6 +11,7 @@
 
 #include "backend/decompiler/instruction.h"
 #include "backend/decompiler/instruction_map.h"
+#include "backend/decompiler/rom_bridge.h"
 #include "backend/decompiler/rom_reader.h"
 
 namespace back_end {
@@ -18,10 +19,10 @@ namespace decompiler {
 
 class Decompiler {
  public:
-  Decompiler(std::unique_ptr<std::vector<uint8_t>> rom, uint8_t rom_type) :
-      rom_size_(rom->size()),
+  Decompiler(const ROMBridge& rom, uint8_t rom_type) :
+      rom_size_(rom.size()),
       rom_type_(rom_type),
-      rom_reader_(std::move(rom)) {}
+      rom_reader_(rom) {}
 
   void AddPathStart(uint16_t address) { 
     code_paths_.push(address);

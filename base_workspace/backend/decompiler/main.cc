@@ -7,6 +7,7 @@
 #include <vector>
 #include "backend/decompiler/decompiler.h"
 #include "backend/decompiler/decompiler_factory.h"
+#include "backend/decompiler/rom_bridge.h"
 #include "submodules/glog/src/glog/logging.h"
 
 using std::filebuf;
@@ -16,6 +17,7 @@ using std::unique_ptr;
 using std::vector;
 using back_end::decompiler::Decompiler;
 using back_end::decompiler::DecompilerFactory;
+using back_end::decompiler::VectorROMBridge;
 
 unique_ptr<vector<unsigned char>> ReadROM(string file_name) {
   unique_ptr<vector<uint8_t>> rom = unique_ptr<vector<uint8_t>>(new vector<uint8_t>());
@@ -46,7 +48,8 @@ int main(int argc, char* argv[]) {
 
   unique_ptr<vector<uint8_t>> rom = ReadROM(argv[1]);
   DecompilerFactory factory;
-  factory.set_rom(std::move(rom));
+  VectorROMBridge bridge(rom.get());
+  factory.set_rom(&bridge);
   factory.set_type(DecompilerFactory::FORMATTED_ROM);
   Decompiler decompiler = factory.Build();
   decompiler.AddPathStart(0);
