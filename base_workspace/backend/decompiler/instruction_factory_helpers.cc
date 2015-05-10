@@ -1,4 +1,4 @@
-#include "backend/decompiler/instruction_factory.h"
+#include "backend/decompiler/instruction_factory_helpers.h"
 
 namespace back_end {
 namespace decompiler {

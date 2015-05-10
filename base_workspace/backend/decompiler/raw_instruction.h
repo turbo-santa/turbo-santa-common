@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <array>
+#include "backend/decompiler/rom_bridge.h"
 #include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {
@@ -37,9 +38,9 @@ class RawInstructionBase {
 template <uint8_t LEN>
 class RawInstruction : public RawInstructionBase {
  public:
-  void set_ptr(const uint8_t* ptr) {
+  void set_data(const ROMBridge& bridge, uint16_t start_address) {
     for (size_t i = 0; i < value_.size(); i++) {
-      value_[i] = ptr[i];
+      value_[i] = bridge.at(i + start_address);
     }
   }
 

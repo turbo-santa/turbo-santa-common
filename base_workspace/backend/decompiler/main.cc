@@ -46,6 +46,8 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
+  google::InstallFailureSignalHandler();
+
   unique_ptr<vector<uint8_t>> rom = ReadROM(argv[1]);
   DecompilerFactory factory;
   VectorROMBridge bridge(rom.get());

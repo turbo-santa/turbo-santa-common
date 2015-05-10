@@ -5,31 +5,179 @@
 #include <ncurses.h>
 
 namespace back_end {
-namespace handlers {
+namespace opcode_executor {
 
+using decompiler::ArgumentType;
+using decompiler::Instruction;
+using decompiler::Parameter;
+using decompiler::Register;
 using opcodes::Opcode;
 using registers::GB_CPU;
 using memory::MemoryMapper;
 using std::string;
 
-unsigned char GetParameterValue(MemoryMapper* memory_mapper, int instruction_ptr) {
-  return memory_mapper->Read(instruction_ptr);
+
+
+uint16_t* GetRegister16Bit(Register reg, GB_CPU* cpu) {
+  switch (reg) {
+    case Register::A:
+    case Register::B:
+    case Register::C:
+    case Register::D:
+    case Register::E:
+    case Register::H:
+    case Register::L:
+      LOG(FATAL) << "16 bit pointer requested for 8 bit register.";
+    case Register::AF:
+      return &cpu->rAF;
+    case Register::BC:
+      return &cpu->rBC;
+    case Register::DE:
+      return &cpu->rDE;
+    case Register::HL:
+      return &cpu->rHL;
+    case Register::SP:
+      return &cpu->rSP;
+    case Register::PC:
+      return &cpu->rPC;
+    case Register::ZF:
+    case Register::NF:
+    case Register::HF:
+    case Register::CF:
+    case Register::ZN:
+    case Register::NN:
+    case Register::HN:
+    case Register::CN:
+      LOG(FATAL) << "Address of bit field requested.";
+  }
 }
 
-unsigned short GetParameterValue16(MemoryMapper* memory_mapper, int instruction_ptr) {
-  return (((short) memory_mapper->Read(instruction_ptr + 1)) << 8) | (short) memory_mapper->Read(instruction_ptr);
+uint16_t* GetRegister16Bit(Parameter param, GB_CPU* cpu) {
+  switch (param.type) {
+    case ArgumentType::REGISTER:
+      return GetRegister16Bit(param.value.reg, cpu);
+    case ArgumentType::VALUE:
+    case ArgumentType::EMPTY:
+      LOG(FATAL) << "Attempted to dereference non-register value as register.";
+  }
 }
 
-unsigned short GetAddress16(MemoryMapper* memory_mapper, int instruction_ptr) {
-  unsigned char upper = GetParameterValue(memory_mapper, instruction_ptr + 1);
-  unsigned char lower = GetParameterValue(memory_mapper, instruction_ptr);
-  unsigned short address = upper;
-  address = address << 8;
-  address |= lower;
-  return address;
+uint8_t* GetRegister8Bit(Register reg, GB_CPU* cpu) {
+  switch (reg) {
+    case Register::A:
+      return &cpu->flag_struct.rA;
+    case Register::B:
+      return &cpu->bc_struct.rB;
+    case Register::C:
+      return &cpu->bc_struct.rC;
+    case Register::D:
+      return &cpu->de_struct.rD;
+    case Register::E:
+      return &cpu->de_struct.rE;
+    case Register::H:
+      return &cpu->hl_struct.rH;
+    case Register::L:
+      return &cpu->hl_struct.rL;
+    case Register::AF:
+    case Register::BC:
+    case Register::DE:
+    case Register::HL:
+    case Register::SP:
+    case Register::PC:
+      LOG(FATAL) << "8 bit pointer requested for 16 bit register.";
+    case Register::ZF:
+    case Register::NF:
+    case Register::HF:
+    case Register::CF:
+    case Register::ZN:
+    case Register::NN:
+    case Register::HN:
+    case Register::CN:
+      LOG(FATAL) << "Address of bit field requested.";
+  }
 }
 
-void SetZFlag(unsigned char register_value, GB_CPU* cpu) {
+uint8_t* GetRegister8Bit(Parameter param, GB_CPU* cpu) {
+  switch (param.type) {
+    case ArgumentType::REGISTER:
+      return GetRegister8Bit(param.value.reg, cpu);
+    case ArgumentType::VALUE:
+    case ArgumentType::EMPTY:
+      LOG(FATAL) << "Attempted to dereference non-register value as register.";
+  }
+}
+
+uint16_t GetRegisterValue16Bit(Register reg, GB_CPU* cpu) {
+  switch (reg) {
+    case Register::A:
+      return cpu->flag_struct.rA;
+    case Register::B:
+      return cpu->bc_struct.rB;
+    case Register::C:
+      return cpu->bc_struct.rC;
+    case Register::D:
+      return cpu->de_struct.rD;
+    case Register::E:
+      return cpu->de_struct.rE;
+    case Register::H:
+      return cpu->hl_struct.rH;
+    case Register::L:
+      return cpu->hl_struct.rL;
+    case Register::AF:
+      return cpu->rAF;
+    case Register::BC:
+      return cpu->rBC;
+    case Register::DE:
+      return cpu->rDE;
+    case Register::HL:
+      return cpu->rHL;
+    case Register::SP:
+      return cpu->rSP;
+    case Register::PC:
+      return cpu->rPC;
+    case Register::ZF:
+      return cpu->flag_struct.rF.Z;
+    case Register::NF:
+      return cpu->flag_struct.rF.N;
+    case Register::HF:
+      return cpu->flag_struct.rF.H;
+    case Register::CF:
+      return cpu->flag_struct.rF.C;
+    case Register::ZN:
+      return cpu->flag_struct.rF.Z;
+    case Register::NN:
+      return cpu->flag_struct.rF.N;
+    case Register::HN:
+      return cpu->flag_struct.rF.H;
+    case Register::CN:
+      return cpu->flag_struct.rF.C;
+  }
+}
+
+uint8_t GetRegisterValue8Bit(Register reg, GB_CPU* cpu) {
+  return static_cast<uint8_t>(GetRegisterValue16Bit(reg, cpu));
+}
+
+uint16_t GetParameterValue16Bit(const Parameter& param, GB_CPU* cpu) {
+  switch (param.type) {
+    case ArgumentType::REGISTER:
+      return GetRegisterValue16Bit(param.value.reg, cpu);
+    case ArgumentType::VALUE:
+      return param.value.val;
+    case ArgumentType::EMPTY:
+      LOG(FATAL) << "Tried to dereference a non-existent parameter.";
+  }
+}
+
+uint8_t GetParameterValue8Bit(const Parameter& param, GB_CPU* cpu) {
+  return static_cast<uint8_t>(GetParameterValue16Bit(param, cpu));
+}
+
+int8_t GetParameterValue8BitSigned(const Parameter& param, GB_CPU* cpu) {
+  return static_cast<int8_t>(GetParameterValue8Bit(param, cpu));
+}
+
+void SetZFlag(uint8_t register_value, GB_CPU* cpu) {
   cpu->flag_struct.rF.Z = register_value == 0;
 }
 
@@ -37,11 +185,11 @@ void SetNFlag(bool performed_subtraction, GB_CPU* cpu) {
   cpu->flag_struct.rF.N = performed_subtraction;
 }
 
-unsigned char NthBit(unsigned int byte, int n) {
+uint8_t NthBit(unsigned int byte, int n) {
   return (byte >> n) & 1;
 }
 
-string Hex(unsigned short i) {
+string Hex(uint16_t i) {
   std::stringstream stream;
   stream << "0x" << std::hex << i;
   return stream.str();
@@ -127,31 +275,31 @@ bool DoesUnderflow(unsigned int left, unsigned int right, int bit) {
   return false;
 }
 
-bool DoesBorrow8(unsigned char left, unsigned char right) {
+bool DoesBorrow8(uint8_t left, uint8_t right) {
   return DoesUnderflow(left, right, 7);
 }
 
-bool DoesBorrow16(unsigned short left, unsigned short right) {
+bool DoesBorrow16(uint16_t left, uint16_t right) {
   return DoesUnderflow(left, right, 15);
 }
 
-bool DoesHalfBorrow8(unsigned char left, unsigned char right) {
+bool DoesHalfBorrow8(uint8_t left, uint8_t right) {
   return DoesUnderflow(left, right, 3);
 }
 
-bool DoesHalfBorrow16(unsigned short left, unsigned short right) {
+bool DoesHalfBorrow16(uint16_t left, uint16_t right) {
   return DoesUnderflow(left, right, 11);
 }
 
-bool DoesHalfCarry8(unsigned char left, unsigned char right) {
+bool DoesHalfCarry8(uint8_t left, uint8_t right) {
   return DoesOverflow(left, right, 3);
 }
 
-bool DoesCarry8(unsigned char left, unsigned char right) {
+bool DoesCarry8(uint8_t left, uint8_t right) {
   return DoesOverflow(left, right, 7);
 }
 
-bool DoesHalfCarry16(unsigned char left, unsigned char right) {
+bool DoesHalfCarry16(uint8_t left, uint8_t right) {
   return DoesOverflow(left, right, 11);
 }
 
@@ -159,7 +307,7 @@ bool DoesCarry16(unsigned int left, unsigned int right) {
   return DoesOverflow(left, right, 15);
 }
 
-void Add8BitImpl(unsigned char value, GB_CPU* cpu) {
+void Add8BitImpl(uint8_t value, GB_CPU* cpu) {
   cpu->flag_struct.rF.C = DoesCarry8(cpu->flag_struct.rA, value);
   cpu->flag_struct.rF.H = DoesHalfCarry8(cpu->flag_struct.rA, value);
   cpu->flag_struct.rA += value;
@@ -167,31 +315,29 @@ void Add8BitImpl(unsigned char value, GB_CPU* cpu) {
   SetNFlag(false, cpu);
 }
 
-int Add8Bit(handlers::ExecutorContext* context) {
+int Add8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  Add8BitImpl(*opcode.reg1, context->cpu);
+  Add8BitImpl(GetParameterValue8Bit(instruction.arg2, context->cpu), context->cpu);
   // PrintInstruction(context->frame_factory, "ADD", "A", RegisterName8(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
-int Add8BitAddress(handlers::ExecutorContext* context) {
+int Add8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  Add8BitImpl(context->memory_mapper->Read(*opcode.reg1), context->cpu);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  Add8BitImpl(context->memory_mapper->Read(address), context->cpu);
   // PrintInstruction(context->frame_factory, "ADD", "A", "(" + RegisterName16(opcode.reg1, context->cpu) + ")");
   return instruction_ptr;
 }
 
-int Add8BitLiteral(handlers::ExecutorContext* context) {
+int Add8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  Add8BitImpl(GetParameterValue(context->memory_mapper, instruction_ptr), context->cpu);
+  Add8BitImpl(GetParameterValue8Bit(instruction.arg2, context->cpu), context->cpu);
   // PrintInstruction(context->frame_factory, "ADD", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-void ADC8BitImpl(unsigned char value, GB_CPU* cpu) {
+void ADC8BitImpl(uint8_t value, GB_CPU* cpu) {
   char carry = cpu->flag_struct.rF.C;
   cpu->flag_struct.rF.C = DoesCarry8(cpu->flag_struct.rA, value + carry);
   cpu->flag_struct.rF.H = DoesHalfCarry8(cpu->flag_struct.rA, value + carry);
@@ -201,31 +347,29 @@ void ADC8BitImpl(unsigned char value, GB_CPU* cpu) {
   SetNFlag(false, cpu);
 }
 
-int ADC8Bit(handlers::ExecutorContext* context) {
+int ADC8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  ADC8BitImpl(*opcode->reg1, context->cpu);
+  ADC8BitImpl(GetParameterValue8Bit(instruction.arg2, context->cpu), context->cpu);
   // PrintInstruction(context->frame_factory, "ADC", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
-int ADC8BitAddress(handlers::ExecutorContext* context) {
+int ADC8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  ADC8BitImpl(context->memory_mapper->Read(*opcode->reg1), context->cpu);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  ADC8BitImpl(address, context->cpu);
   // PrintInstruction(context->frame_factory, "ADC", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
 
-int ADC8BitLiteral(handlers::ExecutorContext* context) {
+int ADC8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  ADC8BitImpl(GetParameterValue(context->memory_mapper, instruction_ptr), context->cpu);
+  ADC8BitImpl(GetParameterValue8Bit(instruction.arg2, context->cpu), context->cpu);
   // PrintInstruction(context->frame_factory, "ADC", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-void Sub8BitImpl(unsigned char value, GB_CPU* cpu) {
+void Sub8BitImpl(uint8_t value, GB_CPU* cpu) {
   cpu->flag_struct.rF.C = !DoesBorrow8(cpu->flag_struct.rA, value);
   cpu->flag_struct.rF.H = !DoesHalfBorrow8(cpu->flag_struct.rA, value);
   cpu->flag_struct.rA -= value;
@@ -233,31 +377,29 @@ void Sub8BitImpl(unsigned char value, GB_CPU* cpu) {
   SetNFlag(true, cpu);
 }
 
-int Sub8Bit(handlers::ExecutorContext* context) {
+int Sub8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  Sub8BitImpl(*opcode->reg1, context->cpu);
+  Sub8BitImpl(GetParameterValue8Bit(instruction.arg2, context->cpu), context->cpu);
   // PrintInstruction(context->frame_factory, "SUB", "A", RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
-int Sub8BitAddress(handlers::ExecutorContext* context) {
+int Sub8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  Sub8BitImpl(context->memory_mapper->Read(*opcode->reg1), context->cpu);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  Sub8BitImpl(context->memory_mapper->Read(address), context->cpu);
   // PrintInstruction(context->frame_factory, "SUB", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
   
-int Sub8BitLiteral(handlers::ExecutorContext* context) {
+int Sub8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  Sub8BitImpl(GetParameterValue(context->memory_mapper, instruction_ptr), context->cpu);
+  Sub8BitImpl(GetParameterValue8Bit(instruction.arg2, context->cpu), context->cpu);
   // PrintInstruction(context->frame_factory, "SUB", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-void SBC8BitImpl(unsigned char value, GB_CPU* cpu) {
+void SBC8BitImpl(uint8_t value, GB_CPU* cpu) {
     char carry = cpu->flag_struct.rF.C;
     cpu->flag_struct.rF.C = !DoesBorrow8(cpu->flag_struct.rA, value + carry);
     cpu->flag_struct.rF.H = !DoesHalfBorrow8(cpu->flag_struct.rA, value + carry);
@@ -267,28 +409,28 @@ void SBC8BitImpl(unsigned char value, GB_CPU* cpu) {
     SetNFlag(true, cpu);
 }
 
-int SBC8Bit(handlers::ExecutorContext* context) {
-    SBC8BitImpl(*context->opcode->reg1, context->cpu);
+int SBC8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
+    SBC8BitImpl(GetParameterValue8Bit(instruction.arg2, context->cpu), context->cpu);
     // PrintInstruction(context->frame_factory, "SBC", "A", RegisterName8(context->opcode->reg1, context->cpu));
     return *context->instruction_ptr;
 }
 
-int SBC8BitAddress(handlers::ExecutorContext* context) {
-  SBC8BitImpl(context->memory_mapper->Read(*context->opcode->reg1), context->cpu);
+int SBC8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  SBC8BitImpl(context->memory_mapper->Read(address), context->cpu);
   // PrintInstruction(context->frame_factory, "SBC", "A", "(" + RegisterName16(context->opcode->reg1, context->cpu) + ")");
   return *context->instruction_ptr;
 }
 
-int SBC8BitLiteral(handlers::ExecutorContext* context) {
-    SBC8BitImpl(GetParameterValue(context->memory_mapper, *context->instruction_ptr), context->cpu);
+int SBC8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
+    SBC8BitImpl(GetParameterValue8Bit(instruction.arg2, context->cpu), context->cpu);
     // PrintInstruction(context->frame_factory, "SBC", "A", Hex(GetParameterValue(context->memory_mapper, *context->instruction_ptr)));
     return *context->instruction_ptr;
 }
 
-int And8Bit(handlers::ExecutorContext* context) {
+int And8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  context->cpu->flag_struct.rA &= *opcode->reg1;
+  context->cpu->flag_struct.rA &= GetParameterValue8Bit(instruction.arg2, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 1;
@@ -297,10 +439,10 @@ int And8Bit(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
   
-int And8BitAddress(handlers::ExecutorContext* context) {
+int And8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  context->cpu->flag_struct.rA &= context->memory_mapper->Read(*opcode->reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  context->cpu->flag_struct.rA &= context->memory_mapper->Read(address);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 1;
@@ -309,22 +451,20 @@ int And8BitAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
   
-int And8BitLiteral(handlers::ExecutorContext* context) {
+int And8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rA &= GetParameterValue(context->memory_mapper, instruction_ptr);
+  context->cpu->flag_struct.rA &= GetParameterValue8Bit(instruction.arg2, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 1;
   context->cpu->flag_struct.rF.C = 0;
   // PrintInstruction(context->frame_factory, "AND", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int Or8Bit(handlers::ExecutorContext* context) {
+int Or8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  context->cpu->flag_struct.rA |= *opcode->reg1;
+  context->cpu->flag_struct.rA |= GetParameterValue8Bit(instruction.arg2, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
@@ -333,10 +473,10 @@ int Or8Bit(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int Or8BitAddress(handlers::ExecutorContext* context) {
+int Or8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  context->cpu->flag_struct.rA |= context->memory_mapper->Read(*opcode->reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  context->cpu->flag_struct.rA |= context->memory_mapper->Read(address);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
@@ -345,22 +485,20 @@ int Or8BitAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
   
-int Or8BitLiteral(handlers::ExecutorContext* context) {
+int Or8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rA |= GetParameterValue(context->memory_mapper, instruction_ptr);
+  context->cpu->flag_struct.rA |= GetParameterValue8Bit(instruction.arg2, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
   // PrintInstruction(context->frame_factory, "OR", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int Xor8Bit(handlers::ExecutorContext* context) {
+int Xor8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  context->cpu->flag_struct.rA ^= *opcode->reg1;
+  context->cpu->flag_struct.rA ^= GetParameterValue8Bit(instruction.arg2, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
@@ -369,10 +507,10 @@ int Xor8Bit(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int Xor8BitAddress(handlers::ExecutorContext* context) {
+int Xor8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  context->cpu->flag_struct.rA ^= context->memory_mapper->Read(*opcode->reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  context->cpu->flag_struct.rA ^= context->memory_mapper->Read(address);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
@@ -381,27 +519,25 @@ int Xor8BitAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int Xor8BitLiteral(handlers::ExecutorContext* context) {
+int Xor8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rA ^= GetParameterValue(context->memory_mapper, instruction_ptr);
+  context->cpu->flag_struct.rA ^= GetParameterValue8Bit(instruction.arg2, context->cpu);
   SetZFlag(context->cpu->flag_struct.rA, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
   context->cpu->flag_struct.rF.C = 0;
   // PrintInstruction(context->frame_factory, "XOR", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int Cp8Bit(handlers::ExecutorContext* context) {
-  Opcode* opcode = context->opcode;
-
+int Cp8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  unsigned char result = context->cpu->flag_struct.rA - *opcode->reg1;
+  const uint8_t arg2 = GetParameterValue8Bit(instruction.arg2, context->cpu);
+  uint8_t result = context->cpu->flag_struct.rA - arg2;
   SetZFlag(result, context->cpu);
   SetNFlag(true, context->cpu); // Performed subtraction.
-  context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, *opcode->reg1);
-  context->cpu->flag_struct.rF.C = !DoesBorrow8(context->cpu->flag_struct.rA, *opcode->reg1);
+  context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, arg2);
+  context->cpu->flag_struct.rF.C = !DoesBorrow8(context->cpu->flag_struct.rA, arg2);
   // PrintInstruction(context->frame_factory, "CP", "A", RegisterName8(opcode->reg1, context->cpu));
   LOG(INFO) << "Z flag = " << 0x0000 + context->cpu->flag_struct.rF.Z;
   LOG(INFO) << "N flag = " << 0x0000 + context->cpu->flag_struct.rF.N;
@@ -410,11 +546,10 @@ int Cp8Bit(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int Cp8BitAddress(handlers::ExecutorContext* context) {
+int Cp8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
-  unsigned char result = context->cpu->flag_struct.rA - value;
+  uint8_t value = context->memory_mapper->Read(GetParameterValue16Bit(instruction.arg2, context->cpu));
+  uint8_t result = context->cpu->flag_struct.rA - value;
   SetZFlag(result, context->cpu);
   SetNFlag(true, context->cpu); // Performed subtraction.
   context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, value);
@@ -428,11 +563,10 @@ int Cp8BitAddress(handlers::ExecutorContext* context) {
 }
   
   
-int Cp8BitLiteral(handlers::ExecutorContext* context) {
+int Cp8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
-  unsigned char result = context->cpu->flag_struct.rA - value;
+  const uint8_t value = GetParameterValue8Bit(instruction.arg2, context->cpu);
+  uint8_t result = context->cpu->flag_struct.rA - value;
   SetZFlag(result, context->cpu);
   SetNFlag(true, context->cpu); // Performed subtraction.
   context->cpu->flag_struct.rF.H = !DoesHalfBorrow8(context->cpu->flag_struct.rA, value);
@@ -442,13 +576,12 @@ int Cp8BitLiteral(handlers::ExecutorContext* context) {
   LOG(INFO) << "N flag = " << 0x0000 + context->cpu->flag_struct.rF.N;
   LOG(INFO) << "H flag = " << 0x0000 + context->cpu->flag_struct.rF.H;
   LOG(INFO) << "C flag = " << 0x0000 + context->cpu->flag_struct.rF.C;
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int Inc8Bit(handlers::ExecutorContext* context) {
+int Inc8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char* reg = (unsigned char*) opcode.reg1;
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
   bool half_carry = DoesHalfCarry8(*reg, 1);
   ++(*reg);
   
@@ -459,12 +592,12 @@ int Inc8Bit(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int Inc8BitAddress(handlers::ExecutorContext* context) {
+int Inc8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char val = context->memory_mapper->Read(*opcode.reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t val = context->memory_mapper->Read(address);
   bool half_carry = DoesHalfCarry8(val, 1);
-  context->memory_mapper->Write(*opcode.reg1, ++val);
+  context->memory_mapper->Write(address, ++val);
 
   SetZFlag(val, context->cpu);
   SetNFlag(false, context->cpu);
@@ -473,30 +606,25 @@ int Inc8BitAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
   
-int Dec8Bit(handlers::ExecutorContext* context) {
+int Dec8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char* reg = (unsigned char*) opcode.reg1;
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
   bool borrowed_h = DoesHalfBorrow8(*reg, 1);
   --(*reg);
   
   SetZFlag(*reg, context->cpu);
   SetNFlag(true, context->cpu);
   context->cpu->flag_struct.rF.H = borrowed_h;
-  if (opcode.opcode_name == 0x05) {
-    LOG(INFO) << "B decremented to " << std::hex << 0x0000 + *reg;
-    LOG(INFO) << "Z flag is " << std::dec << 0x0000 + context->cpu->flag_struct.rF.Z;
-  }
   // PrintInstruction(context->frame_factory, "DEC", RegisterName8(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
-int Dec8BitAddress(handlers::ExecutorContext* context) {
+int Dec8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char val = context->memory_mapper->Read(*opcode.reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t val = context->memory_mapper->Read(address);
   bool borrowed_h = DoesHalfBorrow8(val, 1);
-  context->memory_mapper->Write(*opcode.reg1, --val);
+  context->memory_mapper->Write(address, --val);
   
   SetZFlag(val, context->cpu);
   SetNFlag(true, context->cpu);
@@ -505,22 +633,21 @@ int Dec8BitAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
   
-int Add16Bit(handlers::ExecutorContext* context) {
+int Add16Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rF.H = DoesHalfCarry16(context->cpu->rHL, *opcode.reg1);
-  context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->rHL, *opcode.reg1);
-  context->cpu->rHL += *opcode.reg1;
+  const uint16_t arg2 = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  context->cpu->flag_struct.rF.H = DoesHalfCarry16(context->cpu->rHL, arg2);
+  context->cpu->flag_struct.rF.C = DoesCarry16(context->cpu->rHL, arg2);
+  context->cpu->rHL += arg2;
   SetNFlag(false, context->cpu);
   // PrintInstruction(context->frame_factory, "ADD", "HL", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
-int AddSPLiteral(handlers::ExecutorContext* context) {
+int AddSPLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   // This value is signed.
-  char value = static_cast<char>(GetParameterValue(context->memory_mapper, instruction_ptr));
+  char value = GetParameterValue8Bit(instruction.arg2, context->cpu);
   if (NthBit(value, 7)) {
     // TODO(Brendan): Make sure this works the same for signed.
     context->cpu->flag_struct.rF.H = DoesHalfBorrow16(context->cpu->rSP, value);
@@ -533,32 +660,29 @@ int AddSPLiteral(handlers::ExecutorContext* context) {
   context->cpu->flag_struct.rF.Z = 0;
   context->cpu->rSP += value;
   // PrintInstruction(context->frame_factory, "ADD", "SP", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int Inc16Bit(handlers::ExecutorContext* context) {
+int Inc16Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  ++(*opcode.reg1);
+  ++(*GetRegister16Bit(instruction.arg1, context->cpu));
   // No flags are affected by this instruction
   // PrintInstruction(context->frame_factory, "INC", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
-int Dec16Bit(handlers::ExecutorContext* context) {
+int Dec16Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  --(*opcode.reg1);
+  --(*GetRegister16Bit(instruction.arg1, context->cpu));
   // No flags are affected by this instruction
   // PrintInstruction(context->frame_factory, "DEC", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
-int Swap(handlers::ExecutorContext* context) {
+int Swap(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char value = *reg;
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
+  uint8_t value = *reg;
   *reg = (value << 4) | (value >> 4);
   SetZFlag(*reg, context->cpu);
   SetNFlag(false, context->cpu);
@@ -568,10 +692,11 @@ int Swap(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
   
-int SwapAddress(handlers::ExecutorContext* context) {
-  unsigned char val = context->memory_mapper->Read(*context->opcode->reg1);
-  unsigned char swapVal = (val << 4) | (val >> 4);
-  context->memory_mapper->Write(*context->opcode->reg1, swapVal);
+int SwapAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t val = context->memory_mapper->Read(address);
+  uint8_t swapVal = (val << 4) | (val >> 4);
+  context->memory_mapper->Write(address, swapVal);
   SetZFlag(swapVal, context->cpu);
   SetNFlag(false, context->cpu);
   context->cpu->flag_struct.rF.H = 0;
@@ -580,13 +705,12 @@ int SwapAddress(handlers::ExecutorContext* context) {
   return *context->instruction_ptr;
 }
 
-int DAA(handlers::ExecutorContext* context) {
+int DAA(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
 
-  unsigned char mul = 0x6;
-  unsigned char sum = context->cpu->flag_struct.rA;
-  unsigned char n = sum / 10;
+  uint8_t mul = 0x6;
+  uint8_t sum = context->cpu->flag_struct.rA;
+  uint8_t n = sum / 10;
   while (n > 0) {
     sum += n * mul;
     n /= 10;
@@ -600,9 +724,8 @@ int DAA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int CPL(handlers::ExecutorContext* context) {
+int CPL(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = ~context->cpu->flag_struct.rA;
   context->cpu->flag_struct.rF.H = 1;
   SetNFlag(true, context->cpu);
@@ -610,9 +733,8 @@ int CPL(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int CCF(handlers::ExecutorContext* context) {
+int CCF(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = ~context->cpu->flag_struct.rA;
   context->cpu->flag_struct.rF.C = !context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.H = 0;
@@ -621,9 +743,8 @@ int CCF(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int SCF(handlers::ExecutorContext* context) {
+int SCF(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rF.C = 1;
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
@@ -631,51 +752,45 @@ int SCF(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int NOP(handlers::ExecutorContext* context) {
+int NOP(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   // PrintInstruction(context->frame_factory, "NOP");
   return instruction_ptr;
 }
 
-int Halt(handlers::ExecutorContext* context) {
+int Halt(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   LOG(WARNING) << "UNINPLEMENTED OPCODE: Halt";
   // TODO: We should actually halt instead of just nop
   // PrintInstruction(context->frame_factory, "HALT");
   return instruction_ptr;
 }
 
-int Stop(handlers::ExecutorContext* context) {
+int Stop(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   LOG(WARNING) << "UNINPLEMENTED OPCODE: Stop";
   // TODO: We should actually stop instead of just nop
   // PrintInstruction(context->frame_factory, "STOP");
   return instruction_ptr;
 }
 
-int DI(handlers::ExecutorContext* context) {
+int DI(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   *context->interrupt_master_enable = false;
   // PrintInstruction(context->frame_factory, "DI");
   return instruction_ptr;
 }
 
-int EI(handlers::ExecutorContext* context) {
+int EI(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   *context->interrupt_master_enable = true;
   // PrintInstruction(context->frame_factory, "EI");
   return instruction_ptr;
 }
 
-int RLCA(handlers::ExecutorContext* context) {
+int RLCA(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char msb = NthBit(context->cpu->flag_struct.rA, 7);
+  uint8_t msb = NthBit(context->cpu->flag_struct.rA, 7);
   context->cpu->flag_struct.rF.C = msb;
   context->cpu->flag_struct.rA = (context->cpu->flag_struct.rA << 1) | msb;
   context->cpu->flag_struct.rF.H = 0;
@@ -685,10 +800,9 @@ int RLCA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RLA(handlers::ExecutorContext* context) {
+int RLA(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char carry = context->cpu->flag_struct.rF.C;
+  uint8_t carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 7);
   context->cpu->flag_struct.rA = context->cpu->flag_struct.rA << 1;
   context->cpu->flag_struct.rA |= carry;
@@ -699,10 +813,9 @@ int RLA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RRCA(handlers::ExecutorContext* context) {
+int RRCA(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char lsb = NthBit(context->cpu->flag_struct.rA, 0);
+  uint8_t lsb = NthBit(context->cpu->flag_struct.rA, 0);
   context->cpu->flag_struct.rF.C = lsb;
   context->cpu->flag_struct.rA = (context->cpu->flag_struct.rA >> 1) | (lsb << 7);
   context->cpu->flag_struct.rF.H = 0;
@@ -712,10 +825,9 @@ int RRCA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RRA(handlers::ExecutorContext* context) {
+int RRA(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char carry = context->cpu->flag_struct.rF.C;
+  uint8_t carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(context->cpu->flag_struct.rA, 0);
   context->cpu->flag_struct.rA = context->cpu->flag_struct.rA >> 1;
   context->cpu->flag_struct.rA |= (carry << 7);
@@ -726,11 +838,10 @@ int RRA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RLC(handlers::ExecutorContext* context) {
+int RLC(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char msb = NthBit(*reg, 7);
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
+  uint8_t msb = NthBit(*reg, 7);
   context->cpu->flag_struct.rF.C = msb;
   *reg = (*reg << 1) | msb;
   context->cpu->flag_struct.rF.H = 0;
@@ -740,14 +851,14 @@ int RLC(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RLCAddress(handlers::ExecutorContext* context) {
+int RLCAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
-  unsigned char msb = NthBit(value, 7);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t value = context->memory_mapper->Read(address);
+  uint8_t msb = NthBit(value, 7);
   context->cpu->flag_struct.rF.C = msb;
   value = (value << 1) | msb;
-  context->memory_mapper->Write(*opcode->reg1, value);
+  context->memory_mapper->Write(address, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
@@ -755,11 +866,10 @@ int RLCAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RL(handlers::ExecutorContext* context) {
+int RL(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char carry = context->cpu->flag_struct.rF.C;
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
+  uint8_t carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 7);
   *reg = *reg << 1;
   *reg |= carry;
@@ -770,15 +880,15 @@ int RL(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RLAddress(handlers::ExecutorContext* context) {
+int RLAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
-  unsigned char carry = context->cpu->flag_struct.rF.C;
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t value = context->memory_mapper->Read(address);
+  uint8_t carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(value, 7);
   value = value << 1;
   value |= carry;
-  context->memory_mapper->Write(*opcode->reg1, value);
+  context->memory_mapper->Write(address, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
@@ -786,11 +896,10 @@ int RLAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RRC(handlers::ExecutorContext* context) {
+int RRC(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char lsb = NthBit(*reg, 0);
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
+  uint8_t lsb = NthBit(*reg, 0);
   context->cpu->flag_struct.rF.C = lsb;
   *reg = (*reg >> 1) | (lsb << 7);
   context->cpu->flag_struct.rF.H = 0;
@@ -800,14 +909,14 @@ int RRC(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RRCAddress(handlers::ExecutorContext* context) {
+int RRCAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
-  unsigned char lsb = NthBit(value, 0);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t value = context->memory_mapper->Read(address);
+  uint8_t lsb = NthBit(value, 0);
   context->cpu->flag_struct.rF.C = lsb;
   value = (value >> 1) | (lsb << 7);
-  context->memory_mapper->Write(*opcode->reg1, value);
+  context->memory_mapper->Write(address, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
@@ -815,11 +924,10 @@ int RRCAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RR(handlers::ExecutorContext* context) {
+int RR(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char carry = context->cpu->flag_struct.rF.C;
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
+  uint8_t carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(*reg, 0);
   *reg = *reg >> 1;
   *reg |= (carry << 7);
@@ -830,15 +938,15 @@ int RR(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int RRAddress(handlers::ExecutorContext* context) {
+int RRAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
-  unsigned char carry = context->cpu->flag_struct.rF.C;
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t value = context->memory_mapper->Read(address);
+  uint8_t carry = context->cpu->flag_struct.rF.C;
   context->cpu->flag_struct.rF.C = NthBit(value, 0);
   value = value >> 1;
   value |= (carry << 7);
-  context->memory_mapper->Write(*opcode->reg1, value);
+  context->memory_mapper->Write(address, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
@@ -846,10 +954,9 @@ int RRAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int SLA(handlers::ExecutorContext* context) {
+int SLA(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
   context->cpu->flag_struct.rF.C = NthBit(*reg, 7);
   *reg = *reg << 1;
   context->cpu->flag_struct.rF.H = 0;
@@ -859,13 +966,13 @@ int SLA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int SLAAddress(handlers::ExecutorContext* context) {
+int SLAAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t value = context->memory_mapper->Read(address);
   context->cpu->flag_struct.rF.C = NthBit(value, 7);
   value = value << 1;
-  context->memory_mapper->Write(*opcode->reg1, value);
+  context->memory_mapper->Write(address, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
@@ -873,12 +980,11 @@ int SLAAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int SRA(handlers::ExecutorContext* context) {
+int SRA(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
   context->cpu->flag_struct.rF.C = NthBit(*reg, 0);
-  unsigned char msb = NthBit(*reg, 7) << 7;
+  uint8_t msb = NthBit(*reg, 7) << 7;
   *reg = *reg >> 1;
   *reg |= msb;
   context->cpu->flag_struct.rF.H = 0;
@@ -888,15 +994,15 @@ int SRA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int SRAAddress(handlers::ExecutorContext* context) {
+int SRAAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t value = context->memory_mapper->Read(address);
   context->cpu->flag_struct.rF.C = NthBit(value, 0);
-  unsigned char msb = NthBit(value, 7) << 7;
+  uint8_t msb = NthBit(value, 7) << 7;
   value = value >> 1;
   value |= msb;
-  context->memory_mapper->Write(*opcode->reg1, value);
+  context->memory_mapper->Write(address, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
@@ -904,10 +1010,9 @@ int SRAAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int SRL(handlers::ExecutorContext* context) {
+int SRL(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
+  uint8_t* reg = GetRegister8Bit(instruction.arg1, context->cpu);
   context->cpu->flag_struct.rF.C = NthBit(*reg, 0);
   *reg = *reg >> 1;
   context->cpu->flag_struct.rF.H = 0;
@@ -917,13 +1022,13 @@ int SRL(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int SRLAddress(handlers::ExecutorContext* context) {
+int SRLAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = context->memory_mapper->Read(*opcode->reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t value = context->memory_mapper->Read(address);
   context->cpu->flag_struct.rF.C = NthBit(value, 0);
   value = value >> 1;
-  context->memory_mapper->Write(*opcode->reg1, value);
+  context->memory_mapper->Write(address, value);
   context->cpu->flag_struct.rF.H = 0;
   SetNFlag(false, context->cpu);
   SetZFlag(value, context->cpu);
@@ -931,11 +1036,10 @@ int SRLAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int Bit(handlers::ExecutorContext* context) {
+int Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char bit = NthBit(*reg, context->magic);
+  uint8_t* reg = GetRegister8Bit(instruction.arg2, context->cpu);
+  uint8_t bit = NthBit(*reg, GetParameterValue8Bit(instruction.arg1, context->cpu));
   context->cpu->flag_struct.rF.H = 1;
   SetZFlag(bit, context->cpu);
   SetNFlag(false, context->cpu);
@@ -944,10 +1048,10 @@ int Bit(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int BitAddress(handlers::ExecutorContext* context) {
+int BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  unsigned char val = context->memory_mapper->Read(context->cpu->rHL);
-  unsigned char bit = NthBit(val, context->magic);
+  uint8_t val = context->memory_mapper->Read(context->cpu->rHL);
+  uint8_t bit = NthBit(val, GetParameterValue8Bit(instruction.arg1, context->cpu));
   context->cpu->flag_struct.rF.H = 1;
   SetZFlag(bit, context->cpu);
   SetNFlag(false, context->cpu);
@@ -956,22 +1060,20 @@ int BitAddress(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
   
-int Set(handlers::ExecutorContext* context) {
+int Set(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char bit = context->magic;
+  uint8_t* reg = GetRegister8Bit(instruction.arg2, context->cpu);
+  uint8_t bit = GetParameterValue8Bit(instruction.arg1, context->cpu);
   *reg |= (0x1 << bit);
   
   // PrintInstruction(context->frame_factory, "SET", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
 }
 
-int Res(handlers::ExecutorContext* context) {
+int Res(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char* reg = (unsigned char*) opcode->reg1;
-  unsigned char bit = context->magic;
+  uint8_t* reg = GetRegister8Bit(instruction.arg2, context->cpu);
+  uint8_t bit = GetParameterValue8Bit(instruction.arg1, context->cpu);
   *reg &= ~(0x1 << bit);
   
   // PrintInstruction(context->frame_factory, "RES", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
@@ -979,120 +1081,107 @@ int Res(handlers::ExecutorContext* context) {
 }
 
 
-int Jump(handlers::ExecutorContext* context) {
+int Jump(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  instruction_ptr = GetAddress16(context->memory_mapper, instruction_ptr);
+  instruction_ptr = GetParameterValue16Bit(instruction.arg1, context->cpu);
   
   // PrintInstruction(context->frame_factory, "JP", Hex(instruction_ptr));
   return instruction_ptr;
 }
 
-int JumpConditional(handlers::ExecutorContext* context) {
+int JumpConditional(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  switch (opcode.opcode_name) {
+  switch (instruction.instruction) {
     case 0xC2:
       // PrintInstruction(context->frame_factory, "JP", "NZ", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
-        return Jump(context);
+        return GetParameterValue16Bit(instruction.arg2, context->cpu);
       }
       return instruction_ptr;
     case 0xCA:
       // PrintInstruction(context->frame_factory, "JP", "Z", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
-        return Jump(context);
+        return GetParameterValue16Bit(instruction.arg2, context->cpu);
       }
       return instruction_ptr;
     case 0xD2:
       // PrintInstruction(context->frame_factory, "JP", "NC", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
-        return Jump(context);
+        return GetParameterValue16Bit(instruction.arg2, context->cpu);
       }
       return instruction_ptr;
     case 0xDA:
       // PrintInstruction(context->frame_factory, "JP", "C", Hex(GetAddress16(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
-        return Jump(context);
+        return GetParameterValue16Bit(instruction.arg2, context->cpu);
       }
       return instruction_ptr;
+    default:
+      LOG(FATAL) << "Invalid conditional jump.";
   }
-  return instruction_ptr;
 }
 
-int JumpHL(handlers::ExecutorContext* context) {
+int JumpHL(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   instruction_ptr = context->cpu->rHL;
   
   // PrintInstruction(context->frame_factory, "JP", "(HL)");
   return instruction_ptr;
 }
 
-int JumpRelativeImpl(handlers::ExecutorContext* context) {
-  int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  instruction_ptr += 1 + static_cast<char>(GetParameterValue(context->memory_mapper, instruction_ptr));
-
-  LOG(INFO) << "Jumping to " << std::hex << instruction_ptr;
-
-  return instruction_ptr;
-}
-
-int JumpRelative(handlers::ExecutorContext* context) {
-  int instruction_ptr = JumpRelativeImpl(context);
+int JumpRelative(const decompiler::Instruction& instruction, ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr + GetParameterValue8BitSigned(instruction.arg1, context->cpu);
   // PrintInstruction(context->frame_factory, "JR", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
   return instruction_ptr;
 }
 
-int JumpRelativeConditional(handlers::ExecutorContext* context) {
+int JumpRelativeConditional(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  switch (opcode.opcode_name) {
+  switch (instruction.instruction) {
     case 0x20:
       // PrintInstruction(context->frame_factory, "JR", "NZ", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
-        return JumpRelativeImpl(context);
+        return instruction_ptr + GetParameterValue8BitSigned(instruction.arg2, context->cpu);
       }
-      return instruction_ptr + 1; // Have to account for the 8-bit parameter 
-                                  // whether we use it or not.
+      return instruction_ptr;
     case 0x28:
       // PrintInstruction(context->frame_factory, "JR", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
-        return JumpRelativeImpl(context);
+        return instruction_ptr + GetParameterValue8BitSigned(instruction.arg2, context->cpu);
       }
-      return instruction_ptr + 1;
+      return instruction_ptr;
     case 0x30:
       // PrintInstruction(context->frame_factory, "JR", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
-        return JumpRelativeImpl(context);
+        return instruction_ptr + GetParameterValue8BitSigned(instruction.arg2, context->cpu);
       }
-      return instruction_ptr + 1;
+      return instruction_ptr;
     case 0x38:
       // PrintInstruction(context->frame_factory, "JR", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
-        return JumpRelativeImpl(context);
+        return instruction_ptr + GetParameterValue8BitSigned(instruction.arg2, context->cpu);
       }
+      return instruction_ptr;
+    default:
+      LOG(FATAL) << "Unkown instruction.";
   }
-  LOG(INFO) << "Not jumping";
-  return instruction_ptr + 1;
 }
 
 // TODO(Brendan, Diego, Aaron, Dave): We should make sure we are doing endian
 // specific work in functions that we can either swap out at compile time or at
 // runtime to preserve correct endianness.
-unsigned char GetLSB(unsigned short value) {
-  LOG(INFO) << "Pushing, lsb is " << std::hex << 0x0000 + static_cast<unsigned char>(value);
-  return static_cast<unsigned char>(value);
+uint8_t GetLSB(uint16_t value) {
+  LOG(INFO) << "Pushing, lsb is " << std::hex << 0x0000 + static_cast<uint8_t>(value);
+  return static_cast<uint8_t>(value);
 }
 
-unsigned char GetMSB(unsigned short value) {
-  LOG(INFO) << "Pushing, msb is " << std::hex << 0x0000 + static_cast<unsigned char>(value >> 8);
-  return static_cast<unsigned char>(value >> 8);
+uint8_t GetMSB(uint16_t value) {
+  LOG(INFO) << "Pushing, msb is " << std::hex << 0x0000 + static_cast<uint8_t>(value >> 8);
+  return static_cast<uint8_t>(value >> 8);
 }
 
-void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
-  unsigned short* rSP = &cpu->rSP;
+void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, uint16_t* reg) {
+  uint16_t* rSP = &cpu->rSP;
   // memory_mapper->Write(0xfffe, GetLSB(*reg));
   --*rSP;
   memory_mapper->Write(*rSP, GetLSB(*reg));
@@ -1100,22 +1189,21 @@ void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg)
   memory_mapper->Write(*rSP, GetMSB(*reg));
 }
 
-void PopRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, unsigned short* reg) {
-  unsigned short* rSP = &cpu->rSP;
-  unsigned short msb = memory_mapper->Read(*rSP);
+void PopRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, uint16_t* reg) {
+  uint16_t* rSP = &cpu->rSP;
+  uint16_t msb = memory_mapper->Read(*rSP);
   ++*rSP;
-  unsigned short lsb = memory_mapper->Read(*rSP);
+  uint16_t lsb = memory_mapper->Read(*rSP);
   ++*rSP;
   *reg = (msb << 8) | lsb;
 }
 
-int Call(handlers::ExecutorContext* context) {
+int Call(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   GB_CPU* cpu = context->cpu;
-  unsigned short* rPC = &cpu->rPC;
+  uint16_t* rPC = &cpu->rPC;
 
-  unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
+  uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
   *rPC += 2; // Must take the parameter into account.
   // context->call_stack->Push({context->frame_factory->current_timestamp(), *rPC});
   PushRegister(context->memory_mapper, cpu, rPC);
@@ -1127,43 +1215,41 @@ int Call(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int CallConditional(handlers::ExecutorContext* context) {
+int CallConditional(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  switch (opcode.opcode_name) {
+  switch (instruction.instruction) {
     case 0xC4:
       // PrintInstruction(context->frame_factory, "CALL", "NZ", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
-        return Call(context);
+        return Call(instruction, context);
       }
       return instruction_ptr;
     case 0xCC:
       // PrintInstruction(context->frame_factory, "CALL", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
-        return Call(context);
+        return Call(instruction, context);
       }
       return instruction_ptr;
     case 0xD4:
       // PrintInstruction(context->frame_factory, "CALL", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
-        return Call(context);
+        return Call(instruction, context);
       }
       return instruction_ptr;
     case 0xDC:
       // PrintInstruction(context->frame_factory, "CALL", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
-        return Call(context);
+        return Call(instruction, context);
       }
       return instruction_ptr;
   }
   return instruction_ptr;
 }
 
-int Restart(handlers::ExecutorContext* context) {
+int Restart(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char accum = 0;
-  switch (opcode.opcode_name) {
+  uint8_t accum = 0;
+  switch (instruction.instruction) {
     case 0xFF:
       accum += 0x08;
     case 0xF7:
@@ -1192,9 +1278,8 @@ int Restart(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int Return(handlers::ExecutorContext* context) {
+int Return(const decompiler::Instruction&, ExecutorContext* context) {
   LOG(INFO) << "Returning";
-  Opcode opcode = *context->opcode;
   PopRegister(context->memory_mapper, context->cpu, &context->cpu->rPC);
   // PrintInstruction(context->frame_factory, "RET");
   // if (!context->call_stack->PeekCheck(context->cpu->rPC)) {
@@ -1208,181 +1293,167 @@ int Return(handlers::ExecutorContext* context) {
   return context->cpu->rPC;
 }
 
-int ReturnConditional(handlers::ExecutorContext* context) {
+int ReturnConditional(const decompiler::Instruction& instruction, ExecutorContext* context) {
   LOG(INFO) << "Conditional return";
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  switch (opcode.opcode_name) {
+  switch (instruction.instruction) {
     case 0xC0:
       // PrintInstruction(context->frame_factory, "RET", "NZ");
       if (!context->cpu->flag_struct.rF.Z) {
-        return Return(context);
+        return Return(instruction, context);
       }
       return instruction_ptr;
     case 0xC8:
       // PrintInstruction(context->frame_factory, "RET", "Z");
       if (context->cpu->flag_struct.rF.Z) {
-        return Return(context);
+        return Return(instruction, context);
       }
       return instruction_ptr;
     case 0xD0:
       // PrintInstruction(context->frame_factory, "RET", "NC");
       if (!context->cpu->flag_struct.rF.C) {
-        return Return(context);
+        return Return(instruction, context);
       }
       return instruction_ptr;
     case 0xD8:
       // PrintInstruction(context->frame_factory, "RET", "C");
       if (context->cpu->flag_struct.rF.C) {
-        return Return(context);
+        return Return(instruction, context);
       }
   }
   return instruction_ptr;
 }
 
-int ReturnInterrupt(handlers::ExecutorContext* context) {
+int ReturnInterrupt(const decompiler::Instruction& instruction, ExecutorContext* context) {
   LOG(INFO) << "Returning from interrupt.";
   ExecutorContext new_context(context);
-  EI(context);
+  EI(instruction, context);
   
   // PrintInstruction(context->frame_factory, "RETI");
-  return Return(context);
+  return Return(instruction, context);
 }
 
-int LoadN(handlers::ExecutorContext* context) {
+int LoadN(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode* opcode = context->opcode;
-  unsigned char value = GetParameterValue(context->memory_mapper, instruction_ptr);
-  *((unsigned char*) opcode->reg1) = value;
+  *GetRegister8Bit(instruction.arg1, context->cpu) = GetParameterValue8Bit(instruction.arg2, context->cpu);
   
   // PrintInstruction(context->frame_factory, "LD", RegisterName8(opcode->reg1, context->cpu), Hex(value));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int LoadRR8Bit(handlers::ExecutorContext* context) {
+int LoadRR8Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char* reg1 = (unsigned char*)opcode.reg1;
-  unsigned char* reg2 = (unsigned char*)opcode.reg2;
-  *((unsigned char*) reg1) = *((unsigned char*) reg2);
+  *GetRegister8Bit(instruction.arg1, context->cpu) = GetParameterValue8Bit(instruction.arg2, context->cpu);
   
   // PrintInstruction(context->frame_factory, "LD", RegisterName8(opcode.reg1, context->cpu), RegisterName8(opcode.reg2, context->cpu));
   return instruction_ptr;
 }
 
-int LoadRR8BitAddress(handlers::ExecutorContext* context) {
+int LoadRR8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char* reg1 = (unsigned char*) opcode.reg1;
-  *reg1 = context->memory_mapper->Read(*opcode.reg2);
+  uint8_t* reg1 = GetRegister8Bit(instruction.arg1, context->cpu);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  *reg1 = context->memory_mapper->Read(address);
   
   // PrintInstruction(context->frame_factory, "LD", RegisterName8(opcode.reg1, context->cpu), "(HL)");
   return instruction_ptr;
 }
 
-int LoadRR8BitIntoAddress(handlers::ExecutorContext* context) {
-  Opcode opcode = *context->opcode;
-  context->memory_mapper->Write(*opcode.reg1, *opcode.reg2);
+int LoadRR8BitIntoAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
+  context->memory_mapper->Write(GetParameterValue16Bit(instruction.arg1, context->cpu), GetParameterValue8Bit(instruction.arg1, context->cpu));
   
   // PrintInstruction(context->frame_factory, "LD", "(HL)", RegisterName8(opcode.reg2, context->cpu));
   return *context->instruction_ptr;
 }
   
-int Load8BitLiteral(handlers::ExecutorContext* context) {
+int Load8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned short val = (unsigned short)GetParameterValue(context->memory_mapper, instruction_ptr);
-  context->memory_mapper->Write(*opcode.reg1, val);
+  uint16_t val = GetParameterValue8Bit(instruction.arg2, context->cpu);
+  context->memory_mapper->Write(GetParameterValue16Bit(instruction.arg1, context->cpu), val);
   
   // PrintInstruction(context->frame_factory, "LD", "(HL)", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 
 }
   
-int LoadRR16Bit(handlers::ExecutorContext* context) {
+int LoadRR16Bit(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  *opcode.reg1 = *opcode.reg2;
+  *GetRegister16Bit(instruction.arg1, context->cpu) = GetParameterValue16Bit(instruction.arg2, context->cpu);
   
   // PrintInstruction(context->frame_factory, "LD", RegisterName16(opcode.reg1, context->cpu), RegisterName16(opcode.reg2, context->cpu));
   return instruction_ptr;
 }
 
-int LoadAN(handlers::ExecutorContext* context) {
+int LoadAN(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rA = context->memory_mapper->Read(*opcode.reg1);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  context->cpu->flag_struct.rA = context->memory_mapper->Read(address);
   
-  // PrintInstruction(context->frame_factory, "LD", "(" + RegisterName16(opcode.reg1, context->cpu) + ")", "A");
+  // PrintInstruction(context->frame_factory, "LD", "A", "(" + RegisterName16(opcode.reg2, context->cpu) + ")");
   return instruction_ptr;
 }
 
-int LoadAN16BitLiteral(handlers::ExecutorContext* context) {
+int LoadAN16BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
+  uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
   context->cpu->flag_struct.rA = context->memory_mapper->Read(address);
   
-  // PrintInstruction(context->frame_factory, "LD", "(" + Hex(address) + ")", "A");
-  return instruction_ptr + 2;
+  // PrintInstruction(context->frame_factory, "LD", "A", "(" + Hex(address) + ")");
+  return instruction_ptr;
 }
   
-int LoadAN8BitLiteral(handlers::ExecutorContext* context) {
+int LoadAN8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->cpu->flag_struct.rA = GetParameterValue(context->memory_mapper, instruction_ptr);
+  context->cpu->flag_struct.rA = GetParameterValue8Bit(instruction.arg2, context->cpu);
   
   // PrintInstruction(context->frame_factory, "LD", "A", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int LoadNA(handlers::ExecutorContext* context) {
+int LoadNA(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  unsigned char* reg1 = (unsigned char*)opcode.reg1;
-  *reg1 = (unsigned char)context->cpu->flag_struct.rA;
+  uint8_t* reg1 = GetRegister8Bit(instruction.arg1, context->cpu);
+  *reg1 = (uint8_t)context->cpu->flag_struct.rA;
   
   // PrintInstruction(context->frame_factory, "LD", RegisterName8(opcode.reg1, context->cpu), "A");
   return instruction_ptr;
 }
 
-int LoadNAAddress(handlers::ExecutorContext* context) {
+int LoadNAAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  context->memory_mapper->Write(*opcode.reg1, context->cpu->flag_struct.rA);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  context->memory_mapper->Write(address, context->cpu->flag_struct.rA);
   
   // PrintInstruction(context->frame_factory, "LD", "(" + RegisterName16(opcode.reg1, context->cpu) + ")", "A");
   return instruction_ptr;
 }
   
-int LoadNA16BitLiteral(handlers::ExecutorContext* context) {
+int LoadNA16BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  unsigned short address = GetParameterValue16(context->memory_mapper, instruction_ptr);
+  uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
   context->memory_mapper->Write(address, context->cpu->flag_struct.rA);
   
   // PrintInstruction(context->frame_factory, "LD", Hex(address), "A");
-  return instruction_ptr + 2;
+  return instruction_ptr;
 }
 
-int LoadAC(handlers::ExecutorContext* context) {
+int LoadAC(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(0xFF00 + context->cpu->bc_struct.rC);
   
   // PrintInstruction(context->frame_factory, "LD", "A", "(C)");
   return instruction_ptr;
 }
 
-int LoadCA(handlers::ExecutorContext* context) {
+int LoadCA(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->memory_mapper->Write(0xFF00 + context->cpu->bc_struct.rC, context->cpu->flag_struct.rA);
   
   // PrintInstruction(context->frame_factory, "LD", "(C)", "A");
   return instruction_ptr;
 }
 
-int LoadDecAHL(handlers::ExecutorContext* context) {
+int LoadDecAHL(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(context->cpu->rHL);
   context->cpu->rHL--;
@@ -1391,7 +1462,7 @@ int LoadDecAHL(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int LoadDecHLA(handlers::ExecutorContext* context) {
+int LoadDecHLA(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   context->memory_mapper->Write(context->cpu->rHL, context->cpu->flag_struct.rA);
   context->cpu->rHL--;
@@ -1400,7 +1471,7 @@ int LoadDecHLA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int LoadIncAHL(handlers::ExecutorContext* context) {
+int LoadIncAHL(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   context->cpu->flag_struct.rA = context->memory_mapper->Read(context->cpu->rHL);
   context->cpu->rHL++;
@@ -1409,7 +1480,7 @@ int LoadIncAHL(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int LoadIncHLA(handlers::ExecutorContext* context) {
+int LoadIncHLA(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   context->memory_mapper->Write(context->cpu->rHL, context->cpu->flag_struct.rA);
   context->cpu->rHL++;
@@ -1418,51 +1489,45 @@ int LoadIncHLA(handlers::ExecutorContext* context) {
   return instruction_ptr;
 }
 
-int LoadHNA(handlers::ExecutorContext* context) {
+int LoadHNA(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   MemoryMapper* memory_mapper = context->memory_mapper;
-  unsigned short address = 0xFF00 + GetParameterValue(memory_mapper, instruction_ptr);
-  unsigned char value = context->cpu->flag_struct.rA;
+  uint16_t address = 0xFF00 + GetParameterValue8Bit(instruction.arg1, context->cpu);
+  uint8_t value = context->cpu->flag_struct.rA;
   memory_mapper->Write(address, value);
-  LOG(INFO) << std::hex << 0x0000 + value << " was written to " << std::hex << address;
   
   // PrintInstruction(context->frame_factory, "LD", "(0xff00 +" + Hex(GetParameterValue(memory_mapper, instruction_ptr)) + ")", "A");
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int LoadHAN(handlers::ExecutorContext* context) {
+int LoadHAN(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   MemoryMapper* memory_mapper = context->memory_mapper;
-  context->cpu->flag_struct.rA = memory_mapper->Read(0xFF00 + GetParameterValue(memory_mapper, instruction_ptr));
+  context->cpu->flag_struct.rA = memory_mapper->Read(0xFF00 + GetParameterValue8Bit(instruction.arg2, context->cpu));
   
   // PrintInstruction(context->frame_factory, "LD", "A", "(0xff00 + " + Hex(GetParameterValue(memory_mapper, instruction_ptr)) + ")");
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int LoadNN(handlers::ExecutorContext* context) {
+int LoadNN(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  *opcode.reg1 = GetParameterValue16(context->memory_mapper, instruction_ptr);
+  *GetRegister16Bit(instruction.arg1, context->cpu) = GetParameterValue16Bit(instruction.arg1, context->cpu);
   
   // PrintInstruction(context->frame_factory, "LD", RegisterName16(opcode.reg1, context->cpu), Hex(GetParameterValue16(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 2;
+  return instruction_ptr;
 }
 
-int LoadSPHL(handlers::ExecutorContext* context) {
+int LoadSPHL(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
   context->cpu->rSP = context->cpu->rHL;
   
   // PrintInstruction(context->frame_factory, "LD", "SP", "HL");
   return instruction_ptr;
 }
 
-int LoadHLSP(handlers::ExecutorContext* context) {
+int LoadHLSP(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  char val = static_cast<char>(GetParameterValue(context->memory_mapper, instruction_ptr));
+  char val = GetParameterValue8Bit(instruction.arg2, context->cpu);
   if (val < 0) {
     context->cpu->flag_struct.rF.H = DoesHalfBorrow8(context->cpu->rSP, val);
     context->cpu->flag_struct.rF.C = DoesBorrow8(context->cpu->rSP, val);
@@ -1475,33 +1540,31 @@ int LoadHLSP(handlers::ExecutorContext* context) {
   SetNFlag(false, context->cpu);
   
   // PrintInstruction(context->frame_factory, "LDHL", "SP", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
-  return instruction_ptr + 1;
+  return instruction_ptr;
 }
 
-int LoadNNSP(handlers::ExecutorContext* context) {
+int LoadNNSP(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   MemoryMapper* memory_mapper = context->memory_mapper;
-  unsigned short address = GetParameterValue16(memory_mapper, instruction_ptr);
-  unsigned char lsb = (unsigned char)(0x00FF & context->cpu->rSP);
-  unsigned char msb = (unsigned char)((0xFF00 & context->cpu->rSP) >> 8);
+  uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  uint8_t lsb = (uint8_t)(0x00FF & context->cpu->rSP);
+  uint8_t msb = (uint8_t)((0xFF00 & context->cpu->rSP) >> 8);
   memory_mapper->Write(address++, lsb);
   memory_mapper->Write(address, msb);
   // PrintInstruction(context->frame_factory, "LD", "(" + Hex(GetParameterValue16(memory_mapper, instruction_ptr)) + ")", "SP");
-  return instruction_ptr + 2;
+  return instruction_ptr;
 }
 
-int Push(handlers::ExecutorContext* context) {
+int Push(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  PushRegister(context->memory_mapper, context->cpu, opcode.reg1);
+  PushRegister(context->memory_mapper, context->cpu, GetRegister16Bit(instruction.arg1, context->cpu));
   // PrintInstruction(context->frame_factory, "Push", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
 
-int Pop(handlers::ExecutorContext* context) {
+int Pop(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  Opcode opcode = *context->opcode;
-  PopRegister(context->memory_mapper, context->cpu, opcode.reg1);
+  PopRegister(context->memory_mapper, context->cpu, GetRegister16Bit(instruction.arg1, context->cpu));
   // PrintInstruction(context->frame_factory, "Pop", RegisterName16(opcode.reg1, context->cpu));
   return instruction_ptr;
 }
@@ -1512,5 +1575,5 @@ int HaltAndCatchFire(handlers::ExecutorContext*) {
   LOG(FATAL) << "Setting memory on fire.";
 }
 
-} // namespace handlers
+} // namespace opcode_executor
 } // namespace back_end

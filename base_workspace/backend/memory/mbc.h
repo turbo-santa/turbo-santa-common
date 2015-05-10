@@ -65,6 +65,10 @@ class MBC : public MemorySegment {
     static const unsigned short kROMBank0Size = 0x4000;
     static const unsigned short kROMBankNSize = 0x4000;
     static const unsigned short kRAMBankNSize = 0x2000;
+    static const unsigned short kROMMinAddress = 0x0000;
+    static const unsigned short kROMMaxAddress = 0x7fff;
+    static const unsigned short kRAMMinAddress = 0xa000;
+    static const unsigned short kRAMMaxAddress = 0xbfff;
 
     enum CartridgeType {
       ROM_ONLY = 0x00,
@@ -80,7 +84,7 @@ class MBC : public MemorySegment {
     virtual void Write(unsigned short address, unsigned char value) = 0;
 
     virtual bool InRange(unsigned short address) { 
-      return (0x0000 <= address && address <= 0x7fff) || (0xa000 <= address && address <= 0xbfff);
+      return (kROMMinAddress <= address && address <= kROMMaxAddress) || (kRAMMinAddress <= address && address <= kRAMMaxAddress);
     }
     
   protected:

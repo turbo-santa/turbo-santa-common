@@ -23,19 +23,19 @@ const RawInstructionBase& ROMReader::raw_instruction(uint16_t address, ValueWidt
     case ValueWidth::BIT_0:
       LOG(FATAL) << "Cannot have instruction of length zero.";
     case ValueWidth::BIT_8:
-      raw_instruction_8bit_.set_ptr(rom_.data() + address);
+      raw_instruction_8bit_.set_data(rom_, address);
       return raw_instruction_8bit_;
     case ValueWidth::BIT_16:
       if (address + 1 >= rom_.size()) {
         LOG(FATAL) << "Instruction should be 16 bits wide but only one byte remains.";
       }
-      raw_instruction_16bit_.set_ptr(rom_.data() + address);
+      raw_instruction_16bit_.set_data(rom_, address);
       return raw_instruction_16bit_;
     case ValueWidth::BIT_24:
       if (address + 2 >= rom_.size()) {
         LOG(FATAL) << "Instruction should be 24 bits wide but fewer remain.";
       }
-      raw_instruction_24bit_.set_ptr(rom_.data() + address);
+      raw_instruction_24bit_.set_data(rom_, address);
       return raw_instruction_24bit_;
   }
 }

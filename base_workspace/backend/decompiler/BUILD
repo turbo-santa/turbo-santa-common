@@ -14,9 +14,19 @@ cc_library(
 cc_library(
   name = "instruction_factory",
   hdrs = ["instruction_factory.h"],
-  srcs = ["instruction_factory.cc"],
   deps = [
     ":instruction",
+    ":raw_instruction",
+  ],
+)
+
+cc_library(
+  name = "instruction_factory_helpers",
+  hdrs = ["instruction_factory_helpers.h"],
+  srcs = ["instruction_factory_helpers.cc"],
+  deps = [
+    ":instruction",
+    ":instruction_factory",
     ":raw_instruction",
   ],
 )
@@ -29,6 +39,7 @@ cc_library(
     "//submodules:glog",
     ":instruction",
     ":instruction_factory",
+    ":instruction_factory_helpers",
     ":raw_instruction",
   ],
 )

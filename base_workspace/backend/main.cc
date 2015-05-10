@@ -225,6 +225,8 @@ int main(int argc, char* argv[]) {
     return -1;
   }
 
+  google::InstallFailureSignalHandler();
+
   TerminalScreen terminal_screen;
 //   GreatLibrary great_library;
   vector<unsigned char> rom = ReadROM(argv[1]);

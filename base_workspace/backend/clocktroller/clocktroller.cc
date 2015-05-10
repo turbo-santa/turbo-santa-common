@@ -8,7 +8,7 @@ namespace clocktroller {
 using std::unique_ptr;
 using graphics::GraphicsController;
 using memory::MemoryMapper;
-using handlers::OpcodeExecutor;
+using opcode_executor::OpcodeExecutor;
 
 void Clocktroller::Init(unsigned char* rom, long length) {
   unique_ptr<MemoryMapper> memory_mapper = unique_ptr<MemoryMapper>(new MemoryMapper());

@@ -33,7 +33,7 @@ class Clocktroller {
   memory::DMATransferModule dma_transfer_module_;
   memory::UnimplementedModule unimplemented_module_;
   graphics::Screen* screen_;
-  std::unique_ptr<handlers::OpcodeExecutor> opcode_executor_;
+  std::unique_ptr<opcode_executor::OpcodeExecutor> opcode_executor_;
   std::unique_ptr<graphics::GraphicsController> graphics_controller_;
   bool is_running_;
   std::atomic<bool> is_paused_;

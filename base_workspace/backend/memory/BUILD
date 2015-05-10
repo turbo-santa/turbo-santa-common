@@ -130,6 +130,17 @@ cc_library(
 )
 
 cc_library(
+  name = "memory_mapper_rom_bridge",
+  hdrs = ["memory_mapper_rom_bridge.h"],
+  deps = [
+    "//backend/decompiler:rom_bridge",
+    ":mbc",
+    ":memory_mapper",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
   name = "memory_mapper",
   hdrs = ["memory_mapper.h"],
   srcs = ["memory_mapper.cc"],

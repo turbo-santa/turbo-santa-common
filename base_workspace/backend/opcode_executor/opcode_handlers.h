@@ -1,147 +1,148 @@
-#ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
-#define TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
+#ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_HANDLERS_H_
+#define TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_HANDLERS_H_
 
 #include <memory>
 
+#include "backend/decompiler/instruction.h"
 #include "backend/memory/memory_mapper.h"
-#include "backend/opcode_executor/opcodes.h"
+#include "backend/opcode_executor/executor_context.h"
 #include "backend/opcode_executor/registers.h"
 
 namespace back_end {
-namespace handlers {
+namespace opcode_executor {
 
 // Helper functions.
 void PushRegister(memory::MemoryMapper* memory_mapper,
                   registers::GB_CPU* cpu, unsigned short* reg);
 
 // 8 Bit ALU
-int Add8Bit(handlers::ExecutorContext* context);
-int Add8BitAddress(handlers::ExecutorContext* context);
-int Add8BitLiteral(handlers::ExecutorContext* context);
-int ADC8Bit(handlers::ExecutorContext* context);
-int ADC8BitAddress(handlers::ExecutorContext* context);
-int ADC8BitLiteral(handlers::ExecutorContext* context);
-int Sub8Bit(handlers::ExecutorContext* context);
-int Sub8BitAddress(handlers::ExecutorContext* context);
-int Sub8BitLiteral(handlers::ExecutorContext* context);
-int SBC8Bit(handlers::ExecutorContext* context);
-int SBC8BitAddress(handlers::ExecutorContext* context);
-int SBC8BitLiteral(handlers::ExecutorContext* context);
-int And8Bit(handlers::ExecutorContext* context);
-int And8BitAddress(handlers::ExecutorContext* context);
-int And8BitLiteral(handlers::ExecutorContext* context);
-int Or8Bit(handlers::ExecutorContext* context);
-int Or8BitAddress(handlers::ExecutorContext* context);
-int Or8BitLiteral(handlers::ExecutorContext* context);
-int Xor8Bit(handlers::ExecutorContext* context);
-int Xor8BitAddress(handlers::ExecutorContext* context);
-int Xor8BitLiteral(handlers::ExecutorContext* context);
-int Cp8Bit(handlers::ExecutorContext* context);
-int Cp8BitAddress(handlers::ExecutorContext* context);
-int Cp8BitLiteral(handlers::ExecutorContext* context);
-int Inc8Bit(handlers::ExecutorContext* context);
-int Inc8BitAddress(handlers::ExecutorContext* context);
-int Dec8Bit(handlers::ExecutorContext* context);
-int Dec8BitAddress(handlers::ExecutorContext* context);
+int Add8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Add8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Add8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int ADC8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int ADC8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int ADC8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Sub8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Sub8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Sub8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SBC8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SBC8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SBC8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int And8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int And8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int And8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Or8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Or8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Or8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Xor8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Xor8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Xor8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Cp8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Cp8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Cp8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Inc8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Inc8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Dec8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Dec8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
   
 // 16 Bit ALU
-int Add16Bit(handlers::ExecutorContext* context);
-int AddSPLiteral(handlers::ExecutorContext* context);
-int Inc16Bit(handlers::ExecutorContext* context);
-int Dec16Bit(handlers::ExecutorContext* context);
+int Add16Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int AddSPLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Inc16Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Dec16Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // Miscelaneous
-int Swap(handlers::ExecutorContext* context);
-int SwapAddress(handlers::ExecutorContext* context);
-int DAA(handlers::ExecutorContext* context);
-int CPL(handlers::ExecutorContext* context);
-int CCF(handlers::ExecutorContext* context);
-int SCF(handlers::ExecutorContext* context);
-int NOP(handlers::ExecutorContext* context);
-int Halt(handlers::ExecutorContext* context);
-int Stop(handlers::ExecutorContext* context);
-int DI(handlers::ExecutorContext* context);
-int EI(handlers::ExecutorContext* context);
+int Swap(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SwapAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int DAA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int CPL(const decompiler::Instruction& instruction, ExecutorContext* context);
+int CCF(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SCF(const decompiler::Instruction& instruction, ExecutorContext* context);
+int NOP(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Halt(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Stop(const decompiler::Instruction& instruction, ExecutorContext* context);
+int DI(const decompiler::Instruction& instruction, ExecutorContext* context);
+int EI(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // Rotates & Shifts
-int RLCA(handlers::ExecutorContext* context);
-int RLA(handlers::ExecutorContext* context);
-int RRCA(handlers::ExecutorContext* context);
-int RRA(handlers::ExecutorContext* context);
-int RLC(handlers::ExecutorContext* context);
-int RLCAddress(handlers::ExecutorContext* context);
-int RL(handlers::ExecutorContext* context);
-int RLAddress(handlers::ExecutorContext* context);
-int RRC(handlers::ExecutorContext* context);
-int RRCAddress(handlers::ExecutorContext* context);
-int RR(handlers::ExecutorContext* context);
-int RRAddress(handlers::ExecutorContext* context);
-int SLA(handlers::ExecutorContext* context);
-int SLAAddress(handlers::ExecutorContext* context);
-int SRA(handlers::ExecutorContext* context);
-int SRAAddress(handlers::ExecutorContext* context);
-int SRL(handlers::ExecutorContext* context);
-int SRLAddress(handlers::ExecutorContext* context);
+int RLCA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RLA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RRCA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RRA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RLC(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RLCAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RL(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RLAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RRC(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RRCAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RR(const decompiler::Instruction& instruction, ExecutorContext* context);
+int RRAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SLA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SLAAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SRA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SRAAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SRL(const decompiler::Instruction& instruction, ExecutorContext* context);
+int SRLAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // Bit operators
-int Bit(handlers::ExecutorContext* context);
-int BitAddress(handlers::ExecutorContext* context);
-int Set(handlers::ExecutorContext* context);
-int Res(handlers::ExecutorContext* context);
+int Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Set(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Res(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // Jumps
-int Jump(handlers::ExecutorContext* context);
-int JumpConditional(handlers::ExecutorContext* context);
-int JumpHL(handlers::ExecutorContext* context);
-int JumpRelative(handlers::ExecutorContext* context);
-int JumpRelativeConditional(handlers::ExecutorContext* context);
+int Jump(const decompiler::Instruction& instruction, ExecutorContext* context);
+int JumpConditional(const decompiler::Instruction& instruction, ExecutorContext* context);
+int JumpHL(const decompiler::Instruction& instruction, ExecutorContext* context);
+int JumpRelative(const decompiler::Instruction& instruction, ExecutorContext* context);
+int JumpRelativeConditional(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // Calls
-int Call(handlers::ExecutorContext* context);
-int CallConditional(handlers::ExecutorContext* context);
+int Call(const decompiler::Instruction& instruction, ExecutorContext* context);
+int CallConditional(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // Restart
-int Restart(handlers::ExecutorContext* context);
+int Restart(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // Returns
-int Return(handlers::ExecutorContext* context);
-int ReturnConditional(handlers::ExecutorContext* context);
-int ReturnInterrupt(handlers::ExecutorContext* context);
+int Return(const decompiler::Instruction& instruction, ExecutorContext* context);
+int ReturnConditional(const decompiler::Instruction& instruction, ExecutorContext* context);
+int ReturnInterrupt(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // 8-Bit Loads
-int LoadN(handlers::ExecutorContext* context);
-int LoadRR8Bit(handlers::ExecutorContext* context);
-int LoadRR8BitAddress(handlers::ExecutorContext* context);
-int LoadRR8BitIntoAddress(handlers::ExecutorContext* context);
-int Load8BitLiteral(handlers::ExecutorContext* context);
-int LoadRR16Bit(handlers::ExecutorContext* context);
-int LoadAN(handlers::ExecutorContext* context);
-int LoadAN16BitLiteral(handlers::ExecutorContext* context);
-int LoadAN8BitLiteral(handlers::ExecutorContext* context);
-int LoadNA(handlers::ExecutorContext* context);
-int LoadNAAddress(handlers::ExecutorContext* context);
-int LoadNA16BitLiteral(handlers::ExecutorContext* context);
-int LoadAC(handlers::ExecutorContext* context);
-int LoadCA(handlers::ExecutorContext* context);
-int LoadDecAHL(handlers::ExecutorContext* context);
-int LoadDecHLA(handlers::ExecutorContext* context);
-int LoadIncAHL(handlers::ExecutorContext* context);
-int LoadIncHLA(handlers::ExecutorContext* context);
-int LoadHNA(handlers::ExecutorContext* context);
-int LoadHAN(handlers::ExecutorContext* context);
+int LoadN(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadRR8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadRR8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadRR8BitIntoAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Load8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadRR16Bit(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadAN(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadAN16BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadAN8BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadNA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadNAAddress(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadNA16BitLiteral(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadAC(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadCA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadDecAHL(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadDecHLA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadIncAHL(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadIncHLA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadHNA(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadHAN(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // 16-Bit Loads
-int LoadNN(handlers::ExecutorContext* context);
-int LoadSPHL(handlers::ExecutorContext* context);
-int LoadHLSP(handlers::ExecutorContext* context);
-int LoadNNSP(handlers::ExecutorContext* context);
-int Push(handlers::ExecutorContext* context);
-int Pop(handlers::ExecutorContext* context);
+int LoadNN(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadSPHL(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadHLSP(const decompiler::Instruction& instruction, ExecutorContext* context);
+int LoadNNSP(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Push(const decompiler::Instruction& instruction, ExecutorContext* context);
+int Pop(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 // Bonus
-int HaltAndCatchFire(handlers::ExecutorContext* context);
+int HaltAndCatchFire(const decompiler::Instruction& instruction, ExecutorContext* context);
 
 } // namespace back_end
-} // namespace handlers
+} // namespace opcode_executor
 
-#endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_HANDLERS_H_
+#endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_HANDLERS_H_

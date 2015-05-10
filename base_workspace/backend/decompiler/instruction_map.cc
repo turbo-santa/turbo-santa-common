@@ -1,6 +1,7 @@
 #include "backend/decompiler/instruction_map.h"
 
 #include <vector>
+#include "instruction_factory_helpers.h"
 #include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {

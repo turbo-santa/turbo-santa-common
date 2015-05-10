@@ -1,33 +1,21 @@
-#ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_MAP_H_
-#define TURBO_SANTA_COMMON_BACK_END_OPCODE_MAP_H_
+#ifndef TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_MAP_H_
+#define TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_MAP_H_
 
+#include <cstdint>
 #include <vector>
 #include <map>
 
-#include "backend/opcode_executor/opcodes.h"
+#include "backend/decompiler/instruction.h"
+#include "backend/opcode_executor/executor_context.h"
 #include "backend/opcode_executor/opcode_handlers.h"
-#include "backend/opcode_executor/registers.h"
 
 namespace back_end {
-namespace opcodes {
+namespace opcode_executor {
 
-extern unsigned char* rA; 
-extern unsigned char* rB; 
-extern unsigned char* rC; 
-extern unsigned char* rD; 
-extern unsigned char* rE; 
-extern unsigned char* rF; 
-extern unsigned char* rH; 
-extern unsigned char* rL; 
-extern unsigned char* rAF;
-extern unsigned char* rBC;
-extern unsigned char* rDE;
-extern unsigned char* rHL;
-extern unsigned char* rPC;
-extern unsigned char* rSP;
+typedef std::function<int(const decompiler::Instruction&, ExecutorContext*)> OpcodeHandler;
 
-std::map<unsigned short, Opcode> CreateOpcodeMap(registers::GB_CPU* cpu);
+std::map<uint16_t, OpcodeHandler> CreateOpcodeMap();
 
 } // namespace opcodes
 } // namespace back_end
-#endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_MAP_H_
+#endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_MAP_H_
