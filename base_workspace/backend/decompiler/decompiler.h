@@ -29,6 +29,8 @@ class Decompiler {
     addresses_jumped_to_.insert(address);
   }
 
+  bool LookUp(uint16_t address, Instruction* instruction);
+
   void Decompile();
 
   void PrintToStream(std::ostream* out_stream);

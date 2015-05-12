@@ -32,7 +32,12 @@ void Clocktroller::Init(unsigned char* rom, long length) {
   graphics_controller_->Init();
   memory_mapper->RegisterModule(*graphics_controller_);
 
-  opcode_executor_ = unique_ptr<OpcodeExecutor>(new OpcodeExecutor(std::move(memory_mapper), &primary_flags_));
+  opcode_executor_ = unique_ptr<OpcodeExecutor>(
+      new OpcodeExecutor(std::move(memory_mapper), 
+                         &primary_flags_, 
+                         mbc_.internal_rom_flag()
+                         ));
+  opcode_executor_->Init();
 }
 
 void Clocktroller::Run() {

@@ -53,14 +53,13 @@ int main(int argc, char* argv[]) {
   VectorROMBridge bridge(rom.get());
   factory.set_rom(&bridge);
   factory.set_type(DecompilerFactory::FORMATTED_ROM);
-  Decompiler decompiler = factory.Build();
-  decompiler.AddPathStart(0);
-  decompiler.Decompile();
+  unique_ptr<Decompiler> decompiler = factory.Build();
+  decompiler->Decompile();
 
   std::filebuf fb;
   fb.open(argv[2], std::ios::out);
   ostream file(&fb);
-  decompiler.PrintToStream(&file);
+  decompiler->PrintToStream(&file);
   fb.close();
   return 0;
 }

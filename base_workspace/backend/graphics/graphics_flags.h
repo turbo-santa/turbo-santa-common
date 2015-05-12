@@ -19,6 +19,15 @@ class LCDControl : public memory::Flag {
   bool sprite_size() { return bit(2); }
   bool sprite_display_enable() { return bit(1); }
   bool bg_display() { return bit(0); }
+
+  void Write(unsigned short address, unsigned char value) override {
+    Flag::Write(address, value);
+    if (lcd_display_enable()) {
+      LOG(INFO) << "LCD enabled";
+    } else {
+      LOG(INFO) << "LCD disabled";
+    }
+  }
 };
 
 class LCDStatus : public memory::Flag {

@@ -18,37 +18,37 @@ class DecompilerFactory {
     UNFORMATTED_ROM,
   };
 
-  Decompiler Build() {
+  std::unique_ptr<Decompiler> Build() {
     uint8_t rom_type = 0x00;
     if (decompiler_type_ == FORMATTED_ROM) {
       rom_type = rom_->at(0x0147);
     }
-    Decompiler decompiler(*rom_, rom_type);
+    Decompiler* decompiler = new Decompiler(*rom_, rom_type);
     switch (decompiler_type_) {
       case FORMATTED_ROM:
         // Restart vectors.
-        decompiler.AddPathStart(0x0000);
-        decompiler.AddPathStart(0x0008);
-        decompiler.AddPathStart(0x0010);
-        decompiler.AddPathStart(0x0018);
-        decompiler.AddPathStart(0x0020);
-        decompiler.AddPathStart(0x0028);
-        decompiler.AddPathStart(0x0030);
-        decompiler.AddPathStart(0x0038);
+        decompiler->AddPathStart(0x0000);
+        decompiler->AddPathStart(0x0008);
+        decompiler->AddPathStart(0x0010);
+        decompiler->AddPathStart(0x0018);
+        decompiler->AddPathStart(0x0020);
+        decompiler->AddPathStart(0x0028);
+        decompiler->AddPathStart(0x0030);
+        decompiler->AddPathStart(0x0038);
         // Interrupt vectors.
-        decompiler.AddPathStart(0x0040);
-        decompiler.AddPathStart(0x0048);
-        decompiler.AddPathStart(0x0050);
-        decompiler.AddPathStart(0x0058);
-        decompiler.AddPathStart(0x0060);
+        decompiler->AddPathStart(0x0040);
+        decompiler->AddPathStart(0x0048);
+        decompiler->AddPathStart(0x0050);
+        decompiler->AddPathStart(0x0058);
+        decompiler->AddPathStart(0x0060);
         // Actual start.
-        decompiler.AddPathStart(0x0100);
+        decompiler->AddPathStart(0x0100);
         break;
       case UNFORMATTED_ROM:
-        decompiler.AddPathStart(0x0000);
+        decompiler->AddPathStart(0x0000);
         break;
     }
-    return decompiler;
+    return std::unique_ptr<Decompiler>(decompiler);
   }
 
   void set_rom(const ROMBridge* rom) { rom_ = rom; }

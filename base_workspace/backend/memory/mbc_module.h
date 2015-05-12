@@ -47,8 +47,10 @@ class MBCModule : public Module {
   void Init(unsigned char* program_rom, long size) {
     mbc_.Init(program_rom, size);
     add_memory_segment(&mbc_);
-    add_flag(mbc_.internal_rom_flag());
+    add_flag(internal_rom_flag());
   }
+
+  Flag* internal_rom_flag() { return mbc_.internal_rom_flag(); }
 
  private:
   MBCWrapper mbc_;

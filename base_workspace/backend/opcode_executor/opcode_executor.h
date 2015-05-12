@@ -14,6 +14,7 @@
 
 namespace back_end {
 namespace decompiler {
+class Decompiler;
 class ROMReader;
 } // namespace decompiler
 } // namespace back_end
@@ -24,28 +25,35 @@ namespace opcode_executor {
 class OpcodeExecutor {
  public:
   OpcodeExecutor(std::unique_ptr<memory::MemoryMapper> memory_mapper, 
-                 memory::PrimaryFlags* primary_flags);
+                 memory::PrimaryFlags* primary_flags,
+                 memory::Flag* internal_rom_flag);
 
   ~OpcodeExecutor();
 
+  void Init();
+
   int ReadInstruction();
 
-  int OldReadInstruction();
+  bool ValidateInstruction(const decompiler::Instruction& instruction);
 
  private:
   bool CheckInterrupts();
+  bool FetchInstruction(uint16_t address, decompiler::Instruction* instruction);
   void HandleInterrupts();
+  void SwitchToExternalROM();
     
   registers::GB_CPU cpu_;
   std::unique_ptr<memory::MemoryMapper> memory_mapper_;
   memory::MemoryMapperROMBridge bridge_;
-  std::unique_ptr<decompiler::ROMReader> rom_reader_;
+  std::unique_ptr<decompiler::Decompiler> decompiler_;
   std::map<uint16_t, OpcodeHandler> opcode_map_ = CreateOpcodeMap();
   // This is a special flag/register that can only be set or unset and can
   // only be accessed by the user using the EI, DI or RETI instructions.
   bool interrupt_master_enable_ = false;
+  bool using_internal_rom_ = true;
   memory::InterruptEnable* interrupt_enable_;
   memory::InterruptFlag* interrupt_flag_;
+  memory::Flag* internal_rom_flag_;
 };
 
 } // namespace opcode_executor

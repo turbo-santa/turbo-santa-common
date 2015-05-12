@@ -16,8 +16,6 @@ using registers::GB_CPU;
 using memory::MemoryMapper;
 using std::string;
 
-
-
 uint16_t* GetRegister16Bit(Register reg, GB_CPU* cpu) {
   switch (reg) {
     case Register::A:
@@ -1201,12 +1199,25 @@ void PopRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, uint16_t* reg) {
 int Call(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   GB_CPU* cpu = context->cpu;
-  uint16_t* rPC = &cpu->rPC;
 
   uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
-  *rPC += 2; // Must take the parameter into account.
   // context->call_stack->Push({context->frame_factory->current_timestamp(), *rPC});
-  PushRegister(context->memory_mapper, cpu, rPC);
+  PushRegister(context->memory_mapper, cpu, &cpu->rPC);
+
+  LOG(INFO) << "Calling address: " << std::hex << address;
+  instruction_ptr = address;
+  
+  // PrintInstruction(context->frame_factory, "CALL", Hex(address));
+  return instruction_ptr;
+}
+
+int CallConditionalImpl(const decompiler::Instruction& instruction, ExecutorContext* context) {
+  int instruction_ptr = *context->instruction_ptr;
+  GB_CPU* cpu = context->cpu;
+
+  uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+  // context->call_stack->Push({context->frame_factory->current_timestamp(), *rPC});
+  PushRegister(context->memory_mapper, cpu, &cpu->rPC);
 
   LOG(INFO) << "Calling address: " << std::hex << address;
   instruction_ptr = address;
@@ -1221,25 +1232,25 @@ int CallConditional(const decompiler::Instruction& instruction, ExecutorContext*
     case 0xC4:
       // PrintInstruction(context->frame_factory, "CALL", "NZ", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.Z) {
-        return Call(instruction, context);
+        return CallConditionalImpl(instruction, context);
       }
       return instruction_ptr;
     case 0xCC:
       // PrintInstruction(context->frame_factory, "CALL", "Z", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.Z) {
-        return Call(instruction, context);
+        return CallConditionalImpl(instruction, context);
       }
       return instruction_ptr;
     case 0xD4:
       // PrintInstruction(context->frame_factory, "CALL", "NC", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (!context->cpu->flag_struct.rF.C) {
-        return Call(instruction, context);
+        return CallConditionalImpl(instruction, context);
       }
       return instruction_ptr;
     case 0xDC:
       // PrintInstruction(context->frame_factory, "CALL", "C", Hex(GetParameterValue(context->memory_mapper, instruction_ptr)));
       if (context->cpu->flag_struct.rF.C) {
-        return Call(instruction, context);
+        return CallConditionalImpl(instruction, context);
       }
       return instruction_ptr;
   }
@@ -1511,7 +1522,7 @@ int LoadHAN(const decompiler::Instruction& instruction, ExecutorContext* context
 
 int LoadNN(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  *GetRegister16Bit(instruction.arg1, context->cpu) = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  *GetRegister16Bit(instruction.arg1, context->cpu) = GetParameterValue16Bit(instruction.arg2, context->cpu);
   
   // PrintInstruction(context->frame_factory, "LD", RegisterName16(opcode.reg1, context->cpu), Hex(GetParameterValue16(context->memory_mapper, instruction_ptr)));
   return instruction_ptr;

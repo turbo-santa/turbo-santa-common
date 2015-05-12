@@ -130,7 +130,6 @@ string InstructionToString(const map<Opcode, string>& opcode_map,
   }
   return stream.str();
 }
-
 } // namespace
 
 void Decompiler::Decompile() {
@@ -147,6 +146,16 @@ void Decompiler::Decompile() {
     }
   }
   LOG(INFO) << "Decompilation complete.";
+}
+
+bool Decompiler::LookUp(uint16_t address, Instruction* instruction) {
+  auto iter = address_opcode_map_.find(address);
+  if (iter != address_opcode_map_.end()) {
+    *instruction = iter->second;
+    return true;
+  } else {
+    return false;
+  }
 }
 
 void Decompiler::PrintToStream(ostream* out_stream) {

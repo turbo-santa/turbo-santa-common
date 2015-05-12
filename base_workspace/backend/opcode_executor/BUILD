@@ -25,7 +25,8 @@ cc_library(
   hdrs = ["opcode_executor.h"],
   srcs = ["opcode_executor.cc"],
   deps = [
-    "//backend/decompiler:rom_reader",
+    "//backend/decompiler:decompiler",
+    "//backend/decompiler:decompiler_factory",
     "//backend/memory:interrupt_flag",
     "//backend/memory:memory_mapper",
     "//backend/memory:memory_mapper_rom_bridge",
