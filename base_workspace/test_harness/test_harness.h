@@ -19,13 +19,13 @@ class TestHarness : public ::testing::Test {
         unsigned int ExecuteInstruction(unsigned char instruction, unsigned short value);
         unsigned int ExecuteInstruction(unsigned char instruction, unsigned char value);
         ::testing::AssertionResult AssertRegisterAdapter(
-                const std::string& not_used,
+                const std::string&,
                 std::vector<RegisterNameValuePair>& register_diff) {
             return AssertRegisterState(register_diff);
         }
         ::testing::AssertionResult AssertRegisterState(const std::vector<RegisterNameValuePair>& register_diff);
         ::testing::AssertionResult AssertMemoryAdapter(
-                const std::string& not_used,
+                const std::string&,
                 const std::vector<MemoryAddressValuePair>& memory_diff) {
             return AssertMemoryState(memory_diff);
         }
@@ -38,11 +38,11 @@ class TestHarness : public ::testing::Test {
         unsigned short instruction_ptr() { return parser_->cpu_.rPC; }
 
     protected:
-        TestHarness(back_end::handlers::OpcodeExecutor* parser) : parser_(parser) {}
+        TestHarness(back_end::opcode_executor::OpcodeExecutor* parser) : parser_(parser) {}
         virtual void TearDown() { ClearParser(); }
         // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
         // delete it when done.
-        back_end::handlers::OpcodeExecutor* parser_;
+        back_end::opcode_executor::OpcodeExecutor* parser_;
 
     private:
         bool VerifyCorrectInstruction(const std::vector<unsigned char>& instruction);

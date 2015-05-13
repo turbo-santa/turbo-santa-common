@@ -78,6 +78,17 @@ cc_library(
 )
 
 cc_library(
+  name = "dma_transfer",
+  hdrs = ["dma_transfer.h"],
+  deps = [
+    ":flags",
+    ":memory_mapper",
+    ":module",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
   name = "flag_container",
   hdrs = ["flag_container.h"],
   deps = [

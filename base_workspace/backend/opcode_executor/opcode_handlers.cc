@@ -2,7 +2,6 @@
 #include "backend/opcode_executor/opcode_executor.h"
 #include "backend/opcode_executor/opcodes.h"
 #include "submodules/glog/src/glog/logging.h"
-#include <ncurses.h>
 
 namespace back_end {
 namespace opcode_executor {
@@ -1582,7 +1581,7 @@ int Pop(const decompiler::Instruction& instruction, ExecutorContext* context) {
 
 int HaltAndCatchFire(handlers::ExecutorContext*) {
   // PrintInstruction(context->frame_factory, "HCF");
-  endwin();
+  // endwin();
   LOG(FATAL) << "Setting memory on fire.";
 }
 

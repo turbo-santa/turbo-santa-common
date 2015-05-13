@@ -7,6 +7,10 @@
 #include "backend/memory/memory_segment.h"
 #include "backend/memory/module.h"
 
+namespace test_harness {
+class TestHarness;
+} // namespace test_harness
+
 namespace back_end {
 namespace memory {
 
@@ -17,8 +21,11 @@ class MemoryMapper {
   void RegisterModule(const Module& module);
 
  private:
+  void ForceWrite(unsigned short address, unsigned char value);
   FlagContainer flag_container_;
   std::vector<MemorySegment*> memory_segments_ = std::vector<MemorySegment*>(1, &flag_container_);
+
+  friend test_harness::TestHarness;
 };
 
 } // namespace memory

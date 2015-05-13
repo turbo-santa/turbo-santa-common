@@ -54,6 +54,8 @@ class OpcodeExecutor {
   memory::InterruptEnable* interrupt_enable_;
   memory::InterruptFlag* interrupt_flag_;
   memory::Flag* internal_rom_flag_;
+
+  friend test_harness::TestHarness;
 };
 
 } // namespace opcode_executor

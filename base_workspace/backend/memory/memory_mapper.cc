@@ -42,5 +42,9 @@ void MemoryMapper::Write(unsigned short address, unsigned char value) {
   Lookup(memory_segments_, address)->Write(address, value);
 }
 
+void MemoryMapper::ForceWrite(unsigned short address, unsigned char value) {
+  Lookup(memory_segments_, address)->ForceWrite(address, value);
+}
+
 } // namespace memory
 } // namespace back_end

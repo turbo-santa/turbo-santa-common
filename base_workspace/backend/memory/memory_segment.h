@@ -17,6 +17,10 @@ class MemorySegment {
 
   // Write this value to this memory address.
   virtual void Write(unsigned short address, unsigned char value) = 0;
+
+  virtual void ForceWrite(unsigned short address, unsigned char value) {
+    Write(address, value);
+  }
 };
 
 class ContiguousMemorySegment : public MemorySegment {

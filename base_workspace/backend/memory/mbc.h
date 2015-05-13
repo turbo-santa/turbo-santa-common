@@ -13,8 +13,8 @@ class TestHarness;
 namespace back_end {
 namespace clocktroller {
 class ClocktrollerTest;
-}
-}
+} // namespace clocktroller
+} // namespace back_end
 
 namespace back_end {
 namespace memory {
@@ -90,7 +90,6 @@ class MBC : public MemorySegment {
   protected:
     virtual unsigned short lower_address_bound() { return 0x0000; }
     virtual unsigned short upper_address_bound() { return 0xbfff; }
-    virtual void ForceWrite(unsigned short address, unsigned char value) = 0;
     friend class test_harness::TestHarness;
     friend class clocktroller::ClocktrollerTest;
 };
@@ -114,13 +113,12 @@ class NoMBC : public MBC {
 
   virtual unsigned char Read(unsigned short address);
   virtual void Write(unsigned short address, unsigned char value);
+  virtual void ForceWrite(unsigned short address, unsigned char value) override;
 
  protected:
   ROMBank rom_bank_0_;
   ROMBank rom_bank_1_;
   RAMBank ram_bank_0_;
-
-  virtual void ForceWrite(unsigned short address, unsigned char value);
 };
 
 class MBC1 : public MBC {
@@ -130,6 +128,7 @@ class MBC1 : public MBC {
 
     virtual unsigned char Read(unsigned short address);
     virtual void Write(unsigned short address, unsigned char value);
+    virtual void ForceWrite(unsigned short address, unsigned char value) override;
    
     // The documentation stated
     // that the gameboy game may change the ROM/RAM addressing mode at anytime
@@ -215,7 +214,6 @@ class MBC1 : public MBC {
 
   private:
     void SetRAMEnabled(unsigned char value);
-    virtual void ForceWrite(unsigned short address, unsigned char value);
     
     bool ram_enabled_ = true;
     BankModeRegister bank_mode_register_;

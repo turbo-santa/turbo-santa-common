@@ -8,6 +8,7 @@ cc_library(
     "//backend/graphics:graphics_controller",
     "//backend/graphics:screen",
     "//backend/memory:default_module",
+    "//backend/memory:dma_transfer",
     "//backend/memory:mbc_module",
     "//backend/memory:memory_mapper",
     "//backend/memory:primary_flags",

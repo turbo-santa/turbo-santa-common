@@ -72,6 +72,8 @@ flags = [
 '-I',
 '.',
 '-I',
+'submodules/googletest/include',
+'-I',
 './ClangCompleter',
 '-isystem',
 './tests/gmock/gtest',

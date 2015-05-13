@@ -1,6 +1,11 @@
-#include "backend/config.h"
 
 #include <vector>
+#include "backend/graphics/graphics_controller.h"
+#include "backend/graphics/screen.h"
+#include "backend/memory/default_module.h"
+#include "backend/memory/dma_transfer.h"
+#include "backend/memory/mbc_module.h"
+#include "backend/memory/unimplemented_module.h"
 #include "backend/opcode_executor/opcode_handlers.h"
 #include "backend/opcode_executor/opcode_executor.h"
 #include "backend/opcode_executor/opcodes.h"
@@ -14,18 +19,66 @@ namespace handlers {
   
 unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned char opcode);
 
+using std::unique_ptr;
 using std::vector;
-using handlers::OpcodeExecutor;
+using graphics::GraphicsController;
+using opcode_executor::OpcodeExecutor;
+using memory::DefaultModule;
+using memory::DMATransferModule;
+using memory::MBCModule;
+using memory::MemoryMapper;
+using memory::PrimaryFlags;
+using memory::UnimplementedModule;
 using Register = test_harness::RegisterNameValuePair;
 using Memory = test_harness::MemoryAddressValuePair;
 
-// The fixture gets instantiated once per test case. We would like to reuse the
-// OpcodeExecutor. Also, this will get cleaned up when the test is over.
-OpcodeExecutor* parser = new OpcodeExecutor();
+class NullScreen : public graphics::Screen {
+ public:
+  virtual void Draw(const graphics::ScreenRaster&) {}
+};
+
+OpcodeExecutor* BuildOpcodeExecutor() {
+  unique_ptr<MemoryMapper> memory_mapper = unique_ptr<MemoryMapper>(new MemoryMapper());
+
+  UnimplementedModule* unimplemented_module = new UnimplementedModule();
+  unimplemented_module->Init();
+  memory_mapper->RegisterModule(*unimplemented_module);
+
+  PrimaryFlags* primary_flags = new PrimaryFlags();
+  primary_flags->Init();
+  memory_mapper->RegisterModule(*primary_flags);
+
+  DefaultModule* default_module = new DefaultModule();
+  default_module->Init();
+  memory_mapper->RegisterModule(*default_module);
+
+  DMATransferModule* dma_transfer_module = new DMATransferModule();
+  dma_transfer_module->Init(memory_mapper.get());
+  memory_mapper->RegisterModule(*dma_transfer_module);
+
+  MBCModule* mbc = new MBCModule();
+  vector<uint8_t> rom(0x150);
+  rom[0x147] = 0x00;
+  mbc->Init(rom.data(), 0x150);
+  memory_mapper->RegisterModule(*mbc);
+
+  GraphicsController* graphics_controller = new GraphicsController(new NullScreen(), primary_flags);
+  graphics_controller->Init();
+  memory_mapper->RegisterModule(*graphics_controller);
+
+  OpcodeExecutor* opcode_executor = new OpcodeExecutor(std::move(memory_mapper), 
+                                                       primary_flags, 
+                                                       mbc->internal_rom_flag()
+                                                       );
+  opcode_executor->Init();
+  return opcode_executor;
+}
 
 class OpcodeHandlersTest : public test_harness::TestHarness {
-  protected:
-    OpcodeHandlersTest() : test_harness::TestHarness(parser) {}
+ protected:
+  // The fixture gets instantiated once per test case. We would like to reuse the
+  // OpcodeExecutor. Also, this will get cleaned up when the test is over.
+  OpcodeHandlersTest() : test_harness::TestHarness(BuildOpcodeExecutor()) {}
 };
 
 // Start 8-bit load tests

@@ -1,7 +1,7 @@
 package(default_visibility = ["//visibility:public"])
 
 cc_library(
-  name = "googletest",
+  name = "googletest_internal",
   hdrs = [
     "googletest/include/gtest/gtest-death-test.h",
     "googletest/include/gtest/gtest-spi.h",
@@ -15,13 +15,23 @@ cc_library(
     "googletest/include/gtest/gtest-param-test.h",
   ],
   srcs = [
-    "googletest/lib/.libs/libgtest_main.a",
+    # "googletest/lib/.libs/libgtest_main.a",
     "googletest/lib/.libs/libgtest.a",
   ],
   includes = ["googletest/include"],
   linkopts = ["-pthread"],
   # deps = [":my-gtest-lib"],
   linkstatic = 1,
+)
+
+cc_library(
+  name = "googletest",
+  srcs = ["gtest_main.cc"],
+  deps = [
+    "googletest_internal",
+    "glog",
+  ],
+  visibility = ["//visibility:public"],
 )
 
 cc_library(
