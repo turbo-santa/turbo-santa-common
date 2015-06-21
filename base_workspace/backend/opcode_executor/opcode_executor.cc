@@ -115,6 +115,7 @@ int OpcodeExecutor::ReadInstruction() {
   HandleInterrupts();
   if (using_internal_rom_ && internal_rom_flag_->flag()) {
     SwitchToExternalROM();
+    LOG(INFO) << "Switched to external ROM.";
     using_internal_rom_ = false;
   }
 
