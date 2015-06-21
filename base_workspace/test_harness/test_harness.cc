@@ -25,8 +25,9 @@ namespace {
 AssertionResult ExpectRegisterEquals(unsigned short expected, unsigned short actual, const string& name) {
   if (expected != actual) {
     Message failure_message;
-    failure_message << "Expected register " << name << " to be " << to_string(expected)
-        << " but was " << to_string(actual);
+    failure_message << std::hex << "Expected register " << name 
+        << " to be 0x" << expected 
+        << " but was 0x" << actual;
     return AssertionFailure(failure_message);
   }
   return AssertionSuccess();
@@ -67,8 +68,9 @@ AssertionResult TestHarness::AssertMemoryState(const vector<MemoryAddressValuePa
     unsigned char actual_value = memory_mapper->Read(memory_diff.address);
     if (memory_diff.value != actual_value) {
       Message failure_message;
-      failure_message << "Expected memory at " << to_string(memory_diff.address)
-          << " to be " << to_string(memory_diff.value) << " but was " << to_string(actual_value);
+      failure_message << std::hex << "Expected memory at 0x" << memory_diff.address
+          << " to be 0x" << memory_diff.value + 0x0000
+          << " but was 0x" << actual_value + 0x0000;
       return AssertionFailure(failure_message);
     }
   }
@@ -76,30 +78,38 @@ AssertionResult TestHarness::AssertMemoryState(const vector<MemoryAddressValuePa
 }
 
 unsigned int TestHarness::ExecuteInstruction(unsigned char instruction) {
+  parser_->cpu_.rPC = 0;
   parser_->memory_mapper_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
+  parser_->Init();
   return parser_->ReadInstruction();
 }
 
 unsigned int TestHarness::ExecuteInstruction(unsigned short instruction) {
+  parser_->cpu_.rPC = 0;
   unsigned char lsb = (unsigned char)(0x00FF & instruction);
   unsigned char msb = (unsigned char)((0xFF00 & instruction) >> 8);
   parser_->memory_mapper_->ForceWrite(instruction_ptr(), msb);
   parser_->memory_mapper_->ForceWrite(instruction_ptr() + 1, lsb);
+  parser_->Init();
   return parser_->ReadInstruction();
 }
 
 unsigned int TestHarness::ExecuteInstruction(unsigned char instruction, unsigned short value) {
-    parser_->memory_mapper_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
-    // TODO(Deigo): Make sure that we are actually MSB.
-    parser_->memory_mapper_->ForceWrite(instruction_ptr() + 1, static_cast<unsigned char>(value >> 8));
-    parser_->memory_mapper_->ForceWrite(instruction_ptr() + 2, static_cast<unsigned char>(value));
-    return parser_->ReadInstruction();
+  parser_->cpu_.rPC = 0;
+  parser_->memory_mapper_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
+  // TODO(Deigo): Make sure that we are actually MSB.
+  parser_->memory_mapper_->ForceWrite(instruction_ptr() + 1, static_cast<unsigned char>(value >> 8));
+  parser_->memory_mapper_->ForceWrite(instruction_ptr() + 2, static_cast<unsigned char>(value));
+  parser_->Init();
+  return parser_->ReadInstruction();
 }
 
 unsigned int TestHarness::ExecuteInstruction(unsigned char instruction, unsigned char value) {
-    parser_->memory_mapper_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
-    parser_->memory_mapper_->ForceWrite(instruction_ptr() + 1, value);
-    return parser_->ReadInstruction();
+  parser_->cpu_.rPC = 0;
+  parser_->memory_mapper_->ForceWrite(instruction_ptr(), instruction); // We put the instruction in right before it gets called.
+  parser_->memory_mapper_->ForceWrite(instruction_ptr() + 1, value);
+  parser_->Init();
+  return parser_->ReadInstruction();
 }
 
 void TestHarness::LoadROM(const vector<TestROM>& test_rom) {
@@ -110,6 +120,8 @@ void TestHarness::LoadROM(const vector<TestROM>& test_rom) {
       address++;
     }
   }
+  // We have to reset the instruction parser.
+  parser_->Init();
 }
 
 void TestHarness::Run(int instruction_number_to_run) {

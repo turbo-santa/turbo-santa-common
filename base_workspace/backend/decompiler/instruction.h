@@ -111,12 +111,14 @@ struct Instruction {
 
   Instruction(Opcode opcode_,
               uint16_t instruction_,
+              uint16_t clock_cycles_,
               Parameter arg1_,
               Parameter arg2_,
               bool is_jump_,
               uint16_t instruction_width_bytes_) : 
       opcode(opcode_),
       instruction(instruction_),
+      clock_cycles(clock_cycles_),
       arg1(arg1_),
       arg2(arg2_),
       is_jump(is_jump_),
@@ -124,6 +126,7 @@ struct Instruction {
 
   Opcode opcode;
   uint16_t instruction;
+  uint16_t clock_cycles;
   Parameter arg1;
   Parameter arg2;
   bool is_jump;

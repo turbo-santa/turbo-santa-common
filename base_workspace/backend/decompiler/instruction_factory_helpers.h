@@ -12,36 +12,41 @@ namespace back_end {
 namespace decompiler {
 
 InstructionFactory instr(Opcode opcode, 
-                  uint16_t instruction, 
-                  std::unique_ptr<ParameterFactory> left_param = 
-                    std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
-                  std::unique_ptr<ParameterFactory> right_param = 
-                    std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
-                  bool is_jump = false,
-                  ValueWidth width = ValueWidth::BIT_8);
+                         uint16_t instruction, 
+                         uint16_t clock_cycles,
+                         std::unique_ptr<ParameterFactory> left_param = 
+                         std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
+                         std::unique_ptr<ParameterFactory> right_param = 
+                         std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
+                         bool is_jump = false,
+                         ValueWidth width = ValueWidth::BIT_8);
 
 InstructionFactory instr(Opcode opcode, 
-                  uint16_t instruction, 
-                  std::unique_ptr<ParameterFactory> left_param,
-                  std::unique_ptr<ParameterFactory> right_param,
-                  ValueWidth width);
+                         uint16_t instruction,
+                         uint16_t clock_cycles,
+                         std::unique_ptr<ParameterFactory> left_param,
+                         std::unique_ptr<ParameterFactory> right_param,
+                         ValueWidth width);
 
 InstructionFactory instr(Opcode opcode, 
-                  uint16_t instruction, 
-                  std::unique_ptr<ParameterFactory> left_param,
-                  ValueWidth width);
+                         uint16_t instruction,
+                         uint16_t clock_cycles,
+                         std::unique_ptr<ParameterFactory> left_param,
+                         ValueWidth width);
 
-InstructionFactory instr(Opcode opcode, 
-                  uint16_t instruction, 
-                  ValueWidth width);
+InstructionFactory instr(Opcode opcode,
+                         uint16_t instruction,
+                         uint16_t clock_cycles,
+                         ValueWidth width);
 
 InstructionFactory jump(Opcode opcode, 
-                  uint16_t instruction, 
-                  std::unique_ptr<ParameterFactory> left_param = 
-                    std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
-                  std::unique_ptr<ParameterFactory> right_param = 
-                    std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
-                  ValueWidth width = ValueWidth::BIT_8);
+                        uint16_t instruction,
+                        uint16_t clock_cycles,
+                        std::unique_ptr<ParameterFactory> left_param = 
+                          std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
+                        std::unique_ptr<ParameterFactory> right_param = 
+                          std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
+                        ValueWidth width = ValueWidth::BIT_8);
 
 std::unique_ptr<ParameterFactory> val(Register reg);
 

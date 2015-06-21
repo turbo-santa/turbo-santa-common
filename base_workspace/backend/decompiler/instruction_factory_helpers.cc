@@ -4,13 +4,15 @@ namespace back_end {
 namespace decompiler {
 
 InstructionFactory instr(Opcode opcode, 
-                  uint16_t instruction, 
-                  std::unique_ptr<ParameterFactory> left_param,
-                  std::unique_ptr<ParameterFactory> right_param,
-                  bool is_jump,
-                  ValueWidth width) {
+                         uint16_t instruction,
+                         uint16_t clock_cycles,
+                         std::unique_ptr<ParameterFactory> left_param,
+                         std::unique_ptr<ParameterFactory> right_param,
+                         bool is_jump,
+                         ValueWidth width) {
   return InstructionFactory(opcode,
                             instruction,
+                            clock_cycles,
                             std::move(left_param),
                             std::move(right_param),
                             is_jump,
@@ -18,12 +20,14 @@ InstructionFactory instr(Opcode opcode,
 }
 
 InstructionFactory instr(Opcode opcode, 
-                  uint16_t instruction, 
-                  std::unique_ptr<ParameterFactory> left_param,
-                  std::unique_ptr<ParameterFactory> right_param,
-                  ValueWidth width) {
+                         uint16_t instruction,
+                         uint16_t clock_cycles,
+                         std::unique_ptr<ParameterFactory> left_param,
+                         std::unique_ptr<ParameterFactory> right_param,
+                         ValueWidth width) {
   return InstructionFactory(opcode,
                             instruction,
+                            clock_cycles,
                             std::move(left_param),
                             std::move(right_param),
                             false,
@@ -31,11 +35,13 @@ InstructionFactory instr(Opcode opcode,
 }
 
 InstructionFactory instr(Opcode opcode, 
-                  uint16_t instruction, 
-                  std::unique_ptr<ParameterFactory> left_param,
-                  ValueWidth width) {
+                         uint16_t instruction,
+                         uint16_t clock_cycles,
+                         std::unique_ptr<ParameterFactory> left_param,
+                         ValueWidth width) {
   return InstructionFactory(opcode,
                             instruction,
+                            clock_cycles,
                             std::move(left_param),
                             std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
                             false,
@@ -43,10 +49,12 @@ InstructionFactory instr(Opcode opcode,
 }
 
 InstructionFactory instr(Opcode opcode, 
-                  uint16_t instruction, 
-                  ValueWidth width) {
+                         uint16_t instruction,
+                         uint16_t clock_cycles,
+                         ValueWidth width) {
   return InstructionFactory(opcode,
                             instruction,
+                            clock_cycles,
                             std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
                             std::unique_ptr<ParameterFactory>(new EmptyParameterFactory()),
                             false,
@@ -54,12 +62,14 @@ InstructionFactory instr(Opcode opcode,
 }
 
 InstructionFactory jump(Opcode opcode, 
-                  uint16_t instruction, 
-                  std::unique_ptr<ParameterFactory> left_param, 
-                  std::unique_ptr<ParameterFactory> right_param,
-                  ValueWidth width) {
+                        uint16_t instruction,
+                        uint16_t clock_cycles,
+                        std::unique_ptr<ParameterFactory> left_param, 
+                        std::unique_ptr<ParameterFactory> right_param,
+                        ValueWidth width) {
   return InstructionFactory(opcode,
                             instruction,
+                            clock_cycles,
                             std::move(left_param),
                             std::move(right_param),
                             true,

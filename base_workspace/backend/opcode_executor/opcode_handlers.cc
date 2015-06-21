@@ -354,7 +354,7 @@ int ADC8Bit(const decompiler::Instruction& instruction, ExecutorContext* context
 int ADC8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
-  ADC8BitImpl(address, context->cpu);
+  ADC8BitImpl(context->memory_mapper->Read(address), context->cpu);
   // PrintInstruction(context->frame_factory, "ADC", "A", "(" + RegisterName16(opcode->reg1, context->cpu) + ")");
   return instruction_ptr;
 }
@@ -1362,7 +1362,7 @@ int LoadRR8Bit(const decompiler::Instruction& instruction, ExecutorContext* cont
 int LoadRR8BitAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   uint8_t* reg1 = GetRegister8Bit(instruction.arg1, context->cpu);
-  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
   *reg1 = context->memory_mapper->Read(address);
   
   // PrintInstruction(context->frame_factory, "LD", RegisterName8(opcode.reg1, context->cpu), "(HL)");
@@ -1370,7 +1370,7 @@ int LoadRR8BitAddress(const decompiler::Instruction& instruction, ExecutorContex
 }
 
 int LoadRR8BitIntoAddress(const decompiler::Instruction& instruction, ExecutorContext* context) {
-  context->memory_mapper->Write(GetParameterValue16Bit(instruction.arg1, context->cpu), GetParameterValue8Bit(instruction.arg1, context->cpu));
+  context->memory_mapper->Write(GetParameterValue16Bit(instruction.arg1, context->cpu), GetParameterValue8Bit(instruction.arg2, context->cpu));
   
   // PrintInstruction(context->frame_factory, "LD", "(HL)", RegisterName8(opcode.reg2, context->cpu));
   return *context->instruction_ptr;
@@ -1396,7 +1396,7 @@ int LoadRR16Bit(const decompiler::Instruction& instruction, ExecutorContext* con
 
 int LoadAN(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  const uint16_t address = GetParameterValue16Bit(instruction.arg1, context->cpu);
+  const uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
   context->cpu->flag_struct.rA = context->memory_mapper->Read(address);
   
   // PrintInstruction(context->frame_factory, "LD", "A", "(" + RegisterName16(opcode.reg2, context->cpu) + ")");

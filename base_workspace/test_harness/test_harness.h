@@ -38,8 +38,17 @@ class TestHarness : public ::testing::Test {
         unsigned short instruction_ptr() { return parser_->cpu_.rPC; }
 
     protected:
-        TestHarness(back_end::opcode_executor::OpcodeExecutor* parser) : parser_(parser) {}
+        TestHarness(back_end::opcode_executor::OpcodeExecutor* parser) : parser_(parser) {
+          // TODO(Brendan): This is pretty janky; we should have a better way of
+          // mocking out the parser's functionality.
+          // Turns off the internal ROM.
+          parser_->memory_mapper_->Write(0xff50, 1);
+        }
+
+        virtual void SetUp() {}
+
         virtual void TearDown() { ClearParser(); }
+
         // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
         // delete it when done.
         back_end::opcode_executor::OpcodeExecutor* parser_;

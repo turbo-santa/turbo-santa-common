@@ -90,12 +90,14 @@ class InstructionFactory {
 
   InstructionFactory(Opcode opcode,
                      uint16_t instruction,
+                     uint16_t clock_cycles,
                      std::unique_ptr<ParameterFactory> left_param_factory,
                      std::unique_ptr<ParameterFactory> right_param_factory,
                      bool is_jump,
                      ValueWidth instr_width) :
       opcode_(opcode),
       instruction_(instruction),
+      clock_cycles_(clock_cycles),
       left_param_factory_(std::move(left_param_factory)),
       right_param_factory_(std::move(right_param_factory)),
       is_jump_(is_jump),
@@ -104,6 +106,7 @@ class InstructionFactory {
   InstructionFactory(InstructionFactory&& factory) :
       opcode_(factory.opcode()),
       instruction_(factory.instruction()),
+      clock_cycles_(factory.clock_cycles()),
       left_param_factory_(std::move(factory.left_param_factory_)),
       right_param_factory_(std::move(factory.right_param_factory_)),
       is_jump_(factory.is_jump()),
@@ -112,6 +115,7 @@ class InstructionFactory {
   void operator=(InstructionFactory&& factory) {
     opcode_ = factory.opcode();
     instruction_ = factory.instruction();
+    clock_cycles_ = factory.clock_cycles();
     left_param_factory_ = std::move(factory.left_param_factory_);
     right_param_factory_ = std::move(factory.right_param_factory_);
     is_jump_ = factory.is_jump();
@@ -123,6 +127,7 @@ class InstructionFactory {
     Parameter right = right_param_factory_->Build(raw_instruction);
     return Instruction(opcode_,
                        instruction_,
+                       clock_cycles_,
                        left,
                        right,
                        is_jump_,
@@ -131,6 +136,7 @@ class InstructionFactory {
 
   Opcode opcode() const { return opcode_; }
   uint16_t instruction() const { return instruction_; }
+  uint16_t clock_cycles() const { return clock_cycles_; }
   bool is_jump() const { return is_jump_; }
   ValueWidth instr_width() const { return instr_width_; }
   ValueWidth param_width() const {
@@ -147,6 +153,7 @@ class InstructionFactory {
  private:
   Opcode opcode_;
   uint16_t instruction_;
+  uint16_t clock_cycles_;
   std::unique_ptr<ParameterFactory> left_param_factory_;
   std::unique_ptr<ParameterFactory> right_param_factory_;
   bool is_jump_;

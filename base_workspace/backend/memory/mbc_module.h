@@ -32,6 +32,14 @@ class MBCWrapper : public MemorySegment {
     }
   }
 
+  void ForceWrite(unsigned short address, unsigned char value) {
+    if (!internal_rom_flag_.is_set() && internal_rom_.InRange(address)) {
+      internal_rom_.ForceWrite(address, value);
+    } else {
+      mbc_->ForceWrite(address, value);
+    }
+  }
+
   bool InRange(unsigned short address) { return mbc_->InRange(address); }
 
   Flag* internal_rom_flag() { return &internal_rom_flag_; }

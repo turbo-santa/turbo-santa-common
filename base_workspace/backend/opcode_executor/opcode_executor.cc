@@ -4,6 +4,7 @@
 #include "backend/decompiler/decompiler_factory.h"
 #include "backend/decompiler/instruction.h"
 #include "backend/decompiler/rom_reader.h"
+#include "backend/opcode_executor/opcode_handlers.h"
 #include "submodules/glog/src/glog/logging.h"
 
 namespace back_end {
@@ -136,9 +137,9 @@ int OpcodeExecutor::ReadInstruction() {
   if (handler_result == -1) {
     return -1;
   } else {
-    cpu_.rPC = handler_result;
+    cpu_.rPC = static_cast<uint16_t>(handler_result);
     LOG(INFO) << "HL = 0x" << std::hex << cpu_.rHL + 0l;
-    return 4;
+    return instruction.clock_cycles;
   }
 }
 
@@ -167,6 +168,7 @@ bool OpcodeExecutor::FetchInstruction(uint16_t address, Instruction* instruction
 void OpcodeExecutor::HandleInterrupts() {
   if (interrupt_master_enable_ && CheckInterrupts()) {
     interrupt_master_enable_ = false;
+    PushRegister(memory_mapper_.get(), &cpu_, &cpu_.rPC);
 
     if (interrupt_flag_->v_blank() && interrupt_enable_->v_blank()) {
       LOG(INFO) << "Handling V blank interrupt.";
