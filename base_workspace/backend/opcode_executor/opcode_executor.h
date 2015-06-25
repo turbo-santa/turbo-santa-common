@@ -10,6 +10,7 @@
 #include "backend/opcode_executor/executor_context.h"
 #include "backend/opcode_executor/opcodes.h"
 #include "backend/opcode_executor/opcode_map.h"
+#include "backend/opcode_executor/opcode_parser.h"
 #include "backend/opcode_executor/registers.h"
 
 namespace back_end {
@@ -30,22 +31,18 @@ class OpcodeExecutor {
 
   ~OpcodeExecutor();
 
-  void Init();
+  void Init() { opcode_parser_.Init(); }
 
   int ReadInstruction();
 
-  bool ValidateInstruction(const decompiler::Instruction& instruction);
-
  private:
   bool CheckInterrupts();
-  bool FetchInstruction(uint16_t address, decompiler::Instruction* instruction);
   void HandleInterrupts();
-  void SwitchToExternalROM();
+  void SwitchToExternalROM() { opcode_parser_.Reset(); }
     
   registers::GB_CPU cpu_;
   std::unique_ptr<memory::MemoryMapper> memory_mapper_;
-  memory::MemoryMapperROMBridge bridge_;
-  std::unique_ptr<decompiler::Decompiler> decompiler_;
+  OpcodeParser opcode_parser_;
   std::map<uint16_t, OpcodeHandler> opcode_map_ = CreateOpcodeMap();
   // This is a special flag/register that can only be set or unset and can
   // only be accessed by the user using the EI, DI or RETI instructions.

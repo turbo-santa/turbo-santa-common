@@ -32,8 +32,18 @@ class UnimplementedFlag : public Flag {
     LOG(FATAL) << "Attempted to access unimplemented flag: " << name_;
   }
 
- private:
+ protected:
   std::string name_;
+};
+
+class UnimplementedJoypadFlag : public UnimplementedFlag {
+ public:
+  UnimplementedJoypadFlag(uint16_t address) : UnimplementedFlag(address, "Joypad") {}
+
+  unsigned char Read(unsigned short) override {
+    LOG(WARNING) << "Attempted to read unimplemented flag: " << name_;
+    return 0b00001111;
+  }
 };
 
 class UnimplementedModule : public Module {
@@ -124,7 +134,7 @@ class UnimplementedModule : public Module {
   UnimplementedFlag sound_chan_ctrl_ =           UnimplementedFlag(0xff24, "Sound - Channel Control");
   UnimplementedFlag sound_output_terminal_ =     UnimplementedFlag(0xff25, "Sound - Output Terminal");
   UnimplementedFlag sound_on_off_ =              UnimplementedFlag(0xff26, "Sound - ON/OFF");
-  UnimplementedFlag joypad_ =                    UnimplementedFlag(0xff00, "Joypad");
+  UnimplementedJoypadFlag joypad_ =              UnimplementedJoypadFlag(0xff00);
   UnimplementedFlag serial_data_transfer_ =      UnimplementedFlag(0xff01, "Serial - Data Transfer");
   UnimplementedFlag serial_control_ =            UnimplementedFlag(0xff02, "Serial - Control");
   UnimplementedFlag timer_divider_ =             UnimplementedFlag(0xff04, "Timer - Divider");

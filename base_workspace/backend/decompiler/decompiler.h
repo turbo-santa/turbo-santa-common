@@ -20,7 +20,8 @@ namespace decompiler {
 class Decompiler {
  public:
   Decompiler(const ROMBridge& rom, uint8_t rom_type) :
-      rom_size_(rom.size()),
+      rom_min_address_(rom.min()),
+      rom_max_address_(rom.max()),
       rom_type_(rom_type),
       rom_reader_(rom) {}
 
@@ -36,7 +37,8 @@ class Decompiler {
   void PrintToStream(std::ostream* out_stream);
 
  private:
-  size_t rom_size_;
+  size_t rom_min_address_;
+  size_t rom_max_address_;
   uint8_t rom_type_;
   ROMReader rom_reader_;
   std::map<uint16_t, Instruction> address_opcode_map_;

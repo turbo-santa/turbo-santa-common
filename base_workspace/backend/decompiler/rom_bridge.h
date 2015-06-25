@@ -11,17 +11,23 @@ namespace decompiler {
 class ROMBridge {
  public:
   virtual uint8_t at(uint16_t address) const = 0;
+  virtual uint16_t min() const = 0;
+  virtual uint16_t max() const = 0;
 
-  virtual size_t size() const = 0;
+  virtual bool in_range(uint16_t address) const { 
+    return min() <= address && address <= max(); 
+  }
 };
 
 class VectorROMBridge : public ROMBridge {
  public:
   VectorROMBridge(std::vector<uint8_t>* data) : data_(data) {}
 
-  virtual uint8_t at(uint16_t address) const { return data_->at(address); }
+  uint8_t at(uint16_t address) const { return data_->at(address); }
 
-  virtual size_t size() const { return data_->size(); }
+  uint16_t min() const { return 0; }
+
+  uint16_t max() const { return static_cast<uint16_t>(data_->size() - 1); }
 
  private:
   std::vector<uint8_t>* data_;

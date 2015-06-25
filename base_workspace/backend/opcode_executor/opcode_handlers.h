@@ -13,7 +13,10 @@ namespace opcode_executor {
 
 // Helper functions.
 void PushRegister(memory::MemoryMapper* memory_mapper,
-                  registers::GB_CPU* cpu, unsigned short* reg);
+                  registers::GB_CPU* cpu, 
+                  unsigned short* reg);
+
+uint16_t PollRegister(memory::MemoryMapper* memory_mapper, uint16_t rSP);
 
 // 8 Bit ALU
 int Add8Bit(const decompiler::Instruction& instruction, ExecutorContext* context);

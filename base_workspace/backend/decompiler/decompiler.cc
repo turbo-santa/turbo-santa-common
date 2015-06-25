@@ -188,7 +188,9 @@ bool Decompiler::DecompileInstructionAt(uint16_t address) {
   AddInstruction(address, instruction);
   if (instruction.is_jump) {
     uint16_t jump_address = address + instruction.instruction_width_bytes;
-    if (GetJumpAddress(instruction, &jump_address) && jump_address < rom_size_) {
+    if (GetJumpAddress(instruction, &jump_address) 
+        && rom_min_address_ <= jump_address 
+        && jump_address <= rom_max_address_) {
       code_paths_.push(jump_address);
       addresses_jumped_to_.insert(jump_address);
     }
@@ -199,7 +201,7 @@ bool Decompiler::DecompileInstructionAt(uint16_t address) {
     }
   }
   uint16_t next_address = address + instruction.instruction_width_bytes;
-  if (next_address < rom_size_) {
+  if (next_address <= rom_max_address_) {
     code_paths_.push(next_address);
   }
   return true;

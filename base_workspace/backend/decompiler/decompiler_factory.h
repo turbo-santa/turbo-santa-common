@@ -16,6 +16,7 @@ class DecompilerFactory {
   enum DecompilerType {
     FORMATTED_ROM, // Most ROMs.
     UNFORMATTED_ROM,
+    NONE,
   };
 
   std::unique_ptr<Decompiler> Build() {
@@ -46,6 +47,9 @@ class DecompilerFactory {
         break;
       case UNFORMATTED_ROM:
         decompiler->AddPathStart(0x0000);
+        break;
+      case NONE:
+        // Do not add any instructions.
         break;
     }
     return std::unique_ptr<Decompiler>(decompiler);

@@ -21,6 +21,19 @@ cc_library(
 )
 
 cc_library(
+  name = "opcode_parser",
+  hdrs = ["opcode_parser.h"],
+  srcs = ["opcode_parser.cc"],
+  deps = [
+    "//backend/decompiler:decompiler",
+    "//backend/decompiler:decompiler_factory",
+    "//backend/memory:memory_layout",
+    "//backend/memory:memory_mapper_rom_bridge",
+    "//submodules:glog",
+  ],
+)
+
+cc_library(
   name = "opcode_executor",
   hdrs = ["opcode_executor.h"],
   srcs = ["opcode_executor.cc"],
@@ -34,6 +47,7 @@ cc_library(
     "//submodules:glog",
     ":executor_context",
     ":opcode_map",
+    ":opcode_parser",
     ":opcodes",
     ":registers",
   ],

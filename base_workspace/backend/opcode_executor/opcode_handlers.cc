@@ -76,12 +76,17 @@ uint8_t* GetRegister8Bit(Register reg, GB_CPU* cpu) {
     case Register::L:
       return &cpu->hl_struct.rL;
     case Register::AF:
+      LOG(FATAL) << "8 bit pointer requested for 16 bit AF register.";
     case Register::BC:
+      LOG(FATAL) << "8 bit pointer requested for 16 bit BC register.";
     case Register::DE:
+      LOG(FATAL) << "8 bit pointer requested for 16 bit DE register.";
     case Register::HL:
+      LOG(FATAL) << "8 bit pointer requested for 16 bit HL register.";
     case Register::SP:
+      LOG(FATAL) << "8 bit pointer requested for 16 bit SP register.";
     case Register::PC:
-      LOG(FATAL) << "8 bit pointer requested for 16 bit register.";
+      LOG(FATAL) << "8 bit pointer requested for 16 bit PC register.";
     case Register::ZF:
     case Register::NF:
     case Register::HF:
@@ -1059,9 +1064,17 @@ int BitAddress(const decompiler::Instruction& instruction, ExecutorContext* cont
   
 int Set(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  uint8_t* reg = GetRegister8Bit(instruction.arg2, context->cpu);
+  MemoryMapper* memory_mapper = context->memory_mapper;
   uint8_t bit = GetParameterValue8Bit(instruction.arg1, context->cpu);
-  *reg |= (0x1 << bit);
+  if (instruction.arg2.is_pointer) {
+    uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+    uint8_t value = memory_mapper->Read(address);
+    value |= (0x1 << bit);
+    memory_mapper->Write(address, value);
+  } else {
+    uint8_t* reg = GetRegister8Bit(instruction.arg2, context->cpu);
+    *reg |= (0x1 << bit);
+  }
   
   // PrintInstruction(context->frame_factory, "SET", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
@@ -1069,9 +1082,17 @@ int Set(const decompiler::Instruction& instruction, ExecutorContext* context) {
 
 int Res(const decompiler::Instruction& instruction, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  uint8_t* reg = GetRegister8Bit(instruction.arg2, context->cpu);
+  MemoryMapper* memory_mapper = context->memory_mapper;
   uint8_t bit = GetParameterValue8Bit(instruction.arg1, context->cpu);
-  *reg &= ~(0x1 << bit);
+  if (instruction.arg2.is_pointer) {
+    uint16_t address = GetParameterValue16Bit(instruction.arg2, context->cpu);
+    uint8_t value = memory_mapper->Read(address);
+    value &= ~(0x1 << bit);
+    memory_mapper->Write(address, value);
+  } else {
+    uint8_t* reg = GetRegister8Bit(instruction.arg2, context->cpu);
+    *reg &= ~(0x1 << bit);
+  }
   
   // PrintInstruction(context->frame_factory, "RES", Hex(context->magic), RegisterName8(opcode->reg1, context->cpu));
   return instruction_ptr;
@@ -1184,6 +1205,13 @@ void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, uint16_t* reg) {
   memory_mapper->Write(*rSP, GetLSB(*reg));
   --*rSP;
   memory_mapper->Write(*rSP, GetMSB(*reg));
+}
+
+uint16_t PollRegister(MemoryMapper* memory_mapper, uint16_t rSP) {
+  uint16_t msb = memory_mapper->Read(rSP);
+  rSP++;
+  uint16_t lsb = memory_mapper->Read(rSP);
+  return (msb << 8) | lsb;
 }
 
 void PopRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, uint16_t* reg) {

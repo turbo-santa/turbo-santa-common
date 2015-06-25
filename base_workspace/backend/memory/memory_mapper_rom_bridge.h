@@ -5,6 +5,7 @@
 #include "backend/decompiler/rom_bridge.h"
 #include "backend/memory/mbc.h"
 #include "backend/memory/memory_mapper.h"
+#include "backend/memory/memory_layout.h"
 
 namespace back_end {
 namespace memory {
@@ -18,7 +19,26 @@ class MemoryMapperROMBridge : public decompiler::ROMBridge {
     return const_cast<MemoryMapper&>(data_).Read(address);
   }
 
-  size_t size() const override { return MBC::kROMMaxAddress + 1; }
+  uint16_t min() const override { return 0; }
+
+  uint16_t max() const override { return MBC::kROMMaxAddress; }
+
+ private:
+  const MemoryMapper& data_;
+};
+
+class MemoryMapperHighRAMBridge : public decompiler::ROMBridge {
+ public:
+  MemoryMapperHighRAMBridge(const MemoryMapper& data) : data_(data) {}
+
+  uint8_t at(uint16_t address) const override {
+    // TODO(Brendan): Make .Read(...) a constant method.
+    return const_cast<MemoryMapper&>(data_).Read(address);
+  }
+
+  uint16_t min() const override { return memory::kHighRAMMin; }
+
+  uint16_t max() const override { return memory::kHighRAMMax; }
 
  private:
   const MemoryMapper& data_;

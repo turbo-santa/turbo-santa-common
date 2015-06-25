@@ -26,13 +26,13 @@ const RawInstructionBase& ROMReader::raw_instruction(uint16_t address, ValueWidt
       raw_instruction_8bit_.set_data(rom_, address);
       return raw_instruction_8bit_;
     case ValueWidth::BIT_16:
-      if (address + 1 >= rom_.size()) {
+      if (address + 1 > rom_.max()) {
         LOG(FATAL) << "Instruction should be 16 bits wide but only one byte remains.";
       }
       raw_instruction_16bit_.set_data(rom_, address);
       return raw_instruction_16bit_;
     case ValueWidth::BIT_24:
-      if (address + 2 >= rom_.size()) {
+      if (address + 2 > rom_.max()) {
         LOG(FATAL) << "Instruction should be 24 bits wide but fewer remain.";
       }
       raw_instruction_24bit_.set_data(rom_, address);
@@ -42,9 +42,9 @@ const RawInstructionBase& ROMReader::raw_instruction(uint16_t address, ValueWidt
 
 bool ROMReader::Read(uint16_t address, Instruction* instruction) {
   uint16_t opcode;
-  if (address >= rom_.size()) {
+  if (!rom_.in_range(address)) {
     LOG(FATAL) << "Attempted illegal access of ROM at: 0x" << std::hex << address;
-  } else if (address + 1 == rom_.size()) {
+  } else if (address == rom_.max()) {
     opcode = rom_.at(address);
   } else {
     opcode = OpcodeValue(rom_.at(address), rom_.at(address + 1));

@@ -4,6 +4,12 @@ cc_library(
 )
 
 cc_library(
+  name = "memory_layout",
+  hdrs = ["memory_layout.h"],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
   name = "ram_segment",
   hdrs = ["ram_segment.h"],
   deps = [":memory_segment"],
