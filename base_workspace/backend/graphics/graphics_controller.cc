@@ -273,9 +273,11 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
     lcd_status->set_mode(LCDStatus::V_BLANK);
     EnableOAM();
     EnableVRAM();
-    SetVBlankInterrupt();
-    if (lcd_status->v_blank_interrupt()) {
-      SetLCDSTATInterrupt();
+    if (previous_mode_ != MODE_1) {
+      SetVBlankInterrupt();
+      if (lcd_status->v_blank_interrupt()) {
+        SetLCDSTATInterrupt();
+      }
     }
     previous_mode_ = MODE_1;
   // Mode 0.
@@ -283,7 +285,7 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
     lcd_status->set_mode(LCDStatus::H_BLANK);
     EnableOAM();
     EnableVRAM();
-    if (lcd_status->h_blank_interrupt()) {
+    if (lcd_status->h_blank_interrupt() && previous_mode_ != MODE_0) {
       SetLCDSTATInterrupt();
     }
     previous_mode_ = MODE_0;
@@ -303,11 +305,11 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
     lcd_status->set_mode(LCDStatus::OAM_LOCKED);
     DisableOAM();
     EnableVRAM();
-    if (lcd_status->oam_interrupt()) {
-      SetLCDSTATInterrupt();
-    }
     if (previous_mode_ != MODE_2) {
       ly_coordinate->Increment();
+      if (lcd_status->oam_interrupt()) {
+        SetLCDSTATInterrupt();
+      }
     }
     previous_mode_ = MODE_2;
   }

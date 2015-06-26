@@ -77,7 +77,11 @@ int OpcodeExecutor::ReadInstruction() {
 // 2) Check to see if any interrupt flags that are enabled
 // 3) Push PC (as if CALL was performed), set PC to interrupt address, disable IME
 void OpcodeExecutor::HandleInterrupts() {
-  if (interrupt_master_enable_ && CheckInterrupts() && !opcode_parser_.is_dma_running()) {
+  if (interrupt_master_enable_ && CheckInterrupts()) {
+    // TODO(Brendan): Find a better solution to interrupts durring a DMA transfer.
+    if (opcode_parser_.is_dma_running()) {
+      return;
+    }
     interrupt_master_enable_ = false;
     halted_ = false;
     PushRegister(memory_mapper_.get(), &cpu_, &cpu_.rPC);
