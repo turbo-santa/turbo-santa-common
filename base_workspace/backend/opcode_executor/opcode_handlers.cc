@@ -762,8 +762,8 @@ int NOP(const decompiler::Instruction&, ExecutorContext* context) {
 
 int Halt(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
-  LOG(WARNING) << "UNINPLEMENTED OPCODE: Halt";
-  // TODO: We should actually halt instead of just nop
+  LOG(INFO) << "Halting.";
+  *context->halted = true;
   // PrintInstruction(context->frame_factory, "HALT");
   return instruction_ptr;
 }
@@ -779,6 +779,7 @@ int Stop(const decompiler::Instruction&, ExecutorContext* context) {
 int DI(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   *context->interrupt_master_enable = false;
+  LOG(INFO) << "IME disabled.";
   // PrintInstruction(context->frame_factory, "DI");
   return instruction_ptr;
 }
@@ -786,6 +787,7 @@ int DI(const decompiler::Instruction&, ExecutorContext* context) {
 int EI(const decompiler::Instruction&, ExecutorContext* context) {
   int instruction_ptr = *context->instruction_ptr;
   *context->interrupt_master_enable = true;
+  LOG(INFO) << "IME enabled.";
   // PrintInstruction(context->frame_factory, "EI");
   return instruction_ptr;
 }
@@ -1205,6 +1207,7 @@ void PushRegister(MemoryMapper* memory_mapper, GB_CPU* cpu, uint16_t* reg) {
   memory_mapper->Write(*rSP, GetLSB(*reg));
   --*rSP;
   memory_mapper->Write(*rSP, GetMSB(*reg));
+  LOG(INFO) << "SP = 0x" << std::hex << *rSP;
 }
 
 uint16_t PollRegister(MemoryMapper* memory_mapper, uint16_t rSP) {

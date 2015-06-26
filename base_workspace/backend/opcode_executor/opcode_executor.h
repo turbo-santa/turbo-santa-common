@@ -47,6 +47,7 @@ class OpcodeExecutor {
   // This is a special flag/register that can only be set or unset and can
   // only be accessed by the user using the EI, DI or RETI instructions.
   bool interrupt_master_enable_ = false;
+  bool halted_ = false;
   bool using_internal_rom_ = true;
   memory::InterruptEnable* interrupt_enable_;
   memory::InterruptFlag* interrupt_flag_;

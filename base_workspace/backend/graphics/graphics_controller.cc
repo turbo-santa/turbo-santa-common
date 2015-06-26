@@ -41,11 +41,11 @@ class TileReflectedY : public Tile {
   TileReflectedY(Tile* tile) : tile_(tile) {}
 
   virtual unsigned char Get(unsigned int y, unsigned int x) {
-    return tile_->Get(Tile::kTileSize - y, x);
+    return tile_->Get(Tile::kTileSize - 1 - y, x);
   }
 
   virtual void Set(unsigned int y, unsigned int x, unsigned char value) {
-    tile_->Set(Tile::kTileSize - y, x, value);
+    tile_->Set(Tile::kTileSize - 1 - y, x, value);
   }
 
   void set_tile(Tile* tile) { tile_ = tile; }

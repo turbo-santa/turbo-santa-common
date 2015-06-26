@@ -152,7 +152,7 @@ bool OpcodeParser::FetchInstruction(uint16_t address,
                                     uint16_t return_value, 
                                     uint16_t hl_value, 
                                     Instruction* instruction) {
-  if (!is_dma_running) {
+  if (!is_dma_running_) {
     return FetchInstructionROM(address, return_value, hl_value, instruction);
   } else {
     return FetchInstructionDMA(address, return_value, hl_value, instruction);
@@ -168,7 +168,7 @@ bool OpcodeParser::FetchInstructionROM(uint16_t address,
     if (GetJumpAddress(*instruction, address, return_value, hl_value, &jump_address)) {
       if (jump_address >= memory::kHighRAMMin) {
         LOG(INFO) << "Jumping to high RAM for DMA Transfer.";
-        is_dma_running = true;
+        is_dma_running_ = true;
         InitDMADecompiler(jump_address);
       } else if (instruction->instruction == 0xe9) {
         LOG(INFO) << "Exploring new code path.";
@@ -192,7 +192,7 @@ bool OpcodeParser::FetchInstructionDMA(uint16_t address,
     if (GetJumpAddress(*instruction, address, return_value, hl_value, &jump_address)) {
       if (jump_address <= memory::kROMBankNMax) {
         LOG(INFO) << "Jumping back to ROM from DMA Transfer.";
-        is_dma_running = false;
+        is_dma_running_ = false;
         dma_decompiler_.reset();
       } else if (instruction->instruction == 0xe9) {
         LOG(INFO) << "Exploring new code path.";

@@ -31,8 +31,14 @@ OpcodeExecutor::OpcodeExecutor(std::unique_ptr<memory::MemoryMapper> memory_mapp
 OpcodeExecutor::~OpcodeExecutor() = default;
 
 int OpcodeExecutor::ReadInstruction() {
-  LOG(INFO) << "Current address: 0x" << std::hex << cpu_.rPC;
   HandleInterrupts();
+  if (halted_) {
+    // We need to use some number of clock cycles while halted.
+    return 4;
+  }
+
+  LOG(INFO) << "Current address: 0x" << std::hex << cpu_.rPC;
+
   if (using_internal_rom_ && internal_rom_flag_->flag()) {
     SwitchToExternalROM();
     LOG(INFO) << "Switched to external ROM.";
@@ -54,6 +60,7 @@ int OpcodeExecutor::ReadInstruction() {
   ExecutorContext context;
   context.instruction_ptr = &cpu_.rPC;
   context.interrupt_master_enable = &interrupt_master_enable_;
+  context.halted = &halted_;
   context.memory_mapper = memory_mapper_.get();
   context.cpu = &cpu_;
 
@@ -70,8 +77,9 @@ int OpcodeExecutor::ReadInstruction() {
 // 2) Check to see if any interrupt flags that are enabled
 // 3) Push PC (as if CALL was performed), set PC to interrupt address, disable IME
 void OpcodeExecutor::HandleInterrupts() {
-  if (interrupt_master_enable_ && CheckInterrupts()) {
+  if (interrupt_master_enable_ && CheckInterrupts() && !opcode_parser_.is_dma_running()) {
     interrupt_master_enable_ = false;
+    halted_ = false;
     PushRegister(memory_mapper_.get(), &cpu_, &cpu_.rPC);
 
     if (interrupt_flag_->v_blank() && interrupt_enable_->v_blank()) {

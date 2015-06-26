@@ -34,8 +34,13 @@ class InterruptBase : public Flag {
 
   virtual unsigned char Read(unsigned short) { return value_; }
   virtual void Write(unsigned short, unsigned char value) { 
-    value_ = value;
     LOG(INFO) << "Interrupt flag written to.";
+    LOG(INFO) << "v_blank = " << v_blank();
+    LOG(INFO) << "lcd_stat = " << lcd_stat();
+    LOG(INFO) << "timer = " << timer();
+    LOG(INFO) << "serial = " << serial();
+    LOG(INFO) << "joypad = " << joypad();
+    value_ = value;
     LOG(INFO) << "v_blank = " << v_blank();
     LOG(INFO) << "lcd_stat = " << lcd_stat();
     LOG(INFO) << "timer = " << timer();
