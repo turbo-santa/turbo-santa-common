@@ -95,6 +95,18 @@ cc_library(
 )
 
 cc_library(
+  name = "joypad_module",
+  hdrs = ["joypad_module.h"],
+  deps = [
+    "//submodules:glog",
+    ":flags",
+    ":interrupt_flag",
+    ":module",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+cc_library(
   name = "flag_container",
   hdrs = ["flag_container.h"],
   deps = [

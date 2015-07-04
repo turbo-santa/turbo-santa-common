@@ -3,12 +3,14 @@
 #include <algorithm>
 #include <iostream>
 #include <vector>
+#include <thread>
 
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
 
 #include "backend/clocktroller/clocktroller.h"
+#include "backend/memory/joypad_module.h"
 // #include "backend/debugger/frames.h"
 // #include "backend/debugger/deltas.h"
 // #include "backend/debugger/great_library.h"
@@ -20,6 +22,7 @@ using std::endl;
 using std::hex;
 using std::dec;
 using std::string;
+using std::thread;
 using std::vector;
 using back_end::clocktroller::Clocktroller;
 // using back_end::debugger::Frame;
@@ -28,6 +31,7 @@ using back_end::clocktroller::Clocktroller;
 // using back_end::debugger::GreatLibrary;
 using back_end::graphics::Screen;
 using back_end::graphics::ScreenRaster;
+using back_end::memory::JoypadFlag;
 
 static const int kNintendoLogoStartPosition = 0x104;
 
@@ -219,6 +223,46 @@ vector<unsigned char> ReadROM(string file_name) {
 //   }
 // }
 
+void HandleInput(Clocktroller* clocktroller) {
+  JoypadFlag* joypad_flag = clocktroller->joypad_flag();
+  cbreak();
+  bool running = true;
+  while (running) {
+    switch (getch()) {
+      case 'w':
+        joypad_flag->set_up();
+        break;
+      case 'a':
+        joypad_flag->set_left();
+        break;
+      case 's':
+        joypad_flag->set_down();
+        break;
+      case 'd':
+        joypad_flag->set_right();
+        break;
+      case 'u':
+        joypad_flag->set_select();
+        break;
+      case 'i':
+        joypad_flag->set_start();
+        break;
+      case 'j':
+        joypad_flag->set_a();
+        break;
+      case 'k':
+        joypad_flag->set_b();
+        break;
+      case '\\':
+        clocktroller->Kill();
+        running = false;
+        break;
+      default:
+        break;
+    }
+  }
+}
+
 int main(int argc, char* argv[]) {
   if (argc != 2) {
     printf("Please provide the name of the ROM\n");
@@ -237,7 +281,9 @@ int main(int argc, char* argv[]) {
   initscr();
   clocktroller.Init(rom.data(), rom.size());
   clocktroller.Run();
+  thread input_thread(HandleInput, &clocktroller);
   clocktroller.Wait();
+  input_thread.join();
   endwin();
 //   ViewHistory(&great_library);
   return 0;

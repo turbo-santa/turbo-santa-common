@@ -6,13 +6,14 @@
 #include <thread>
 #include "backend/graphics/graphics_controller.h"
 #include "backend/graphics/screen.h"
-#include "backend/opcode_executor/opcode_executor.h"
 #include "backend/memory/default_module.h"
 #include "backend/memory/dma_transfer.h"
+#include "backend/memory/joypad_module.h"
 #include "backend/memory/mbc_module.h"
 #include "backend/memory/memory_mapper.h"
 #include "backend/memory/primary_flags.h"
 #include "backend/memory/unimplemented_module.h"
+#include "backend/opcode_executor/opcode_executor.h"
 
 namespace back_end {
 namespace clocktroller {
@@ -25,10 +26,12 @@ class Clocktroller {
   void Pause() { is_paused_ = true; }
   void Kill() { is_dead_ = true; }
   void Wait() { thread_.join(); }
+  memory::JoypadFlag* joypad_flag() { return joypad_module_.joypad_flag(); }
 
  private:
   memory::PrimaryFlags primary_flags_;
   memory::DefaultModule default_module_;
+  memory::JoypadModule joypad_module_;
   memory::MBCModule mbc_;
   memory::DMATransferModule dma_transfer_module_;
   memory::UnimplementedModule unimplemented_module_;

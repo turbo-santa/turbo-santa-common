@@ -9,6 +9,7 @@ cc_library(
     "//backend/graphics:screen",
     "//backend/memory:default_module",
     "//backend/memory:dma_transfer",
+    "//backend/memory:joypad_module",
     "//backend/memory:mbc_module",
     "//backend/memory:memory_mapper",
     "//backend/memory:primary_flags",
