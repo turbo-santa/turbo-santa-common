@@ -50,7 +50,7 @@ class LCDStatus : public memory::Flag {
 
   void set_mode(Mode mode) {
     set_flag(flag() & 0b11111100);
-    set_flag(flag() + static_cast<unsigned char>(mode));
+    set_flag(flag() | static_cast<unsigned char>(mode));
   }
 
   void set_coincidence_flag(bool value) { set_bit(2, value); }

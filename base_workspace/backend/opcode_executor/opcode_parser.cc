@@ -1,5 +1,6 @@
 #include "backend/opcode_executor/opcode_parser.h"
 
+#include <fstream>
 #include <sstream>
 #include "backend/decompiler/decompiler.h"
 #include "backend/decompiler/decompiler_factory.h"
@@ -12,6 +13,7 @@ namespace opcode_executor {
 using decompiler::Decompiler;
 using decompiler::DecompilerFactory;
 using decompiler::Instruction;
+using std::ofstream;
 
 namespace {
 uint16_t GetArg1(const Instruction& instruction) {
@@ -174,6 +176,9 @@ bool OpcodeParser::FetchInstructionROM(uint16_t address,
         LOG(INFO) << "Exploring new code path.";
         rom_decompiler_->AddPathStart(jump_address);
         rom_decompiler_->Decompile();
+
+        ofstream file("out.s");
+        rom_decompiler_->PrintToStream(&file);
       }
     }
     return true;

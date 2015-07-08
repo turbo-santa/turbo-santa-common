@@ -14,9 +14,9 @@ namespace graphics {
 static const int kSmallPeriod = 456;
 static const int kLargePeriod = 70224;
 static const int kVBlankLowerBound = kLargePeriod - kSmallPeriod * 10; // Mode 1.
-static const int kOAMLockedLowerBound = 80; // Mode 2.
-static const int kVRAMOAMLockedLowerBound = 172 + kOAMLockedLowerBound; // Mode 3.
-static const int kHBlankLowerBound = 204 + kVRAMOAMLockedLowerBound; // Mode 0.
+static const int kOAMLockedUpperBound = 80; // Mode 2.
+static const int kVRAMOAMLockedUpperBound = 172 + kOAMLockedUpperBound; // Mode 3.
+static const int kHBlankUpperBound = 204 + kVRAMOAMLockedUpperBound; // Mode 0.
 
 static const int kScreenBufferSize = 256; // Square.
 

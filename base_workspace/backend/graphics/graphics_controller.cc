@@ -280,28 +280,8 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
       }
     }
     previous_mode_ = MODE_1;
-  // Mode 0.
-  } else if (time_ % kSmallPeriod > kHBlankLowerBound) {
-    lcd_status->set_mode(LCDStatus::H_BLANK);
-    EnableOAM();
-    EnableVRAM();
-    if (lcd_status->h_blank_interrupt() && previous_mode_ != MODE_0) {
-      SetLCDSTATInterrupt();
-    }
-    previous_mode_ = MODE_0;
-  // Mode 3.
-  } else if (time_ % kSmallPeriod > kVRAMOAMLockedLowerBound) {
-    lcd_status->set_mode(LCDStatus::VRAM_OAM_LOCKED);
-    DisableOAM();
-    DisableVRAM();
-    if (graphics_flags_.lcd_control()->lcd_display_enable() 
-        && previous_mode_ != MODE_3
-        && ly_coordinate->flag() == 0) {
-      Draw(&graphics_flags_, &oam_segment_, &vram_segment_, screen_);
-    }
-    previous_mode_ = MODE_3;
   // Mode 2.
-  } else if (time_ % kSmallPeriod > kOAMLockedLowerBound) {
+  } else if (time_ % kSmallPeriod < kOAMLockedUpperBound) {
     lcd_status->set_mode(LCDStatus::OAM_LOCKED);
     DisableOAM();
     EnableVRAM();
@@ -312,6 +292,26 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
       }
     }
     previous_mode_ = MODE_2;
+  // Mode 3.
+  } else if (time_ % kSmallPeriod < kVRAMOAMLockedUpperBound) {
+    lcd_status->set_mode(LCDStatus::VRAM_OAM_LOCKED);
+    DisableOAM();
+    DisableVRAM();
+    if (graphics_flags_.lcd_control()->lcd_display_enable() 
+        && previous_mode_ != MODE_3
+        && ly_coordinate->flag() == 0) {
+      Draw(&graphics_flags_, &oam_segment_, &vram_segment_, screen_);
+    }
+    previous_mode_ = MODE_3;
+  // Mode 0.
+  } else if (time_ % kSmallPeriod < kHBlankUpperBound) {
+    lcd_status->set_mode(LCDStatus::H_BLANK);
+    EnableOAM();
+    EnableVRAM();
+    if (lcd_status->h_blank_interrupt() && previous_mode_ != MODE_0) {
+      SetLCDSTATInterrupt();
+    }
+    previous_mode_ = MODE_0;
   }
 }
 
