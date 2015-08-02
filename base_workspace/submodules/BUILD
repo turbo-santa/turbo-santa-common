@@ -44,9 +44,9 @@ cc_library(
     "glog/src/glog/raw_logging.h",
   ],
   srcs = [
-    "glog/.libs/libglog.a",
+    "glog/.libs/libglog.so",
   ],
   # defines = ["GOOGLE_STRIP_LOG=1"],
   linkopts = ["-pthread"],
-  linkstatic = 1,
+  # linkstatic = 1,
 )
