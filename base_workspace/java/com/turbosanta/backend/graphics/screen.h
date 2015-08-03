@@ -33,7 +33,6 @@ class ScreenRaster : public back_end::graphics::ScreenRaster {
     args[1].i = static_cast<jint>(y);
     args[2].i = static_cast<jint>(value);
     env->CallVoidMethodA(image_, setMID_, reinterpret_cast<const jvalue*>(&args));
-    // LOG(INFO) << "value = " << (value >> 8 & 0xff) << ", set to = " << static_cast<uint32_t>(Get(y, x));
   }
 
  private:

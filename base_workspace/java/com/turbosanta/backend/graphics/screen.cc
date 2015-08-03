@@ -34,7 +34,7 @@ ScreenRaster::ScreenRaster(JavaVM* jvm, JNIEnv* env, jobject image) :
 
 Screen::Screen(JavaVM* jvm, JNIEnv* env, jobject screen) : 
     jvm_(jvm),
-    screen_(env->NewWeakGlobalRef(screen)),
+    screen_(env->NewGlobalRef(screen)),
     drawMID_(GetDrawMethodID(env, screen)),
     raster_(jvm, env, GetImageJObject(env, screen)) {}
 
