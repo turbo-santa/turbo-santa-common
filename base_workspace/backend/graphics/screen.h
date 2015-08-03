@@ -9,14 +9,31 @@ namespace graphics {
 
 class ScreenRaster {
  public:
-  ScreenRaster() : data_(kScreenWidth * kScreenHeight, 0x00) {}
+  static const int kScreenHeight = 144;
+  static const int kScreenWidth = 160;
+  
+  virtual uint8_t Get(uint32_t y, uint32_t x) const = 0;
 
-  unsigned char Get(unsigned int y, unsigned int x) const {
+  virtual void Set(uint32_t y, uint32_t x, uint8_t value) = 0;
+
+ protected:
+  void Check(unsigned int y, unsigned int x) const {
+    if (y >= kScreenHeight || x >= kScreenWidth) {
+      LOG(FATAL) << "Attempted access out of bounds: y = " << y << " x = " << x;
+    }
+  }
+};
+
+class DefaultRaster : public ScreenRaster {
+ public:
+  DefaultRaster() : data_(kScreenWidth * kScreenHeight, 0x00) {}
+
+  uint8_t Get(uint32_t y, uint32_t x) const override {
     Check(y, x);
     return data_[x + kScreenWidth * y];
   }
 
-  void Set(unsigned int y, unsigned int x, unsigned char value) {
+  virtual void Set(uint32_t y, uint32_t x, uint8_t value) {
     Check(y, x);
     data_[x + kScreenWidth * y] = value;
   }
@@ -25,18 +42,16 @@ class ScreenRaster {
   static const int kScreenWidth = 160;
   
  private:
-  void Check(unsigned int y, unsigned int x) const {
-    if (y >= kScreenHeight || x >= kScreenWidth) {
-      LOG(FATAL) << "Attempted access out of bounds: y = " << y << " x = " << x;
-    }
-  }
-
   std::vector<unsigned char> data_;
 };
 
 class Screen {
  public:
-  virtual void Draw(const ScreenRaster& raster) = 0;
+  virtual void Draw() = 0;
+
+  virtual const ScreenRaster& raster() = 0;
+
+  virtual ScreenRaster* mutable_raster() = 0;
 };
 
 } // namespace graphics

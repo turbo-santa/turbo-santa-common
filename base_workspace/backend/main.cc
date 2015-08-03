@@ -29,6 +29,7 @@ using back_end::clocktroller::Clocktroller;
 // using back_end::debugger::RegisterDelta;
 // using back_end::debugger::MemoryDelta;
 // using back_end::debugger::GreatLibrary;
+using back_end::graphics::DefaultRaster;
 using back_end::graphics::Screen;
 using back_end::graphics::ScreenRaster;
 using back_end::memory::JoypadFlag;
@@ -46,11 +47,11 @@ static const vector<unsigned char> kNintendoLogo = {
 
 class TerminalScreen : public Screen {
  public:
-  virtual void Draw(const ScreenRaster& raster) {
+  virtual void Draw() {
     const int realized_width = std::min(COLS, LINES);
     for (int y = 0; y < ScreenRaster::kScreenHeight; y++) {
       for (int x = 0; x < ScreenRaster::kScreenWidth; x++) {
-        unsigned char pixel_shade = raster.Get(y, x);
+        unsigned char pixel_shade = raster_.Get(y, x);
         char real_pixel;
         if (pixel_shade <= 64) {
           real_pixel = ' ';
@@ -68,6 +69,13 @@ class TerminalScreen : public Screen {
     }
     refresh();
   }
+
+  ScreenRaster* mutable_raster() { return &raster_; }
+
+  const ScreenRaster& raster() { return raster_; }
+
+ private:
+  DefaultRaster raster_;
 };
 
 vector<unsigned char> BuildROM() {

@@ -103,17 +103,17 @@ void RenderSprite(SpriteAttribute* sprite_attribute,
 }
 
 void WriteToScreen(GraphicsFlags* graphics_flags, Screen* screen, vector<unsigned char>* screen_buffer_) {
-  ScreenRaster raster;
+  ScreenRaster* raster = screen->mutable_raster();
   const int y_offset = graphics_flags->scroll_y()->flag();
   const int x_offset = graphics_flags->scroll_x()->flag();
   for (int y = 0; y < ScreenRaster::kScreenHeight; y++) {
     for (int x = 0; x < ScreenRaster::kScreenWidth; x++) {
-      raster.Set(y, x, (*screen_buffer_)[(x + x_offset) + (y + y_offset) * kScreenBufferSize]);
+      raster->Set(y, x, (*screen_buffer_)[(x + x_offset) + (y + y_offset) * kScreenBufferSize]);
     }
   }
 
   LOG(INFO) << "Rendering screen.";
-  screen->Draw(raster);
+  screen->Draw();
 }
 
 void RenderLowPrioritySprites(GraphicsFlags* graphics_flags, 
