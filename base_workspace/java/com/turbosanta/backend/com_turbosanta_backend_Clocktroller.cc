@@ -5,6 +5,7 @@
 #include "backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/handle.h"
+#include "submodules/glog/src/glog/logging.h"
 
 using std::vector;
 using back_end::clocktroller::Clocktroller;
@@ -32,6 +33,7 @@ Screen* GetScreen(JNIEnv* env, jobject clocktroller_obj) {
 void Java_com_turbosanta_backend_Clocktroller_init(JNIEnv* env, jobject obj, jbyteArray rom, jlong length) {
   // Create clocktroller.
   Clocktroller* clocktroller = new Clocktroller(GetScreen(env, obj));
+  google::InstallFailureSignalHandler();
 
   // Init with ROM data.
   vector<uint8_t> buffer(length);

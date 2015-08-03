@@ -46,6 +46,7 @@ cc_binary(
     "//backend/clocktroller",
     "//backend/graphics:screen",
     "//java/com/turbosanta/backend/graphics:screen_cc",
+    "//submodules:glog",
     ":jni_headers",
   ],
   linkshared = 1,

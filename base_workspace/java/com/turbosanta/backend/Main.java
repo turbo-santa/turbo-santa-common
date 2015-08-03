@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import java.io.File;
 import java.io.FileInputStream;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
 import com.turbosanta.backend.graphics.Screen;
 import com.turbosanta.backend.graphics.DrawableArea;
 
@@ -24,9 +25,9 @@ public class Main {
   }
 
   private static class FrameWrapper implements DrawableArea {
-    private JFrame frame;
+    private GameFrame frame;
 
-    public FrameWrapper(JFrame frame) {
+    public FrameWrapper(GameFrame frame) {
       this.frame = frame;
     }
 
@@ -43,6 +44,11 @@ public class Main {
     @Override
     public int getWidth() {
       return frame.getWidth();
+    }
+
+    @Override
+    public void repaint() {
+      frame.repaint();
     }
   }
 
@@ -63,7 +69,7 @@ public class Main {
     Clocktroller clocktroller = new Clocktroller(screen);
     clocktroller.init(rom, rom.length);
     clocktroller.run();
-    clocktroller.waitUntilDone();
+    // clocktroller.waitUntilDone();
   }
 
   public static byte[] readROMFile(String fileName) throws Exception {
