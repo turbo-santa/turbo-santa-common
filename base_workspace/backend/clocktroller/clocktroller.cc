@@ -64,7 +64,6 @@ void Clocktroller::ExecutionLoop() {
         is_dead_ = true;
       } else {
         graphics_controller_->Tick(ticks);
-        joypad_module_.Tick(ticks);
       }
     }
   }

@@ -5,7 +5,7 @@ java_library(
     "//java/com/turbosanta/backend/graphics:screen_java",
   ],
   data = [":libclocktrollerjni.so"],
-  visibility = ["//java/com/turbosanta/backend:__pkg__"],
+  visibility = ["//java/com/turbosanta/backend:__subpackages__"],
 )
 
 cc_binary(

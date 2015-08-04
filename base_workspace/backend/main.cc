@@ -238,28 +238,28 @@ void HandleInput(Clocktroller* clocktroller) {
   while (running) {
     switch (getch()) {
       case 'w':
-        joypad_flag->set_up();
+        joypad_flag->set_up(true);
         break;
       case 'a':
-        joypad_flag->set_left();
+        joypad_flag->set_left(true);
         break;
       case 's':
-        joypad_flag->set_down();
+        joypad_flag->set_down(true);
         break;
       case 'd':
-        joypad_flag->set_right();
+        joypad_flag->set_right(true);
         break;
       case 'u':
-        joypad_flag->set_select();
+        joypad_flag->set_select(true);
         break;
       case 'i':
-        joypad_flag->set_start();
+        joypad_flag->set_start(true);
         break;
       case 'j':
-        joypad_flag->set_a();
+        joypad_flag->set_a(true);
         break;
       case 'k':
-        joypad_flag->set_b();
+        joypad_flag->set_b(true);
         break;
       case '\\':
         clocktroller->Kill();

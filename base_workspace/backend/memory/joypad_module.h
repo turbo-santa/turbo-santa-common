@@ -51,49 +51,61 @@ class JoypadFlag : public Flag {
     is_direction_keys_selected_ = !(value & 0b00010000);
   }
 
-  void set_down() { set_direction_keys(3); }
-  void set_up() { set_direction_keys(2); }
-  void set_left() { set_direction_keys(1); }
-  void set_right() { set_direction_keys(0); }
-  void set_start() { set_button_keys(3); }
-  void set_select() { set_button_keys(2); }
-  void set_b() { set_button_keys(1); }
-  void set_a() { set_button_keys(0); }
+  void set_down(bool is_pushed) { set_direction_keys(3, is_pushed); }
+  void set_up(bool is_pushed) { set_direction_keys(2, is_pushed); }
+  void set_left(bool is_pushed) { set_direction_keys(1, is_pushed); }
+  void set_right(bool is_pushed) { set_direction_keys(0, is_pushed); }
+  void set_start(bool is_pushed) { set_button_keys(3, is_pushed); }
+  void set_select(bool is_pushed) { set_button_keys(2, is_pushed); }
+  void set_b(bool is_pushed) { set_button_keys(1, is_pushed); }
+  void set_a(bool is_pushed) { set_button_keys(0, is_pushed); }
   void clear() { button_keys_ = 0b00001111; direction_keys_ = 0b00001111; }
 
-  void DecrementClearCounter(int amount) {
-    if (clear_counter_ <= 0) {
-      return;
-    }
-
-    clear_counter_ -= amount;
-    if (clear_counter_ <= 0) {
-      LOG(INFO) << "Clearing joypad input.";
-      clear();
-    }
-  }
-
  private:
-  static const int kClearCounterStart = 400000;
   bool is_button_keys_selected_ = false;
   bool is_direction_keys_selected_ = false;
   uint8_t button_keys_ = 0b00001111;
   uint8_t direction_keys_ = 0b00001111;
-  int clear_counter_ = 0;
   InterruptFlag* interrupt_flag_;
 
   void set_button_keys(int value) {
     LOG(INFO) << "Setting joypad input.";
     button_keys_ &= ~(1 << value);
-    clear_counter_ = kClearCounterStart;
     interrupt_flag_->set_joypad(true);
+  }
+
+  void unset_button_keys(int value) {
+    LOG(INFO) << "Unsetting joypad input.";
+    button_keys_ |= (1 << value);
+    interrupt_flag_->set_joypad(true);
+  }
+
+  void set_button_keys(int value, bool is_set) {
+    if (is_set) {
+      set_button_keys(value);
+    } else {
+      unset_button_keys(value);
+    }
   }
 
   void set_direction_keys(int value) {
     LOG(INFO) << "Setting joypad input.";
     direction_keys_ &= ~(1 << value);
-    clear_counter_ = kClearCounterStart;
     interrupt_flag_->set_joypad(true);
+  }
+
+  void unset_direction_keys(int value) {
+    LOG(INFO) << "Unsetting joypad input.";
+    direction_keys_ |= (1 << value);
+    interrupt_flag_->set_joypad(true);
+  }
+
+  void set_direction_keys(int value, bool is_set) {
+    if (is_set) {
+      set_direction_keys(value);
+    } else {
+      unset_direction_keys(value);
+    }
   }
 };
 
@@ -102,10 +114,6 @@ class JoypadModule : public Module {
   void Init(InterruptFlag* interrupt_flag) {
     joypad_flag_ = std::unique_ptr<JoypadFlag>(new JoypadFlag(interrupt_flag));
     add_flag(joypad_flag_.get());
-  }
-
-  void Tick(unsigned int number_of_cycles) {
-    joypad_flag_->DecrementClearCounter(number_of_cycles);
   }
 
   JoypadFlag* joypad_flag() { return joypad_flag_.get(); }

@@ -14,17 +14,15 @@ java_library(
   srcs = [
     "Backend.java",
     "BackendUtils.java",
+    "ButtonType.java",
   ],
   deps = [
     "//java/com/turbosanta/backend/graphics:drawable_area",
     "//java/com/turbosanta/backend/graphics:screen_java",
     "//java/com/turbosanta/backend/clocktroller",
+    "//java/com/turbosanta/backend/joypad",
   ],
   visibility = ["//visibility:public"],
-)
-
-java_library(
-  name = "backend_utils",
 )
 
 genrule(
