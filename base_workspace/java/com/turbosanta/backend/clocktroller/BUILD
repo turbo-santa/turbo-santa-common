@@ -11,8 +11,8 @@ java_library(
 cc_binary(
   name = "libclocktrollerjni.so",
   srcs = [
-    "com_turbosanta_backend_Clocktroller.cc",
-    "com_turbosanta_backend_Clocktroller.h",
+    "com_turbosanta_backend_clocktroller_Clocktroller.cc",
+    "com_turbosanta_backend_clocktroller_Clocktroller.h",
   ],
   deps = [
     "//backend/clocktroller",

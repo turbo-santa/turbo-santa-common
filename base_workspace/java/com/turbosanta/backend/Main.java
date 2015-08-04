@@ -2,14 +2,12 @@ package com.turbosanta.backend;
 
 import java.awt.Color;
 import java.awt.Graphics;
-import java.io.File;
-import java.io.FileInputStream;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
-import com.turbosanta.backend.graphics.Screen;
 import com.turbosanta.backend.graphics.DrawableArea;
 
 import static java.lang.System.out;
+import static com.turbosanta.backend.Backend.BackendFactory;
+import static com.turbosanta.backend.BackendUtils.readROMFile;
 
 public class Main {
   private static class GameFrame extends JFrame {
@@ -21,7 +19,6 @@ public class Main {
       setSize(160 * 3, 144 * 3);
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
-
   }
 
   private static class FrameWrapper implements DrawableArea {
@@ -57,28 +54,17 @@ public class Main {
     //   out.println("Must provide path to ROM file.");
     //   return;
     // }
+    String romPath = "roms/tetris.gb"; // args[1];
+
+    BackendFactory factory = new BackendFactory();
+    factory.setROM(readROMFile(romPath));
+
     GameFrame frame = new GameFrame();
     frame.setVisible(true);
-    FrameWrapper wrapper = new FrameWrapper(frame);
-    Screen screen = new Screen(wrapper);
-    screen.init();
+    factory.setDrawableArea(new FrameWrapper(frame));
 
-    String romPath = "roms/tetris.gb"; // args[1];
-    byte[] rom = readROMFile(romPath);
-
-    Clocktroller clocktroller = new Clocktroller(screen);
-    clocktroller.init(rom, rom.length);
-    clocktroller.run();
-    // clocktroller.waitUntilDone();
+    Backend backend = factory.build();
+    backend.run();
   }
 
-  public static byte[] readROMFile(String fileName) throws Exception {
-    File file = new File(fileName);
-    long size = file.length();
-    byte[] rom = new byte[(int) size];
-    FileInputStream stream = new FileInputStream(file);
-    stream.read(rom);
-    stream.close();
-    return rom;
-  }
 }

@@ -1,4 +1,4 @@
-package com.turbosanta.backend;
+package com.turbosanta.backend.clocktroller;
 
 import com.turbosanta.backend.graphics.Screen;
 
@@ -21,6 +21,4 @@ public class Clocktroller {
   public native void pause();
 
   public native void kill();
-
-  public native void waitUntilDone();
 }

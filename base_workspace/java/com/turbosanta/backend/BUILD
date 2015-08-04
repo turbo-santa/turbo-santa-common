@@ -3,11 +3,28 @@ java_binary(
   srcs = ["Main.java"],
   deps = [
     "//java/com/turbosanta/backend/graphics:drawable_area",
-    "//java/com/turbosanta/backend/graphics:screen_java",
-    "//java/com/turbosanta/backend/clocktroller",
+    ":backend",
   ],
   main_class = "com.turbosanta.backend.Main",
   jvm_flags = ["-Xss515m"],
+)
+
+java_library(
+  name = "backend",
+  srcs = [
+    "Backend.java",
+    "BackendUtils.java",
+  ],
+  deps = [
+    "//java/com/turbosanta/backend/graphics:drawable_area",
+    "//java/com/turbosanta/backend/graphics:screen_java",
+    "//java/com/turbosanta/backend/clocktroller",
+  ],
+  visibility = ["//visibility:public"],
+)
+
+java_library(
+  name = "backend_utils",
 )
 
 genrule(
@@ -35,5 +52,5 @@ cc_library(
     ":jni_md.h",
   ],
   includes = ["."],
-  visibility = ["//:__subpackages__"],
+  visibility = ["//java/com/turbosanta/backend:__subpackages__"],
 )
