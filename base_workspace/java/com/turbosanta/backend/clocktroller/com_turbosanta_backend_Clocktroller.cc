@@ -1,4 +1,4 @@
-#include "java/com/turbosanta/backend/com_turbosanta_backend_Clocktroller.h"
+#include "java/com/turbosanta/backend/clocktroller/com_turbosanta_backend_Clocktroller.h"
 
 #include <vector>
 #include "backend/clocktroller/clocktroller.h"

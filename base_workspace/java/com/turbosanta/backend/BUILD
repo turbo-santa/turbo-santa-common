@@ -4,19 +4,10 @@ java_binary(
   deps = [
     "//java/com/turbosanta/backend/graphics:drawable_area",
     "//java/com/turbosanta/backend/graphics:screen_java",
-    ":clocktroller",
+    "//java/com/turbosanta/backend/clocktroller",
   ],
   main_class = "com.turbosanta.backend.Main",
   jvm_flags = ["-Xss515m"],
-)
-
-java_library(
-  name = "clocktroller",
-  srcs = ["Clocktroller.java"],
-  deps = [
-    "//java/com/turbosanta/backend/graphics:screen_java",
-  ],
-  data = [":libclocktrollerjni.so"],
 )
 
 genrule(
@@ -34,22 +25,6 @@ genrule(
   }),
   outs = ["jni_md.h"],
   cmd = "cp -f $< $@",
-)
-
-cc_binary(
-  name = "libclocktrollerjni.so",
-  srcs = [
-    "com_turbosanta_backend_Clocktroller.cc",
-    "com_turbosanta_backend_Clocktroller.h",
-  ],
-  deps = [
-    "//backend/clocktroller",
-    "//backend/graphics:screen",
-    "//java/com/turbosanta/backend/graphics:screen_cc",
-    "//submodules:glog",
-    ":jni_headers",
-  ],
-  linkshared = 1,
 )
 
 cc_library(

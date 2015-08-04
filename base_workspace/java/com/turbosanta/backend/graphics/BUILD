@@ -3,7 +3,9 @@ java_library(
   srcs = ["Screen.java"],
   deps = [":drawable_area"],
   data = [":libscreenjni.so"],
-  visibility = ["//java/com/turbosanta/backend:__pkg__"],
+  visibility = [
+    "//java/com/turbosanta/backend:__subpackages__",
+  ],
 )
 
 java_library(
@@ -34,5 +36,7 @@ cc_library(
     "//backend/graphics:screen",
     "//java/com/turbosanta/backend:jni_headers",
   ],
-  visibility = ["//java/com/turbosanta/backend:__pkg__"],
+  visibility = [
+    "//java/com/turbosanta/backend:__subpackages__",
+  ],
 )
