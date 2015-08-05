@@ -88,10 +88,6 @@ class UnimplementedModule : public Module {
     add_flag(&sound_on_off_);
     add_flag(&serial_data_transfer_);
     add_flag(&serial_control_);
-    add_flag(&timer_divider_);
-    add_flag(&timer_counter_);
-    add_flag(&timer_modulo_);
-    add_flag(&timer_control_);
   }
 
  private:
@@ -133,13 +129,13 @@ class UnimplementedModule : public Module {
   UnimplementedFlag sound_chan_ctrl_ =           UnimplementedFlag(0xff24, "Sound - Channel Control");
   UnimplementedFlag sound_output_terminal_ =     UnimplementedFlag(0xff25, "Sound - Output Terminal");
   UnimplementedFlag sound_on_off_ =              UnimplementedFlag(0xff26, "Sound - ON/OFF");
-//  UnimplementedJoypadFlag joypad_ =              UnimplementedJoypadFlag(0xff00);
+  // UnimplementedJoypadFlag joypad_ =              UnimplementedJoypadFlag(0xff00);
   UnimplementedFlag serial_data_transfer_ =      UnimplementedFlag(0xff01, "Serial - Data Transfer");
   UnimplementedFlag serial_control_ =            UnimplementedFlag(0xff02, "Serial - Control");
-  UnimplementedFlag timer_divider_ =             UnimplementedFlag(0xff04, "Timer - Divider");
-  UnimplementedFlag timer_counter_ =             UnimplementedFlag(0xff05, "Timer - Counter");
-  UnimplementedFlag timer_modulo_ =              UnimplementedFlag(0xff06, "Timer - Modulo");
-  UnimplementedFlag timer_control_ =             UnimplementedFlag(0xff07, "Timer - Control");
+  // UnimplementedFlag timer_divider_ =             UnimplementedFlag(0xff04, "Timer - Divider");
+  // UnimplementedFlag timer_counter_ =             UnimplementedFlag(0xff05, "Timer - Counter");
+  // UnimplementedFlag timer_modulo_ =              UnimplementedFlag(0xff06, "Timer - Modulo");
+  // UnimplementedFlag timer_control_ =             UnimplementedFlag(0xff07, "Timer - Control");
 };
 
 } // namespace memory

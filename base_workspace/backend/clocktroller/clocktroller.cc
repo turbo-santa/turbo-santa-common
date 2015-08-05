@@ -28,6 +28,9 @@ void Clocktroller::Init(unsigned char* rom, long length) {
   joypad_module_.Init(primary_flags_.interrupt_flag());
   memory_mapper->RegisterModule(joypad_module_);
 
+  timer_module_.Init(primary_flags_.interrupt_flag());
+  memory_mapper->RegisterModule(timer_module_);
+
   mbc_.Init(rom, length);
   memory_mapper->RegisterModule(mbc_);
 
@@ -64,6 +67,7 @@ void Clocktroller::ExecutionLoop() {
         is_dead_ = true;
       } else {
         graphics_controller_->Tick(ticks);
+        timer_module_.Tick(ticks);
       }
     }
   }

@@ -39,6 +39,7 @@ cc_library(
   name = "flags",
   hdrs = ["flags.h"],
   deps = [":memory_segment"],
+  visibility = ["//visibility:public"],
 )
 
 cc_library(

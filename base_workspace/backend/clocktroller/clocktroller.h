@@ -9,6 +9,7 @@
 #include "backend/memory/default_module.h"
 #include "backend/memory/dma_transfer.h"
 #include "backend/memory/joypad_module.h"
+#include "backend/memory/timer/timer_module.h"
 #include "backend/memory/mbc_module.h"
 #include "backend/memory/memory_mapper.h"
 #include "backend/memory/primary_flags.h"
@@ -32,6 +33,7 @@ class Clocktroller {
   memory::PrimaryFlags primary_flags_;
   memory::DefaultModule default_module_;
   memory::JoypadModule joypad_module_;
+  memory::timer::TimerModule timer_module_;
   memory::MBCModule mbc_;
   memory::DMATransferModule dma_transfer_module_;
   memory::UnimplementedModule unimplemented_module_;
