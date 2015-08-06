@@ -15,8 +15,8 @@ cc_binary(
     "com_turbosanta_backend_clocktroller_Clocktroller.h",
   ],
   deps = [
-    "//backend/clocktroller",
-    "//backend/graphics:screen",
+    "//cc/backend/clocktroller",
+    "//cc/backend/graphics:screen",
     "//java/com/turbosanta/backend/graphics:screen_cc",
     "//submodules:glog",
     "//java/com/turbosanta/backend:jni_headers",

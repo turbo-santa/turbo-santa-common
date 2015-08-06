@@ -1,8 +1,8 @@
 #include "java/com/turbosanta/backend/clocktroller/com_turbosanta_backend_clocktroller_Clocktroller.h"
 
 #include <vector>
-#include "backend/clocktroller/clocktroller.h"
-#include "backend/graphics/screen.h"
+#include "cc/backend/clocktroller/clocktroller.h"
+#include "cc/backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/handle.h"
 #include "submodules/glog/src/glog/logging.h"

@@ -21,7 +21,7 @@ cc_binary(
     "com_turbosanta_backend_graphics_Screen.cc",
   ],
   deps = [
-    "//backend/graphics:screen",
+    "//cc/backend/graphics:screen",
     "//java/com/turbosanta/backend:jni_headers",
     ":screen_cc",
   ],
@@ -33,7 +33,7 @@ cc_library(
   hdrs = ["screen.h"],
   srcs = ["screen.cc"],
   deps = [
-    "//backend/graphics:screen",
+    "//cc/backend/graphics:screen",
     "//java/com/turbosanta/backend:jni_headers",
   ],
   visibility = [

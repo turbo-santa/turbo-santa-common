@@ -1,7 +1,7 @@
 #include "java/com/turbosanta/backend/joypad/com_turbosanta_backend_joypad_Joypad.h"
 
-#include "backend/clocktroller/clocktroller.h"
-#include "backend/memory/joypad_module.h"
+#include "cc/backend/clocktroller/clocktroller.h"
+#include "cc/backend/memory/joypad_module.h"
 #include "java/com/turbosanta/backend/handle.h"
 
 using back_end::clocktroller::Clocktroller;

@@ -13,8 +13,8 @@ cc_binary(
     "com_turbosanta_backend_joypad_Joypad.h",
   ],
   deps = [
-    "//backend/clocktroller",
-    "//backend/memory:joypad_module",
+    "//cc/backend/clocktroller",
+    "//cc/backend/memory:joypad_module",
     "//java/com/turbosanta/backend:jni_headers",
   ],
   linkshared = 1,

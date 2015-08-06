@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <jni.h>
-#include "backend/graphics/screen.h"
+#include "cc/backend/graphics/screen.h"
 
 namespace java_com_turbosanta_backend {
 namespace graphics {

@@ -1,6 +1,6 @@
 #include "java/com/turbosanta/backend/graphics/com_turbosanta_backend_graphics_Screen.h"
 
-#include "backend/graphics/screen.h"
+#include "cc/backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/handle.h"
 
