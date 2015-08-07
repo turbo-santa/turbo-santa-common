@@ -8,7 +8,7 @@
 #include "cc/backend/memory/memory_segment.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 static const std::vector<unsigned char> kBootROM = {
@@ -63,6 +63,6 @@ class InternalROMFlag : public Flag {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_INTERNAL_ROM_H_

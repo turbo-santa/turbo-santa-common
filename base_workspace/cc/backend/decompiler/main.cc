@@ -15,9 +15,9 @@ using std::ostream;
 using std::string;
 using std::unique_ptr;
 using std::vector;
-using back_end::decompiler::Decompiler;
-using back_end::decompiler::DecompilerFactory;
-using back_end::decompiler::VectorROMBridge;
+using backend::decompiler::Decompiler;
+using backend::decompiler::DecompilerFactory;
+using backend::decompiler::VectorROMBridge;
 
 unique_ptr<vector<unsigned char>> ReadROM(string file_name) {
   unique_ptr<vector<uint8_t>> rom = unique_ptr<vector<uint8_t>>(new vector<uint8_t>());

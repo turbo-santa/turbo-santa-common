@@ -2,7 +2,7 @@
 
 #include <ncurses.h>
 
-namespace back_end {
+namespace backend {
 namespace graphics {
 
 using std::vector;
@@ -316,4 +316,4 @@ void GraphicsController::Tick(unsigned int number_of_cycles) {
 }
 
 } // namespace graphics
-} // namespace back_end
+} // namespace backend

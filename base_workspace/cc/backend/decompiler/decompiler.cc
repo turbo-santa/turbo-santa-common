@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <sstream>
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 using std::endl;
@@ -232,4 +232,4 @@ string Decompiler::PrintInstruction(uint16_t address) {
 }
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend

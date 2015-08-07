@@ -4,7 +4,7 @@
 #include <functional>
 #include <vector>
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class MemorySegment {
@@ -71,5 +71,5 @@ class NullMemorySegment : public ContiguousMemorySegment {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_SEGMENT_H_

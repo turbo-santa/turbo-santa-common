@@ -3,7 +3,7 @@
 
 #include "cc/backend/memory/memory_segment.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class RAMSegment : public ContiguousMemorySegment {
@@ -31,6 +31,6 @@ class RAMSegment : public ContiguousMemorySegment {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_RAM_SEGMENT_H_

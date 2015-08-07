@@ -1,6 +1,6 @@
 #include "cc/backend/opcode_executor/opcodes.h"
 
-namespace back_end {
+namespace backend {
 namespace opcodes {
 
 std::vector<Opcode> ToList2(std::vector<PartialOpcodeExtraReg> partial_opcodes, OpcodeHandler handler) {
@@ -51,5 +51,5 @@ std::map<unsigned short, Opcode> ToMap(std::vector<Opcode> opcode_list) {
     return opcode_map;
 }
 
-} // namespace back_end
+} // namespace backend
 } // namespace opcodes

@@ -1,7 +1,7 @@
 #include "cc/backend/memory/memory_mapper.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 using std::vector;
@@ -47,4 +47,4 @@ void MemoryMapper::ForceWrite(unsigned short address, unsigned char value) {
 }
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend

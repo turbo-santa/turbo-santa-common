@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 using std::unique_ptr;
@@ -268,4 +268,4 @@ void MBC1::SetRAMEnabled(unsigned char value) {
 }
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend

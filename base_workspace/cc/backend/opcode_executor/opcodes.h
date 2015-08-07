@@ -6,13 +6,13 @@
 #include <string>
 #include <vector>
 
-namespace back_end {
+namespace backend {
 namespace handlers {
 struct ExecutorContext;
 }
 }
 
-namespace back_end {
+namespace backend {
 namespace opcodes {
 
 typedef std::function<int(handlers::ExecutorContext* context)> OpcodeHandler;
@@ -53,7 +53,7 @@ std::vector<Opcode> Flatten(std::vector<std::vector<Opcode>> to_flatten);
 
 std::map<unsigned short, Opcode> ToMap(std::vector<Opcode> opcode_list);
 
-} // namespace back_end
+} // namespace backend
 } // namespace opcodes
 
 #endif // TURBO_SANTA_COMMON_BACK_END_OPCODES_H_

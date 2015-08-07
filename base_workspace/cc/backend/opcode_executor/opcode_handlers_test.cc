@@ -13,7 +13,7 @@
 #include "cc/test_harness/test_harness.h"
 #include "cc/test_harness/test_harness_utils.h"
 
-namespace back_end {
+namespace backend {
 namespace handlers {
   
 unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned char opcode);
@@ -2216,4 +2216,4 @@ TEST_F(OpcodeHandlersTest, Interrupt) {
 }
 
 } // namespace handlers
-} // namespace back_end
+} // namespace backend

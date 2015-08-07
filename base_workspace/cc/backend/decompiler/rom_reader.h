@@ -10,7 +10,7 @@
 #include "cc/backend/decompiler/raw_instruction.h"
 #include "cc/backend/decompiler/rom_bridge.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 class ROMReader {
@@ -30,6 +30,6 @@ class ROMReader {
 };
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACKEND_ROM_READER_H_

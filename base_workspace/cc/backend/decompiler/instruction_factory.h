@@ -7,7 +7,7 @@
 #include "cc/backend/decompiler/instruction.h"
 #include "cc/backend/decompiler/raw_instruction.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 class ParameterFactory {
@@ -161,6 +161,6 @@ class InstructionFactory {
 };
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACKEND_INSTRUCTION_FACTORY_H_

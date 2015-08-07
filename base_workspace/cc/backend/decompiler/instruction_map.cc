@@ -4,7 +4,7 @@
 #include "instruction_factory_helpers.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 namespace {
@@ -560,4 +560,4 @@ std::map<Register, std::string> CreateRegisterMap() {
 }
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend

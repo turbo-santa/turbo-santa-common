@@ -14,7 +14,7 @@
 #include "cc/backend/decompiler/rom_bridge.h"
 #include "cc/backend/decompiler/rom_reader.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 class Decompiler {
@@ -55,6 +55,6 @@ class Decompiler {
 };
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACKEND_DECOMPILER_H_

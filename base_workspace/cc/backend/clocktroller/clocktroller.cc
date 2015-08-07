@@ -2,7 +2,7 @@
 
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace clocktroller {
 
 using std::unique_ptr;
@@ -74,4 +74,4 @@ void Clocktroller::ExecutionLoop() {
 }
 
 } // namespace clocktroller
-} // namespace back_end
+} // namespace backend

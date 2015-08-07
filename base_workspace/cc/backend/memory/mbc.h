@@ -10,13 +10,13 @@ namespace test_harness {
 class TestHarness;
 } // namespace test_harness
 
-namespace back_end {
+namespace backend {
 namespace clocktroller {
 class ClocktrollerTest;
 } // namespace clocktroller
-} // namespace back_end
+} // namespace backend
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class ROMBank;
@@ -223,5 +223,5 @@ class MBC1 : public MBC {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_MBC_H_

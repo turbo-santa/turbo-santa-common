@@ -4,19 +4,19 @@
 #include "cc/test_harness/test_harness.h"
 #include "cc/test_harness/test_harness_utils.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
     class MemoryMapper;
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
-namespace back_end {
+namespace backend {
 namespace handlers {
   class OpcodeExecutor;
 } // namespace opcode_executor
-} // namespace back_end
+} // namespace backend
 
-namespace back_end {
+namespace backend {
 namespace clocktroller {
 
 handlers::OpcodeExecutor* parser = new handlers::OpcodeExecutor();
@@ -28,5 +28,5 @@ class ClocktrollerTest : public cc/test_harness::TestHarness {
 };
 
 } // namespace clocktroller
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_TEST_H

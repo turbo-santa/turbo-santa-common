@@ -8,7 +8,7 @@
 #include "submodules/glog/src/glog/logging.h"
 
 using std::vector;
-using back_end::clocktroller::Clocktroller;
+using backend::clocktroller::Clocktroller;
 using java_com_turbosanta_backend::graphics::Screen;
 using java_com_turbosanta_backend::setHandle;
 using java_com_turbosanta_backend::getHandle;

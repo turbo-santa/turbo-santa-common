@@ -8,7 +8,7 @@
 #include "cc/backend/memory/interrupt_flag.h"
 #include "cc/backend/memory/vram_segment.h"
 
-namespace back_end {
+namespace backend {
 namespace graphics {
 
 static const int kSmallPeriod = 456;
@@ -56,6 +56,6 @@ class GraphicsController : public memory::Module {
 };
 
 } // namespace graphics
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_CONTROLLER_H_

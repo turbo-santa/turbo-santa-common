@@ -3,7 +3,7 @@
 #include "cc/backend/opcode_executor/opcodes.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace opcode_executor {
 
 using decompiler::ArgumentType;
@@ -1617,4 +1617,4 @@ int HaltAndCatchFire(handlers::ExecutorContext*) {
 }
 
 } // namespace opcode_executor
-} // namespace back_end
+} // namespace backend

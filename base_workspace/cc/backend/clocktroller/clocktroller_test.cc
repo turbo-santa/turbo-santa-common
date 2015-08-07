@@ -7,7 +7,7 @@
 #include "submodules/glog/src/glog/logging.h"
 #include <vector>
 
-namespace back_end {
+namespace backend {
 namespace clocktroller {
     
 using Register = test_harness::RegisterNameValuePair;
@@ -85,6 +85,4 @@ TEST_F(ClocktrollerTest, DISABLED_InstructionRuntime) {
   
     
 } // namespace clocktroller
-} // namespace back_end
-
-
+} // namespace backend

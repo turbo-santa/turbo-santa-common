@@ -5,21 +5,21 @@
 #include <memory>
 #include "cc/backend/memory/memory_mapper_rom_bridge.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 class Decompiler;
 class Instruction;
 class ROMReader;
 } // namespace decompiler
-} // namespace back_end
+} // namespace backend
 
-namespace back_end {
+namespace backend {
 namespace memory {
 class MemoryMapper;
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
-namespace back_end {
+namespace backend {
 namespace opcode_executor {
 
 class OpcodeParser {
@@ -55,6 +55,6 @@ class OpcodeParser {
 };
 
 } // namespace opcode_executor
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_PARSER_H_

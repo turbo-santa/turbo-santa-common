@@ -3,7 +3,7 @@
 #include "cc/backend/memory/memory_mapper.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace graphics {
 
 void DMATransfer::Write(unsigned short, unsigned char value) {
@@ -25,4 +25,4 @@ void DMATransfer::Write(unsigned short, unsigned char value) {
 }
 
 } // namespace graphics
-} // namespace back_end
+} // namespace backend

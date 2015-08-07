@@ -5,7 +5,7 @@
 #include "cc/backend/memory/flags.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 namespace timer {
 
@@ -30,6 +30,6 @@ class DividerFlag : public Flag {
 
 } // namespace timer
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_TIMER_DIVIDER_FLAG_H_

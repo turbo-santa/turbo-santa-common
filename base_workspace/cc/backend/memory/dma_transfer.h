@@ -6,7 +6,7 @@
 #include "cc/backend/memory/memory_mapper.h"
 #include "cc/backend/memory/module.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class DMATransferFlag : public Flag {
@@ -44,6 +44,6 @@ class DMATransferModule : public Module {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_DMA_TRANSFER_H_

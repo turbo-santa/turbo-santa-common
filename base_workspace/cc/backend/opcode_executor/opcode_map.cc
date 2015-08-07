@@ -4,7 +4,7 @@
 #include <vector>
 #include "cc/backend/opcode_executor/opcode_handlers.h"
 
-namespace back_end {
+namespace backend {
 namespace opcode_executor {
 
 using std::vector;
@@ -347,4 +347,4 @@ std::map<uint16_t, OpcodeHandler> CreateOpcodeMap() {
 }
 
 } // namespace opcodes
-} // namespace back_end
+} // namespace backend

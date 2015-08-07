@@ -4,7 +4,7 @@
 #include <vector>
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace graphics {
 
 class ScreenRaster {
@@ -55,6 +55,6 @@ class Screen {
 };
 
 } // namespace graphics
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_GRAPHICS_SCREEN_H_

@@ -16,7 +16,7 @@
 #include "cc/backend/memory/unimplemented_module.h"
 #include "cc/backend/opcode_executor/opcode_executor.h"
 
-namespace back_end {
+namespace backend {
 namespace clocktroller {
 
 class Clocktroller {
@@ -49,5 +49,5 @@ class Clocktroller {
 };
 
 } // namespace clocktroller
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_CLOCKTROLLER_CLOCKTROLLER_H_

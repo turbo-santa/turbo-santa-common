@@ -24,15 +24,15 @@ using std::dec;
 using std::string;
 using std::thread;
 using std::vector;
-using back_end::clocktroller::Clocktroller;
-// using back_end::debugger::Frame;
-// using back_end::debugger::RegisterDelta;
-// using back_end::debugger::MemoryDelta;
-// using back_end::debugger::GreatLibrary;
-using back_end::graphics::DefaultRaster;
-using back_end::graphics::Screen;
-using back_end::graphics::ScreenRaster;
-using back_end::memory::JoypadFlag;
+using backend::clocktroller::Clocktroller;
+// using backend::debugger::Frame;
+// using backend::debugger::RegisterDelta;
+// using backend::debugger::MemoryDelta;
+// using backend::debugger::GreatLibrary;
+using backend::graphics::DefaultRaster;
+using backend::graphics::Screen;
+using backend::graphics::ScreenRaster;
+using backend::memory::JoypadFlag;
 
 static const int kNintendoLogoStartPosition = 0x104;
 
@@ -186,11 +186,11 @@ vector<unsigned char> ReadROM(string file_name) {
 //           break;
 //         }
 //       case 'l':
-//         iterator = back_end::debugger::LastTimeExecuted(iterator);
+//         iterator = backend::debugger::LastTimeExecuted(iterator);
 //         cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
 //         break;
 //       case 'h':
-//         iterator = back_end::debugger::MostRecentOldAddress(iterator);
+//         iterator = backend::debugger::MostRecentOldAddress(iterator);
 //         cout << "Jumped to frame " << dec << iterator->timestamp() << endl;
 //         break;
 //       case 'i':

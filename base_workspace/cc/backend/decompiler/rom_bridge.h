@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 class ROMBridge {
@@ -34,6 +34,6 @@ class VectorROMBridge : public ROMBridge {
 };
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACKEND_ROM_BRIDGE_H_

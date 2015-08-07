@@ -7,7 +7,7 @@
 #include "cc/backend/memory/memory_layout.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace opcode_executor {
 
 using decompiler::Decompiler;
@@ -213,4 +213,4 @@ bool OpcodeParser::FetchInstructionDMA(uint16_t address,
 }
 
 } // namespace opcode_executor
-} // namespace back_end
+} // namespace backend

@@ -3,7 +3,7 @@
 #include <iomanip>
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 uint16_t OpcodeValue(uint8_t first, uint8_t second) {
@@ -62,4 +62,4 @@ bool ROMReader::Read(uint16_t address, Instruction* instruction) {
 }
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend

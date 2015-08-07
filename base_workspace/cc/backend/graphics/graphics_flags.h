@@ -5,7 +5,7 @@
 #include "cc/backend/memory/memory_segment.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace graphics {
 
 class LCDControl : public memory::Flag {
@@ -297,6 +297,6 @@ class GraphicsFlags : public memory::MemorySegment {
 };
 
 } // namespace graphics
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_FLAGS_H_

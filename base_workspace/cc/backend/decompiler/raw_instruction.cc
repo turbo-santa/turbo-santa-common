@@ -1,6 +1,6 @@
 #include "cc/backend/decompiler/raw_instruction.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 uint16_t to_width_bytes(ValueWidth width) {
@@ -57,4 +57,4 @@ ValueWidth operator+(ValueWidth left, ValueWidth right) {
 }
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend

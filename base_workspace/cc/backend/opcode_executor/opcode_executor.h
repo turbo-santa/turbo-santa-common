@@ -13,14 +13,14 @@
 #include "cc/backend/opcode_executor/opcode_parser.h"
 #include "cc/backend/opcode_executor/registers.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 class Decompiler;
 class ROMReader;
 } // namespace decompiler
-} // namespace back_end
+} // namespace backend
 
-namespace back_end {
+namespace backend {
 namespace opcode_executor {
 
 class OpcodeExecutor {
@@ -57,5 +57,5 @@ class OpcodeExecutor {
 };
 
 } // namespace opcode_executor
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_EXECUTOR_H_

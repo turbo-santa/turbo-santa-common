@@ -33,7 +33,7 @@
 // high_ram          0xff80 - 0xfffe
 // interrupt_enable  0xffff
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class DefaultModule : public Module {
@@ -68,6 +68,6 @@ class DefaultModule : public Module {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_DEFAULT_MODULE_H_

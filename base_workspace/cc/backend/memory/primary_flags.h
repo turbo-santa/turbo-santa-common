@@ -5,7 +5,7 @@
 #include "cc/backend/memory/module.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class PrimaryFlags : public Module {
@@ -25,6 +25,6 @@ class PrimaryFlags : public Module {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_PRIMARY_FLAGS_H_

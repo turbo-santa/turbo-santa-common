@@ -9,7 +9,7 @@
 #include "cc/backend/opcode_executor/executor_context.h"
 #include "cc/backend/opcode_executor/opcode_handlers.h"
 
-namespace back_end {
+namespace backend {
 namespace opcode_executor {
 
 typedef std::function<int(const decompiler::Instruction&, ExecutorContext*)> OpcodeHandler;
@@ -17,5 +17,5 @@ typedef std::function<int(const decompiler::Instruction&, ExecutorContext*)> Opc
 std::map<uint16_t, OpcodeHandler> CreateOpcodeMap();
 
 } // namespace opcodes
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_MAP_H_

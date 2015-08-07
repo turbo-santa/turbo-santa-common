@@ -4,8 +4,8 @@
 #include "cc/backend/memory/joypad_module.h"
 #include "java/com/turbosanta/backend/handle.h"
 
-using back_end::clocktroller::Clocktroller;
-using back_end::memory::JoypadFlag;
+using backend::clocktroller::Clocktroller;
+using backend::memory::JoypadFlag;
 using java_com_turbosanta_backend::getHandle;
 using java_com_turbosanta_backend::setHandle;
 

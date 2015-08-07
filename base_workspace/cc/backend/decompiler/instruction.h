@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <string>
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 enum class Opcode {
@@ -134,6 +134,6 @@ struct Instruction {
 };
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACKEND_INSTRUCTION_H_

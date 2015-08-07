@@ -5,7 +5,7 @@
 #include "cc/backend/opcode_executor/registers.h"
 #include "cc/backend/memory/memory_mapper.h"
 
-namespace back_end {
+namespace backend {
 namespace opcode_executor {
 
 struct ExecutorContext {
@@ -37,5 +37,5 @@ struct ExecutorContext {
 };
 
 } // namespace opcode_executor
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_EXECUTOR_CONTEXT_H_

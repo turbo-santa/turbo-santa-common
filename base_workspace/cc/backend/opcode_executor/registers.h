@@ -1,7 +1,7 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
 #define TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_
 
-namespace back_end {
+namespace backend {
 namespace registers {
 
 struct GB_CPU {
@@ -49,5 +49,5 @@ struct GB_CPU {
 };
 
 } // namespace registers
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_REGISTERS_H_

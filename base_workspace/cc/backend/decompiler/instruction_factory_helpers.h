@@ -8,7 +8,7 @@
 #include "cc/backend/decompiler/raw_instruction.h"
 
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 InstructionFactory instr(Opcode opcode, 
@@ -61,6 +61,6 @@ std::unique_ptr<ParameterFactory> bit();
 std::unique_ptr<ParameterFactory> con(uint16_t value);
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACKEND_INSTRUCTION_FACTORY_HELPERS_H_

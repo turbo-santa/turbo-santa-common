@@ -8,7 +8,7 @@
 namespace java_com_turbosanta_backend {
 namespace graphics {
 
-class ScreenRaster : public back_end::graphics::ScreenRaster {
+class ScreenRaster : public backend::graphics::ScreenRaster {
  public:
   ScreenRaster(JavaVM* jvm, JNIEnv* env, jobject image);
 
@@ -42,7 +42,7 @@ class ScreenRaster : public back_end::graphics::ScreenRaster {
   jmethodID setMID_;
 };
 
-class Screen : public back_end::graphics::Screen {
+class Screen : public backend::graphics::Screen {
  public:
   Screen(JavaVM* jvm, JNIEnv* env, jobject screen);
 
@@ -52,9 +52,9 @@ class Screen : public back_end::graphics::Screen {
     env->CallVoidMethod(screen_, drawMID_);
   }
 
-  back_end::graphics::ScreenRaster* mutable_raster() { return &raster_; }
+  backend::graphics::ScreenRaster* mutable_raster() { return &raster_; }
 
-  const back_end::graphics::ScreenRaster& raster() { return raster_; }
+  const backend::graphics::ScreenRaster& raster() { return raster_; }
 
  private:
   JavaVM* jvm_;

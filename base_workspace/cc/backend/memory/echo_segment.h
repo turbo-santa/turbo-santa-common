@@ -5,7 +5,7 @@
 #include "cc/backend/memory/ram_segment.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class EchoSegment : public ContiguousMemorySegment {

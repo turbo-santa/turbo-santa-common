@@ -16,11 +16,11 @@ void Java_com_turbosanta_backend_graphics_Screen_init(JNIEnv* env, jobject obj) 
 }
 
 jint Java_com_turbosanta_backend_graphics_Screen_getWidth(JNIEnv*, jclass) {
-  return back_end::graphics::ScreenRaster::kScreenWidth;
+  return backend::graphics::ScreenRaster::kScreenWidth;
 }
 
 jint Java_com_turbosanta_backend_graphics_Screen_getHeight(JNIEnv*, jclass) {
-  return back_end::graphics::ScreenRaster::kScreenHeight;
+  return backend::graphics::ScreenRaster::kScreenHeight;
 }
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm_, void*) {

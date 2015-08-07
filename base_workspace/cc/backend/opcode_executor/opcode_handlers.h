@@ -8,7 +8,7 @@
 #include "cc/backend/opcode_executor/executor_context.h"
 #include "cc/backend/opcode_executor/registers.h"
 
-namespace back_end {
+namespace backend {
 namespace opcode_executor {
 
 // Helper functions.
@@ -145,7 +145,7 @@ int Pop(const decompiler::Instruction& instruction, ExecutorContext* context);
 // Bonus
 int HaltAndCatchFire(const decompiler::Instruction& instruction, ExecutorContext* context);
 
-} // namespace back_end
+} // namespace backend
 } // namespace opcode_executor
 
 #endif // TURBO_SANTA_COMMON_BACK_END_OPCODE_EXECUTOR_OPCODE_HANDLERS_H_

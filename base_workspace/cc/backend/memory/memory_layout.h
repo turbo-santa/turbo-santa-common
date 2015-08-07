@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 static const uint16_t kInterruptEnableRegister = 0xffff;
@@ -37,6 +37,6 @@ class MemoryAddressRange {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_LAYOUT_H_

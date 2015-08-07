@@ -8,7 +8,7 @@
 // All flags, with the exception of the interrupt enable flag lie within the IO
 // ports address space.
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class FlagContainer : public ContiguousMemorySegment {
@@ -44,6 +44,6 @@ class FlagContainer : public ContiguousMemorySegment {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_FLAG_CONTAINER_H_

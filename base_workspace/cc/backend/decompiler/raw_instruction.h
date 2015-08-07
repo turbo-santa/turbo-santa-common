@@ -6,7 +6,7 @@
 #include "cc/backend/decompiler/rom_bridge.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 enum class ValueWidth {
@@ -111,6 +111,6 @@ class RawInstruction16Bit : public RawInstruction<2> {
 class RawInstruction24Bit : public RawInstruction<3> {};
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACKEND_RAW_INSTRUCTION_H_

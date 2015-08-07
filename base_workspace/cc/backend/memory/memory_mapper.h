@@ -11,7 +11,7 @@ namespace test_harness {
 class TestHarness;
 } // namespace test_harness
 
-namespace back_end {
+namespace backend {
 namespace memory {
 
 class MemoryMapper {
@@ -29,5 +29,5 @@ class MemoryMapper {
 };
 
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_MAPPER_H_

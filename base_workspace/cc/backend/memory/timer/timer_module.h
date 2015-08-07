@@ -8,7 +8,7 @@
 #include "cc/backend/memory/timer/divider_flag.h"
 #include "submodules/glog/src/glog/logging.h"
 
-namespace back_end {
+namespace backend {
 namespace memory {
 namespace timer {
 
@@ -83,6 +83,6 @@ class TimerModule : public Module {
 
 } // namespace timer
 } // namespace memory
-} // namespace back_end
+} // namespace backend
 
 #endif // TURBO_SANTA_COMMON_BACK_END_MEMORY_TIMER_TIMER_MODULE_H_

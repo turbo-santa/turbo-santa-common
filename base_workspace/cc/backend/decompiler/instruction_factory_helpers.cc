@@ -1,6 +1,6 @@
 #include "cc/backend/decompiler/instruction_factory_helpers.h"
 
-namespace back_end {
+namespace backend {
 namespace decompiler {
 
 InstructionFactory instr(Opcode opcode, 
@@ -101,4 +101,4 @@ std::unique_ptr<ParameterFactory> con(uint16_t value) {
 }
 
 } // namespace decompiler
-} // namespace decompiler
+} // namespace backend
