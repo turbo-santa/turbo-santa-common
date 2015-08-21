@@ -2,7 +2,7 @@
 
 #include <vector>
 #include "instruction_factory_helpers.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace decompiler {

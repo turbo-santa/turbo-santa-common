@@ -6,16 +6,16 @@
 #include "cc/backend/opcode_executor/opcode_executor.h"
 #include "cc/backend/opcode_executor/registers.h"
 #include "cc/backend/memory/memory_mapper.h"
-#include "cc/backend/memory/mbc.h"
+#include "cc/backend/memory/mbc/mbc.h"
 
 namespace test_harness {
 using std::string;
 using std::to_string;
 using std::unique_ptr;
 using std::vector;
-using back_end::memory::MemoryMapper;
-using back_end::memory::MBC;
-using back_end::registers::GB_CPU;
+using backend::memory::MemoryMapper;
+using backend::memory::MBC;
+using backend::registers::GB_CPU;
 using ::testing::AssertionResult;
 using ::testing::AssertionSuccess;
 using ::testing::AssertionFailure;

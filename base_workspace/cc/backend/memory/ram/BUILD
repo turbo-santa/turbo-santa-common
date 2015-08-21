@@ -21,7 +21,7 @@ cc_library(
   hdrs = ["echo_segment.h"],
   deps = [
     "//cc/backend/memory:memory_segment",
-    "//submodules:glog",
+    "//external:glog",
     ":ram_segment",
   ],
 )

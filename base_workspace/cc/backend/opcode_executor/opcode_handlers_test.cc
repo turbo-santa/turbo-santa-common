@@ -1,39 +1,49 @@
 #include <vector>
+
 #include "cc/backend/graphics/graphics_controller.h"
 #include "cc/backend/graphics/screen.h"
-#include "cc/backend/memory/default_module.h"
-#include "cc/backend/memory/dma_transfer.h"
-#include "cc/backend/memory/mbc_module.h"
-#include "cc/backend/memory/unimplemented_module.h"
-#include "cc/backend/opcode_executor/opcode_handlers.h"
+#include "cc/backend/memory/dma_transfer/dma_transfer.h"
+#include "cc/backend/memory/mbc/mbc_module.h"
+#include "cc/backend/memory/ram/default_module.h"
+#include "cc/backend/memory/unimplemented/unimplemented_module.h"
 #include "cc/backend/opcode_executor/opcode_executor.h"
+#include "cc/backend/opcode_executor/opcode_handlers.h"
 #include "cc/backend/opcode_executor/opcodes.h"
-#include "submodules/googletest/include/gtest/gtest.h"
-#include "submodules/glog/src/glog/logging.h"
 #include "cc/test_harness/test_harness.h"
 #include "cc/test_harness/test_harness_utils.h"
+#include "gtest/gtest.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace handlers {
   
 unsigned char GetRegisterValue(unsigned char* rom, int instruction_ptr, unsigned char opcode);
 
-using std::unique_ptr;
-using std::vector;
+using Memory = test_harness::MemoryAddressValuePair;
+using Register = test_harness::RegisterNameValuePair;
+using graphics::DefaultRaster;
 using graphics::GraphicsController;
-using opcode_executor::OpcodeExecutor;
-using memory::DefaultModule;
+using graphics::ScreenRaster;
 using memory::DMATransferModule;
+using memory::DefaultModule;
 using memory::MBCModule;
 using memory::MemoryMapper;
 using memory::PrimaryFlags;
 using memory::UnimplementedModule;
-using Register = test_harness::RegisterNameValuePair;
-using Memory = test_harness::MemoryAddressValuePair;
+using opcode_executor::OpcodeExecutor;
+using std::unique_ptr;
+using std::vector;
 
 class NullScreen : public graphics::Screen {
  public:
-  virtual void Draw(const graphics::ScreenRaster&) {}
+  void Draw() override {}
+
+  ScreenRaster* mutable_raster() { return &raster_; }
+
+  const ScreenRaster& raster() { return raster_; }
+
+ private:
+  DefaultRaster raster_;
 };
 
 OpcodeExecutor* cached_executor = nullptr;

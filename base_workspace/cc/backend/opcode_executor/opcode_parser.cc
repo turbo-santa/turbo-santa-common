@@ -5,7 +5,7 @@
 #include "cc/backend/decompiler/decompiler.h"
 #include "cc/backend/decompiler/decompiler_factory.h"
 #include "cc/backend/memory/memory_layout.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace opcode_executor {

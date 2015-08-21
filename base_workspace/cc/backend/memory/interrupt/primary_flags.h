@@ -3,7 +3,7 @@
 
 #include "cc/backend/memory/interrupt/interrupt_flag.h"
 #include "cc/backend/memory/module.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace memory {

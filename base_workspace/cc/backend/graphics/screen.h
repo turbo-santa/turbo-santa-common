@@ -2,7 +2,7 @@
 #define TURBO_SANTA_COMMON_BACK_END_GRAPHICS_SCREEN_H_
 
 #include <vector>
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace graphics {

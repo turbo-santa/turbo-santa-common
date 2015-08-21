@@ -1,7 +1,7 @@
 #include "cc/backend/memory/mbc/mbc.h"
 
 #include <stdio.h>
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace memory {

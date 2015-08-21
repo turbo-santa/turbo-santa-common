@@ -2,6 +2,8 @@
 
 #include <ncurses.h>
 
+#include "glog/logging.h"
+
 namespace backend {
 namespace graphics {
 

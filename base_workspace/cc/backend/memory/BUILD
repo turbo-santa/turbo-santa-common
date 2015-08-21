@@ -52,7 +52,7 @@ cc_library(
   hdrs = ["memory_mapper.h"],
   srcs = ["memory_mapper.cc"],
   deps = [
-    "//submodules:glog",
+    "//external:glog",
     ":flags",
     ":flag_container",
     ":memory_segment",

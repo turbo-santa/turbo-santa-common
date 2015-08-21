@@ -1,7 +1,7 @@
 #include "cc/backend/decompiler/rom_reader.h"
 
 #include <iomanip>
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace decompiler {

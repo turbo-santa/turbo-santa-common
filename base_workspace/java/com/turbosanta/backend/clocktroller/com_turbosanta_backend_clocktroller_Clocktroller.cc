@@ -5,7 +5,7 @@
 #include "cc/backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/handle.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 using std::vector;
 using backend::clocktroller::Clocktroller;

@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <array>
 #include "cc/backend/decompiler/rom_bridge.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace decompiler {

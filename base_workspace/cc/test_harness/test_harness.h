@@ -4,9 +4,10 @@
 #include <memory>
 #include <string>
 #include <vector>
+  
 #include "cc/backend/opcode_executor/opcode_executor.h"
-#include "submodules/googletest/include/gtest/gtest.h"
 #include "cc/test_harness/test_harness_utils.h"
+#include "include/gtest/gtest.h"
 
 namespace test_harness {
 
@@ -38,7 +39,7 @@ class TestHarness : public ::testing::Test {
         unsigned short instruction_ptr() { return parser_->cpu_.rPC; }
 
     protected:
-        TestHarness(back_end::opcode_executor::OpcodeExecutor* parser) : parser_(parser) {
+        TestHarness(backend::opcode_executor::OpcodeExecutor* parser) : parser_(parser) {
           // TODO(Brendan): This is pretty janky; we should have a better way of
           // mocking out the parser's functionality.
           // Turns off the internal ROM.
@@ -51,7 +52,7 @@ class TestHarness : public ::testing::Test {
 
         // TODO(Brendan): TestHarnesses will want to reuse the parser. Do not
         // delete it when done.
-        back_end::opcode_executor::OpcodeExecutor* parser_;
+        backend::opcode_executor::OpcodeExecutor* parser_;
 
     private:
         bool VerifyCorrectInstruction(const std::vector<unsigned char>& instruction);

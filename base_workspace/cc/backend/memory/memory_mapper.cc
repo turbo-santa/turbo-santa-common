@@ -1,5 +1,5 @@
 #include "cc/backend/memory/memory_mapper.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace memory {

@@ -16,6 +16,7 @@ cc_library(
     "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory/unimplemented:unimplemented_module",
     "//cc/backend/opcode_executor",
+    "//external:glog",
   ],
   visibility = ["//visibility:public"],
 )
@@ -28,8 +29,8 @@ cc_test(
   ],
   deps = [
     "//cc/backend/opcode_executor:registers",
-    "//submodules:glog",
-    "//submodules:googletest",
+    "//external:glog",
+    "//external:gtest",
     "//test_harness",
   ],
 )

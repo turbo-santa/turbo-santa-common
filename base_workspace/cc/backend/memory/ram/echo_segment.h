@@ -3,7 +3,7 @@
 
 #include "cc/backend/memory/memory_segment.h"
 #include "cc/backend/memory/ram/ram_segment.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace memory {

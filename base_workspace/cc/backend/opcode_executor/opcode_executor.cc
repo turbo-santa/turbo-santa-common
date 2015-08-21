@@ -5,7 +5,7 @@
 #include "cc/backend/decompiler/instruction.h"
 #include "cc/backend/decompiler/rom_reader.h"
 #include "cc/backend/opcode_executor/opcode_handlers.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 namespace backend {
 namespace opcode_executor {

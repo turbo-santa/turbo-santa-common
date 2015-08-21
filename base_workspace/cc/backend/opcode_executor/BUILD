@@ -29,7 +29,7 @@ cc_library(
     "//cc/backend/decompiler:decompiler_factory",
     "//cc/backend/memory:memory_layout",
     "//cc/backend/memory:memory_mapper_rom_bridge",
-    "//submodules:glog",
+    "//external:glog",
   ],
 )
 
@@ -44,7 +44,7 @@ cc_library(
     "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory:memory_mapper",
     "//cc/backend/memory:memory_mapper_rom_bridge",
-    "//submodules:glog",
+    "//external:glog",
     ":executor_context",
     ":opcode_map",
     ":opcode_parser",
@@ -67,7 +67,7 @@ cc_library(
   deps = [
     "//cc/backend/decompiler:instruction",
     "//cc/backend/memory:memory_mapper",
-    "//submodules:glog",
+    "//external:glog",
     ":executor_context",
     ":opcodes",
     ":registers",
@@ -80,14 +80,15 @@ cc_test(
   deps = [
     "//cc/backend/graphics:graphics_controller",
     "//cc/backend/graphics:screen",
-    "//cc/backend/memory:default_module",
-    "//cc/backend/memory:dma_transfer",
-    "//cc/backend/memory:mbc_module",
+    "//cc/backend/memory/dma_transfer",
+    "//cc/backend/memory/interrupt:primary_flags",
+    "//cc/backend/memory/mbc:mbc_module",
+    "//cc/backend/memory/ram:default_module",
+    "//cc/backend/memory/unimplemented:unimplemented_module",
     "//cc/backend/memory:memory_mapper",
-    "//cc/backend/memory:primary_flags",
-    "//cc/backend/memory:unimplemented_module",
-    "//submodules:glog",
     "//cc/test_harness",
+    "//external:glog",
+    "//external:gtest",
     ":opcode_map",
   ],
 )

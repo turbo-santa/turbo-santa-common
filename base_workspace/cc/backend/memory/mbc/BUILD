@@ -16,7 +16,7 @@ cc_library(
   srcs = ["mbc.cc"],
   deps = [
     "//cc/backend/memory:memory_segment",
-    "//submodules:glog",
+    "//external:glog",
   ],
   visibility = ["//cc/backend/memory:__pkg__"],
 )
@@ -27,7 +27,7 @@ cc_library(
   deps = [
     "//cc/backend/memory:flags",
     "//cc/backend/memory:memory_segment",
-    "//submodules:glog",
+    "//external:glog",
   ],
 )
 

@@ -6,8 +6,8 @@ cc_library(
   ],
   srcs = ["test_harness.cc"],
   deps = [
-    "//submodules:googletest",
     "//cc/backend/opcode_executor",
+    "//external:gtest",
   ],
   visibility = ["//visibility:public"],
 )

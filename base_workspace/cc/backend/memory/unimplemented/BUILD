@@ -4,6 +4,7 @@ cc_library(
   deps = [
     "//cc/backend/memory:flags",
     "//cc/backend/memory:module",
+    "//external:glog",
   ],
   visibility = ["//visibility:public"],
 )

@@ -6,6 +6,7 @@ cc_library(
     "//cc/backend/memory/interrupt:interrupt_flag",
     "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory:module",
+    "//external:glog",
     ":graphics_flags",
     ":screen",
     ":vram_segment",
@@ -16,14 +17,14 @@ cc_library(
 cc_library(
   name = "screen",
   hdrs = ["screen.h"],
-  deps = ["//submodules:glog"],
+  deps = ["//external:glog"],
   visibility = ["//visibility:public"],
 )
 
 cc_library(
   name = "graphics_flags",
   hdrs = ["graphics_flags.h"],
-  deps = ["//submodules:glog"],
+  deps = ["//external:glog"],
   visibility = ["//visibility:public"],
 )
 
@@ -32,7 +33,7 @@ cc_library(
   hdrs = ["vram_segment.h"],
   deps = [
     "//cc/backend/memory:memory_segment",
-    "//submodules:glog",
+    "//external:glog",
   ],
 )
 
@@ -42,7 +43,7 @@ cc_library(
   srcs = ["dma_transfer.cc"],
   deps = [
     "//cc/backend/memory:memory_mapper",
-    "//submodules:glog",
+    "//external:glog",
   ],
   visibility = ["//visibility:public"],
 )

@@ -8,7 +8,7 @@
 #include "cc/backend/decompiler/decompiler.h"
 #include "cc/backend/decompiler/decompiler_factory.h"
 #include "cc/backend/decompiler/rom_bridge.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "glog/logging.h"
 
 using std::filebuf;
 using std::ostream;

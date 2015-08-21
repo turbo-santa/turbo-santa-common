@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "glog/logging.h"
+
 namespace backend {
 namespace decompiler {
 
