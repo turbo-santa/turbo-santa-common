@@ -2,8 +2,9 @@
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_MBC_MODULE_H_
 
 #include <memory>
-#include "cc/backend/memory/internal_rom.h"
-#include "cc/backend/memory/mbc.h"
+
+#include "cc/backend/memory/mbc/internal_rom.h"
+#include "cc/backend/memory/mbc/mbc.h"
 #include "cc/backend/memory/memory_segment.h"
 #include "cc/backend/memory/module.h"
 

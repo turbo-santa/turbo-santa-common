@@ -2,8 +2,9 @@
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_TIMER_TIMER_MODULE_H_
 
 #include <cstdint>
+
 #include "cc/backend/memory/flags.h"
-#include "cc/backend/memory/interrupt_flag.h"
+#include "cc/backend/memory/interrupt/interrupt_flag.h"
 #include "cc/backend/memory/module.h"
 #include "cc/backend/memory/timer/divider_flag.h"
 #include "submodules/glog/src/glog/logging.h"

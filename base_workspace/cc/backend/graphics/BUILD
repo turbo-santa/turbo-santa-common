@@ -3,12 +3,12 @@ cc_library(
   hdrs = ["graphics_controller.h"],
   srcs = ["graphics_controller.cc"],
   deps = [
-    "//cc/backend/memory:interrupt_flag",
+    "//cc/backend/memory/interrupt:interrupt_flag",
+    "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory:module",
-    "//cc/backend/memory:primary_flags",
-    "//cc/backend/memory:vram_segment",
     ":graphics_flags",
     ":screen",
+    ":vram_segment",
   ],
   visibility = ["//visibility:public"],
 )
@@ -25,6 +25,15 @@ cc_library(
   hdrs = ["graphics_flags.h"],
   deps = ["//submodules:glog"],
   visibility = ["//visibility:public"],
+)
+
+cc_library(
+  name = "vram_segment",
+  hdrs = ["vram_segment.h"],
+  deps = [
+    "//cc/backend/memory:memory_segment",
+    "//submodules:glog",
+  ],
 )
 
 cc_library(

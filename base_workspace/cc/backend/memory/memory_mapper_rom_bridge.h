@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include "cc/backend/decompiler/rom_bridge.h"
-#include "cc/backend/memory/mbc.h"
+#include "cc/backend/memory/mbc/mbc.h"
 #include "cc/backend/memory/memory_mapper.h"
 #include "cc/backend/memory/memory_layout.h"
 

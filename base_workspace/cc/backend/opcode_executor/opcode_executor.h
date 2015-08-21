@@ -3,10 +3,10 @@
 
 #include <map>
 #include <memory>
-#include "cc/backend/memory/interrupt_flag.h"
+#include "cc/backend/memory/interrupt/interrupt_flag.h"
 #include "cc/backend/memory/memory_mapper.h"
 #include "cc/backend/memory/memory_mapper_rom_bridge.h"
-#include "cc/backend/memory/primary_flags.h"
+#include "cc/backend/memory/interrupt/primary_flags.h"
 #include "cc/backend/opcode_executor/executor_context.h"
 #include "cc/backend/opcode_executor/opcodes.h"
 #include "cc/backend/opcode_executor/opcode_map.h"

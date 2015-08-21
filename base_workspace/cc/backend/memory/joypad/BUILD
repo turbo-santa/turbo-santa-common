@@ -1,14 +1,12 @@
 cc_library(
-  name = "timer",
-  hdrs = [
-    "divider_flag.h",
-    "timer_module.h",
-  ],
+  name = "joypad_module",
+  hdrs = ["joypad_module.h"],
   deps = [
     "//cc/backend/memory/interrupt:interrupt_flag",
     "//cc/backend/memory:flags",
     "//cc/backend/memory:module",
     "//submodules:glog",
   ],
-  visibility = ["//visibility:public"], #"//cc/backend/memory:__pkg__"],
+  visibility = ["//visibility:public"],
 )
+

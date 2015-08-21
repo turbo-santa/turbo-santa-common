@@ -40,10 +40,10 @@ cc_library(
   deps = [
     "//cc/backend/decompiler:decompiler",
     "//cc/backend/decompiler:decompiler_factory",
-    "//cc/backend/memory:interrupt_flag",
+    "//cc/backend/memory/interrupt:interrupt_flag",
+    "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory:memory_mapper",
     "//cc/backend/memory:memory_mapper_rom_bridge",
-    "//cc/backend/memory:primary_flags",
     "//submodules:glog",
     ":executor_context",
     ":opcode_map",

@@ -1,12 +1,12 @@
 #ifndef TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_CONTROLLER_H_
 #define TURBO_SANTA_COMMON_BACK_END_GRAPHICS_GRAPHICS_CONTROLLER_H_
 
-#include "cc/backend/memory/module.h"
-#include "cc/backend/memory/primary_flags.h"
 #include "cc/backend/graphics/graphics_flags.h"
 #include "cc/backend/graphics/screen.h"
-#include "cc/backend/memory/interrupt_flag.h"
-#include "cc/backend/memory/vram_segment.h"
+#include "cc/backend/graphics/vram_segment.h"
+#include "cc/backend/memory/interrupt/interrupt_flag.h"
+#include "cc/backend/memory/interrupt/primary_flags.h"
+#include "cc/backend/memory/module.h"
 
 namespace backend {
 namespace graphics {

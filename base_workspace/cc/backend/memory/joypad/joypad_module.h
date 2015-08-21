@@ -4,7 +4,7 @@
 #include <cstdint>
 #include <memory>
 #include "cc/backend/memory/flags.h"
-#include "cc/backend/memory/interrupt_flag.h"
+#include "cc/backend/memory/interrupt/interrupt_flag.h"
 #include "cc/backend/memory/module.h"
 #include "submodules/glog/src/glog/logging.h"
 

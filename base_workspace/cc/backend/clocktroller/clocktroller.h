@@ -4,16 +4,17 @@
 #include <atomic>
 #include <memory>
 #include <thread>
+
 #include "cc/backend/graphics/graphics_controller.h"
 #include "cc/backend/graphics/screen.h"
-#include "cc/backend/memory/default_module.h"
-#include "cc/backend/memory/dma_transfer.h"
-#include "cc/backend/memory/joypad_module.h"
-#include "cc/backend/memory/timer/timer_module.h"
-#include "cc/backend/memory/mbc_module.h"
+#include "cc/backend/memory/dma_transfer/dma_transfer.h"
+#include "cc/backend/memory/interrupt/primary_flags.h"
+#include "cc/backend/memory/joypad/joypad_module.h"
+#include "cc/backend/memory/mbc/mbc_module.h"
 #include "cc/backend/memory/memory_mapper.h"
-#include "cc/backend/memory/primary_flags.h"
-#include "cc/backend/memory/unimplemented_module.h"
+#include "cc/backend/memory/ram/default_module.h"
+#include "cc/backend/memory/timer/timer_module.h"
+#include "cc/backend/memory/unimplemented/unimplemented_module.h"
 #include "cc/backend/opcode_executor/opcode_executor.h"
 
 namespace backend {

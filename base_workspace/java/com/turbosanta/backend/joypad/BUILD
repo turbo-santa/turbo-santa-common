@@ -14,7 +14,7 @@ cc_binary(
   ],
   deps = [
     "//cc/backend/clocktroller",
-    "//cc/backend/memory:joypad_module",
+    "//cc/backend/memory/joypad:joypad_module",
     "//java/com/turbosanta/backend:jni_headers",
   ],
   linkshared = 1,

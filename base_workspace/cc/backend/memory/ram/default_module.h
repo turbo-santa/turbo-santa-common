@@ -2,10 +2,11 @@
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_DEFAULT_MODULE_H_
 
 #include <memory>
-#include "cc/backend/memory/module.h"
-#include "cc/backend/memory/echo_segment.h"
+
 #include "cc/backend/memory/memory_segment.h"
-#include "cc/backend/memory/ram_segment.h"
+#include "cc/backend/memory/module.h"
+#include "cc/backend/memory/ram/echo_segment.h"
+#include "cc/backend/memory/ram/ram_segment.h"
 
 // The majority of memory segments are simple and do not require any special
 // initialization; they have been collected here.

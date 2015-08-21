@@ -3,7 +3,7 @@ cc_binary(
   srcs = ["main.cc"],
   deps = [
     "//cc/backend/clocktroller",
-    "//cc/backend/memory:joypad_module",
+    "//cc/backend/memory/joypad:joypad_module",
   ],
   linkopts = [
     "-L/usr/local/lib",

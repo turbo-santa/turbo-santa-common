@@ -1,4 +1,4 @@
-#include "cc/backend/memory/mbc.h"
+#include "cc/backend/memory/mbc/mbc.h"
 
 #include <stdio.h>
 #include "submodules/glog/src/glog/logging.h"
