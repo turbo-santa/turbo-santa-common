@@ -37,13 +37,3 @@ cc_library(
   ],
 )
 
-cc_library(
-  name = "dma_transfer",
-  hdrs = ["dma_transfer.h"],
-  srcs = ["dma_transfer.cc"],
-  deps = [
-    "//cc/backend/memory:memory_mapper",
-    "//external:glog",
-  ],
-  visibility = ["//visibility:public"],
-)
