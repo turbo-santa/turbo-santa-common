@@ -19,10 +19,10 @@ using decompiler::Register;
 using decompiler::ROMReader;
 using registers::GB_CPU;
 
-OpcodeExecutor::OpcodeExecutor(std::unique_ptr<memory::MemoryMapper> memory_mapper, 
+OpcodeExecutor::OpcodeExecutor(memory::MemoryMapper* memory_mapper, 
                                memory::PrimaryFlags* primary_flags,
                                memory::Flag* internal_rom_flag) :
-    memory_mapper_(std::move(memory_mapper)),
+    memory_mapper_(memory_mapper),
     opcode_parser_(*memory_mapper_),
     interrupt_enable_(primary_flags->interrupt_enable()),
     interrupt_flag_(primary_flags->interrupt_flag()), 
@@ -47,7 +47,7 @@ int OpcodeExecutor::ReadInstruction() {
 
   Instruction instruction;
   if (!opcode_parser_.FetchInstruction(cpu_.rPC,
-                                       PollRegister(memory_mapper_.get(), cpu_.rSP),
+                                       PollRegister(memory_mapper_, cpu_.rSP),
                                        cpu_.rHL,
                                        &instruction)) {
     LOG(WARNING) << "Invalid address, 0x" << std::hex << cpu_.rPC 
@@ -61,7 +61,7 @@ int OpcodeExecutor::ReadInstruction() {
   context.instruction_ptr = &cpu_.rPC;
   context.interrupt_master_enable = &interrupt_master_enable_;
   context.halted = &halted_;
-  context.memory_mapper = memory_mapper_.get();
+  context.memory_mapper = memory_mapper_;
   context.cpu = &cpu_;
 
   int handler_result = handler(instruction, &context);
@@ -84,7 +84,7 @@ void OpcodeExecutor::HandleInterrupts() {
     }
     interrupt_master_enable_ = false;
     halted_ = false;
-    PushRegister(memory_mapper_.get(), &cpu_, &cpu_.rPC);
+    PushRegister(memory_mapper_, &cpu_, &cpu_.rPC);
 
     if (interrupt_flag_->v_blank() && interrupt_enable_->v_blank()) {
       LOG(INFO) << "Handling V blank interrupt.";

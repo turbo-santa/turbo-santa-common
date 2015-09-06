@@ -25,7 +25,7 @@ namespace opcode_executor {
 
 class OpcodeExecutor {
  public:
-  OpcodeExecutor(std::unique_ptr<memory::MemoryMapper> memory_mapper, 
+  OpcodeExecutor(memory::MemoryMapper* memory_mapper, 
                  memory::PrimaryFlags* primary_flags,
                  memory::Flag* internal_rom_flag);
 
@@ -41,7 +41,7 @@ class OpcodeExecutor {
   void SwitchToExternalROM() { opcode_parser_.Reset(); }
     
   registers::GB_CPU cpu_;
-  std::unique_ptr<memory::MemoryMapper> memory_mapper_;
+  memory::MemoryMapper* memory_mapper_;
   OpcodeParser opcode_parser_;
   std::map<uint16_t, OpcodeHandler> opcode_map_ = CreateOpcodeMap();
   // This is a special flag/register that can only be set or unset and can
