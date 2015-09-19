@@ -11,6 +11,7 @@
 
 #include "cc/backend/clocktroller/clocktroller.h"
 #include "cc/backend/memory/joypad/joypad_module.h"
+#include "cc/backend/graphics/screen.h"
 // #include "cc/backend/debugger/frames.h"
 // #include "cc/backend/debugger/deltas.h"
 // #include "cc/backend/debugger/great_library.h"
