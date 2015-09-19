@@ -4,8 +4,18 @@ java_library(
   deps = [
     "//java/com/turbosanta/backend/graphics:screen_java",
   ],
-  data = [":libclocktrollerjni.so"],
+  data = select({
+    "//:darwin": ["libclocktrollerjni.dylib"],
+    "//conditions:default": [":libclocktrollerjni.so"],
+  }),
   visibility = ["//java/com/turbosanta/backend:__subpackages__"],
+)
+
+genrule(
+  name = "mac-compat",
+  srcs = ["libclocktrollerjni.so"],
+  outs = ["libclocktrollerjni.dylib"],
+  cmd = "cp $< $@",
 )
 
 cc_binary(

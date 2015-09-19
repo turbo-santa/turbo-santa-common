@@ -2,7 +2,10 @@ java_library(
   name = "screen_java",
   srcs = ["Screen.java"],
   deps = [":drawable_area"],
-  data = [":libscreenjni.so"],
+  data = select({
+    "//:darwin": [":libscreenjni.dylib"],
+    "//conditions:default": [":libscreenjni.so"],
+  }),
   visibility = [
     "//java/com/turbosanta/backend:__subpackages__",
   ],
@@ -12,6 +15,13 @@ java_library(
   name = "drawable_area",
   srcs = ["DrawableArea.java"],
   visibility = ["//visibility:public"],
+)
+
+genrule(
+  name = "mac-compat",
+  srcs = ["libscreenjni.so"],
+  outs = ["libscreenjni.dylib"],
+  cmd = "cp $< $@",
 )
 
 cc_binary(

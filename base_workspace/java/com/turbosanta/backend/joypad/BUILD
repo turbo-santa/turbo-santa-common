@@ -2,8 +2,18 @@ java_library(
   name = "joypad",
   srcs = ["Joypad.java"],
   deps = ["//java/com/turbosanta/backend/clocktroller"],
-  data = [":libjoypadjni.so"],
+  data = select({
+    "//:darwin": [":libjoypadjni.dylib"],
+    "//conditions:default": [":libjoypadjni.so"],
+  }),
   visibility = ["//java/com/turbosanta/backend:__pkg__"],
+)
+
+genrule(
+  name = "mac-compat",
+  srcs = ["libjoypadjni.so"],
+  outs = ["libjoypadjni.dylib"],
+  cmd = "cp $< $@",
 )
 
 cc_binary(
