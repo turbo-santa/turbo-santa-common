@@ -100,11 +100,11 @@ public class Main {
   }
 
   public static void main(String[] args) throws Exception {
-    // if (args.length < 2) {
-    //   out.println("Must provide path to ROM file.");
-    //   return;
-    // }
-    String romPath = "roms/tetris.gb"; // args[1];
+    if (args.length < 2) {
+      out.println("Must provide path to ROM file.");
+      return;
+    }
+    String romPath = args[1];
 
     BackendFactory factory = new BackendFactory();
     factory.setROM(readROMFile(romPath));
