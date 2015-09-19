@@ -35,7 +35,7 @@ genrule(
 genrule(
   name = "copy_link_jni_md_header",
   srcs = select({
-    # "//src:darwin": ["//tools/jdk:jni_md_header-darwin"],
+    "//:darwin": ["//tools/jdk:jni_md_header-darwin"],
     "//conditions:default": ["//tools/jdk:jni_md_header-linux"],
   }),
   outs = ["jni_md.h"],
