@@ -21,12 +21,14 @@ using registers::GB_CPU;
 
 OpcodeExecutor::OpcodeExecutor(memory::MemoryMapper* memory_mapper, 
                                memory::PrimaryFlags* primary_flags,
-                               memory::Flag* internal_rom_flag) :
+                               memory::Flag* internal_rom_flag) : 
     memory_mapper_(memory_mapper),
     opcode_parser_(*memory_mapper_),
     interrupt_enable_(primary_flags->interrupt_enable()),
     interrupt_flag_(primary_flags->interrupt_flag()), 
-    internal_rom_flag_(internal_rom_flag) {}
+    internal_rom_flag_(internal_rom_flag) {
+  cpu_.rPC = 0;
+}
 
 OpcodeExecutor::~OpcodeExecutor() = default;
 
