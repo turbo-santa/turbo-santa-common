@@ -10,6 +10,7 @@ using graphics::GraphicsController;
 using memory::MemoryMapper;
 using opcode_executor::OpcodeExecutor;
 
+
 void Clocktroller::Init(unsigned char* rom, long length) {
   memory_.Init(rom, length, screen_);
   opcode_executor_ = unique_ptr<OpcodeExecutor>(

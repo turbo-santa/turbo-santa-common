@@ -36,7 +36,7 @@ Screen::Screen(JavaVM* jvm, JNIEnv* env, jobject screen) :
     jvm_(jvm),
     screen_(env->NewGlobalRef(screen)),
     drawMID_(GetDrawMethodID(env, screen)),
-    raster_(jvm, env, GetImageJObject(env, screen)) {}
+    raster_(jvm, env, env->NewGlobalRef(GetImageJObject(env, screen))) {}
 
 } // namespace graphics
 } // namespace java_com_turbosanta_backend
