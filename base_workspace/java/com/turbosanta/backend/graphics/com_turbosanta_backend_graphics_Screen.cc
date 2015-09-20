@@ -25,5 +25,5 @@ jint Java_com_turbosanta_backend_graphics_Screen_getHeight(JNIEnv*, jclass) {
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm_, void*) {
   jvm = jvm_;
-  return JNI_VERSION_1_6;
+  return JNI_VERSION_1_8;
 }
