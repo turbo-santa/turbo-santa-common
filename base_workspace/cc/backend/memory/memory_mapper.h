@@ -2,6 +2,7 @@
 #define TURBO_SANTA_COMMON_BACK_END_MEMORY_MEMORY_MAPPER_H_
 
 #include <vector>
+#include "cc/backend/debug/publisher.h"
 #include "cc/backend/memory/flags.h"
 #include "cc/backend/memory/flag_container.h"
 #include "cc/backend/memory/memory_segment.h"
@@ -14,7 +15,7 @@ class TestHarness;
 namespace backend {
 namespace memory {
 
-class MemoryMapper {
+class MemoryMapper : public debug::Publisher {
  public:
   unsigned char Read(unsigned short address);
   void Write(unsigned short address, unsigned char value);
