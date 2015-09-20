@@ -19,7 +19,6 @@ void Clocktroller::Init(unsigned char* rom, long length) {
                          memory_.internal_rom_flag()
                          ));
   opcode_executor_->Init();
-  LOG(INFO) << "Clocktroller::Init() complete.";
 }
 
 void Clocktroller::Run() {
@@ -33,24 +32,19 @@ void Clocktroller::Run() {
 }
 
 void Clocktroller::ExecutionLoop() {
-  LOG(INFO) << "ExecutionLoop begining.";
   for (;;) {
-    LOG(INFO) << "ExecutionLoop cycle starting.";
     if (!is_paused_) {
       if (is_dead_) {
         return;
       }
       int ticks = opcode_executor_->ReadInstruction();
       if (ticks < 0) {
-        LOG(ERROR) << "Clock clock cycles were negative.";
         is_dead_ = true;
       } else {
         memory_.Tick(ticks);
       }
     }
-    LOG(INFO) << "ExecutionLoop cycle ending";
   }
-  LOG(INFO) << "ExecutionLoop ended.";
 }
 
 } // namespace clocktroller
