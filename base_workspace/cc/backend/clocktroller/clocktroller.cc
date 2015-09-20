@@ -18,6 +18,7 @@ void Clocktroller::Init(unsigned char* rom, long length) {
                          memory_.internal_rom_flag()
                          ));
   opcode_executor_->Init();
+  LOG(INFO) << "Clocktroller::Init() complete.";
 }
 
 void Clocktroller::Run() {
@@ -26,11 +27,14 @@ void Clocktroller::Run() {
   if (!is_running_) {
     thread_ = std::thread([this]() { this->ExecutionLoop(); });
   }
+  LOG(INFO) << "Started ExecutionLoop";
   is_running_ = true;
 }
 
 void Clocktroller::ExecutionLoop() {
+  LOG(INFO) << "ExecutionLoop begining.";
   for (;;) {
+    LOG(INFO) << "ExecutionLoop cycle starting.";
     if (!is_paused_) {
       if (is_dead_) {
         return;
@@ -43,7 +47,9 @@ void Clocktroller::ExecutionLoop() {
         memory_.Tick(ticks);
       }
     }
+    LOG(INFO) << "ExecutionLoop cycle ending";
   }
+  LOG(INFO) << "ExecutionLoop ended.";
 }
 
 } // namespace clocktroller
