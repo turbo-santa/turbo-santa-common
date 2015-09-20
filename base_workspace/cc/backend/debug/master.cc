@@ -17,7 +17,9 @@ void Master::SendToConsumers(unique_ptr<Message> message) {
 void Master::Register(unique_ptr<Consumer> consumer) {
   // Consumers are not copyable.
   consumers_.emplace_back(std::move(consumer));
-  consumers_.end()->Exec();
+  auto end = consumers_.end();
+  end--;
+  end->Exec();
 }
 
 } // namespace debug

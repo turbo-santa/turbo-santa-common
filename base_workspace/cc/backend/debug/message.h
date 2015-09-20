@@ -10,6 +10,7 @@ class Message {
     MEMORY,
     GRAPHICS,
     OPCODE_EXECUTOR,
+    UNSTRUCTURED,
   };
 
   virtual BaseType base_type() const = 0;

@@ -1,7 +1,7 @@
 cc_library(
   name = "message",
   hdrs = ["message.h"],
-  visibility = ["//visbility:public"],
+  visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -9,6 +9,7 @@ cc_library(
   hdrs = ["publisher.h"],
   srcs = ["publisher.cc"],
   deps = [":message"],
+  defines = ["DEBUG"], # Comment out this line to turn debugging off.
   visibility = ["//visibility:public"],
 )
 
@@ -46,5 +47,7 @@ cc_library(
 cc_library(
   name = "consumer_runner",
   hdrs = ["consumer_runner.h"],
+  srcs = ["consumer_runner.cc"],
   deps = [":consumer"],
+  linkopts = ["-pthread"],
 )

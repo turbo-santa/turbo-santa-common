@@ -14,9 +14,7 @@ class ConsumerRunner {
   ConsumerRunner(std::unique_ptr<Consumer> consumer) 
       : consumer_(std::move(consumer)) {}
 
-  void Exec() {
-    thread_ = std::thread([this]() { this->consumer_->Run(); });
-  }
+  void Exec();
 
   FilterBase* filter() { return consumer_->filter_external(); }
 

@@ -1,4 +1,5 @@
 #include "cc/backend/memory/memory_mapper.h"
+#include "cc/backend/debug/memory_profiler/memory_access.h"
 #include "glog/logging.h"
 
 namespace backend {
@@ -35,10 +36,12 @@ void MemoryMapper::RegisterModule(const Module& module) {
 }
 
 unsigned char MemoryMapper::Read(unsigned short address) {
+  PUBLISH_READ(address, Lookup(memory_segments_, address)->Read(address));
   return Lookup(memory_segments_, address)->Read(address);
 }
 
 void MemoryMapper::Write(unsigned short address, unsigned char value) {
+  PUBLISH_WRITE(address, Lookup(memory_segments_, address)->Read(address), value);
   Lookup(memory_segments_, address)->Write(address, value);
 }
 

@@ -71,6 +71,8 @@ cc_library(
   hdrs = ["memory_mapper.h"],
   srcs = ["memory_mapper.cc"],
   deps = [
+    "//cc/backend/debug/memory_profiler:memory_access",
+    "//cc/backend/debug:publisher",
     "//external:glog",
     ":flags",
     ":flag_container",

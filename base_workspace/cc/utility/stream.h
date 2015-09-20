@@ -29,12 +29,18 @@ class Stream {
   Option<T> Take() {
     std::unique_lock<std::mutex> lock(mutex_);
     if (!is_closed_) {
-      condition_.wait(lock, data_.empty());
-      return Some<T>(data_.pop_front());
+      while (data_.empty()) {
+        condition_.wait(lock);
+      }
+      Option<T> value = Some<T>(data_.front());
+      data_.pop_front();
+      return value;
     } else {
       return None<T>();
     }
   }
+
+  bool is_closed() { return is_closed_; }
 
   // Closes stream.
   void Close() { is_closed_ = true; }

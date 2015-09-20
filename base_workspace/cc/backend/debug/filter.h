@@ -43,17 +43,23 @@ class Filter : public FilterBase {
   }
 
   utility::Option<std::shared_ptr<const T>> TakeMessage() {
-    std::shared_ptr<const Message> message = in_stream_.Take();
-    utility::Option<const T*> result = Apply(message);
+    utility::Option<std::shared_ptr<const Message>> message = in_stream_.Take();
+    if (!message.is_present()) {
+      return utility::None<std::shared_ptr<const T>>();
+    }
+
+    utility::Option<const T*> result = Apply(message.get().get());
     if (result.is_present()) {
       // Here the derived_object references some part of the original message,
       // so we don't want message destroyed until we are done with it.
-      std::shared_ptr<const T> derived_object(message, result.get());
+      std::shared_ptr<const T> derived_object(message.get(), result.get());
       return utility::Some(derived_object);
     } else {
       return utility::None<std::shared_ptr<const T>>();
     }
   }
+
+  bool is_closed() { return in_stream_.is_closed(); }
 
   void Close() { in_stream_.Close(); }
 

@@ -24,8 +24,8 @@ class Publisher {
 } // namespace debug 
 } // namespace backend
 
-// If DEBUG is not defined, we do not want to publish messages since the message
-// master will not ever empty the message queue.
+// If DEBUG is not defined, we do not want to publish messages since the
+// messages.
 #ifdef DEBUG
   #define PUBLISH(message) Publish(message);
 #else
