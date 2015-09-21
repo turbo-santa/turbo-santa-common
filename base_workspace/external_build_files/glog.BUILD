@@ -22,7 +22,7 @@ cc_library(
 
 genrule(
   name = "exec_configure",
-  srcs = ["configure"],
+  srcs = glob(["**/*"]),
   outs = [
     "src/config.h",
     "src/glog/logging.h",
@@ -30,9 +30,8 @@ genrule(
     "src/glog/stl_logging.h",
     "src/glog/vlog_is_on.h",
   ],
-  cmd = """STARTING_DIR=`pwd`; ROOT_DIR=`dirname $<`; DEST_DIR=$(@D)/external/remote_glog/src;
+  cmd = """STARTING_DIR=`pwd`; ROOT_DIR=external/remote_glog; DEST_DIR=$(@D)/external/remote_glog/src;
     cd $$ROOT_DIR; ./configure; cd $$STARTING_DIR;
-    echo $(OUTS);
     mv $$ROOT_DIR/src/config.h $$DEST_DIR;
     mv $$ROOT_DIR/src/glog/logging.h $$DEST_DIR/glog;
     mv $$ROOT_DIR/src/glog/raw_logging.h $$DEST_DIR/glog;
