@@ -10,5 +10,9 @@ bazel-testlogs
 
 roms/
 
+.classpath
+.project
+
 *.pyc
 *.zip
+/bin/

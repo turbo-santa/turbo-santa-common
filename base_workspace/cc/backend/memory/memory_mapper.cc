@@ -1,5 +1,5 @@
 #include "cc/backend/memory/memory_mapper.h"
-#include "cc/backend/debug/memory_profiler/memory_access.h"
+#include "cc/backend/logging/logging.h"
 #include "glog/logging.h"
 
 namespace backend {

@@ -21,3 +21,35 @@ bind(
   name = "glog",
   actual = "@remote_glog//:main",
 )
+
+git_repository(
+  name = "remote_protobuf",
+  remote = "https://github.com/google/protobuf.git",
+  commit = "c9418912cb5483551fecde5463c56a0ae40830fb",
+)
+
+bind(
+  name = "protoc",
+  actual = "@remote_protobuf//:protoc"
+)
+
+bind(
+  name = "protobuf_clib",
+  actual = "@remote_protobuf//:protobuf",
+)
+
+bind(
+  name = "protobuf",
+  actual = "@remote_protobuf//:protobuf",
+)
+
+maven_jar(
+  name = "remote_guava",
+  artifact = "com.google.guava:guava:18.0",
+  sha1 = "cce0823396aa693798f8882e64213b1772032b09",
+)
+
+bind(
+  name = "guava",
+  actual = "@remote_guava//jar"
+)

@@ -82,6 +82,8 @@ flags = [
 '-I',
 './bazel-base_workspace/external/remote_gtest/include',
 '-I',
+'./bazel-genfiles',
+'-I',
 './ClangCompleter',
 '-isystem',
 './tests/gmock/gtest',

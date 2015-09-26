@@ -1,0 +1,49 @@
+syntax = "proto2";
+
+package backend.logging;
+
+option java_package = "com.turbosanta.backend.logging";
+option java_outer_classname = "Messages";
+
+// import "protobuf/backend/debug/memory/memory_messages.proto"
+
+message MessageOption {
+  optional Message payload = 1;
+}
+
+message Message {
+  oneof payload {
+    UnstructuredMessage unstructured_message = 1;
+    MemoryMessage memory_message = 2;
+  }
+}
+
+message UnstructuredMessage {
+  enum LogLevel {
+    INFO = 0;
+    WARNING = 1;
+    ERROR = 2;
+    FATAL = 3;
+  }
+
+  required LogLevel log_level = 1;
+  required string log_message = 2;
+}
+
+message MemoryMessage {
+  oneof payload {
+    MemoryAccess memory_access = 1;
+  }
+}
+
+message MemoryAccess {
+  enum AccessType {
+    READ = 0;
+    WRITE = 1;
+  }
+
+  required AccessType access_type = 1;
+  required uint32 address = 2;
+  required uint32 old_value = 3;
+  required uint32 new_value = 4;
+}
