@@ -12,6 +12,7 @@ using graphics::GraphicsController;
 using memory::MemoryMapper;
 using opcode_executor::OpcodeExecutor;
 
+
 void Clocktroller::Init(unsigned char* rom, long length) {
   memory_.Init(rom, length, screen_);
   master_.Own(memory_.memory_mapper());
@@ -30,6 +31,7 @@ void Clocktroller::Run() {
   if (!is_running_) {
     thread_ = std::thread([this]() { this->ExecutionLoop(); });
   }
+  LOG(INFO) << "Started ExecutionLoop";
   is_running_ = true;
 }
 
@@ -41,7 +43,6 @@ void Clocktroller::ExecutionLoop() {
       }
       int ticks = opcode_executor_->ReadInstruction();
       if (ticks < 0) {
-        LOG(ERROR) << "Clock clock cycles were negative.";
         is_dead_ = true;
       } else {
         memory_.Tick(ticks);

@@ -28,7 +28,7 @@ class Clocktroller {
   memory::Memory memory_;
   graphics::Screen* screen_;
   std::unique_ptr<opcode_executor::OpcodeExecutor> opcode_executor_;
-  bool is_running_;
+  bool is_running_ = false;
   std::atomic<bool> is_paused_;
   std::atomic<bool> is_dead_;
   std::thread thread_;

@@ -89,21 +89,20 @@ vector<unsigned char> BuildROM() {
 }
 
 vector<unsigned char> ReadROM(string file_name) {
-  vector<unsigned char> rom;
   FILE* file = fopen(file_name.c_str(), "r");
+  size_t file_length;
   if (file == nullptr) {
     LOG(FATAL) << "Cannot read file " << file_name << ": " << strerror(errno);
   }
 
-  const int buffer_size = 1024;
-  vector<unsigned char> buffer(buffer_size);
-  int amount_read = 0;
-  do {
-    amount_read = fread(buffer.data(), 1, buffer_size, file);
-    // TODO(Brendan): Should not copy the entire buffer since buffer may not be
-    // entirely filled.
-    rom.insert(rom.end(), buffer.begin(), buffer.end());
-  } while (amount_read == buffer_size);
+  // Gets file length.
+  fseek(file, 0, SEEK_END);
+  file_length = ftell(file);
+  rewind(file);
+
+  // Read file.
+  vector<unsigned char> rom(file_length);
+  fread(rom.data(), 1, file_length, file);
 
   fclose(file);
   return rom;
