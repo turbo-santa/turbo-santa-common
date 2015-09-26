@@ -49,43 +49,6 @@ class UnimplementedJoypadFlag : public UnimplementedFlag {
 class UnimplementedModule : public Module {
  public:
   void Init() {
-    add_flag(&sound_ch_1_sweep_);
-    add_flag(&sound_ch_1_sound_length_);
-    add_flag(&sound_ch_1_volume_); 
-    add_flag(&sound_ch_1_freq_lo_);
-    add_flag(&sound_ch_1_freq_hi_);
-    add_flag(&sound_ch_2_sound_length_);
-    add_flag(&sound_ch_2_volume_);
-    add_flag(&sound_ch_2_freq_lo_);
-    add_flag(&sound_ch_2_freq_hi_);
-    add_flag(&sound_ch_3_on_off_);
-    add_flag(&sound_ch_3_sound_length_);
-    add_flag(&sound_ch_3_output_level_);
-    add_flag(&sound_ch_3_freq_lo_);
-    add_flag(&sound_ch_3_freq_hi_);
-    add_flag(&sound_ch_3_wave_pattern_0_);
-    add_flag(&sound_ch_3_wave_pattern_1_);
-    add_flag(&sound_ch_3_wave_pattern_2_);
-    add_flag(&sound_ch_3_wave_pattern_3_);
-    add_flag(&sound_ch_3_wave_pattern_4_);
-    add_flag(&sound_ch_3_wave_pattern_5_);
-    add_flag(&sound_ch_3_wave_pattern_6_);
-    add_flag(&sound_ch_3_wave_pattern_7_);
-    add_flag(&sound_ch_3_wave_pattern_8_);
-    add_flag(&sound_ch_3_wave_pattern_9_);
-    add_flag(&sound_ch_3_wave_pattern_a_);
-    add_flag(&sound_ch_3_wave_pattern_b_);
-    add_flag(&sound_ch_3_wave_pattern_c_);
-    add_flag(&sound_ch_3_wave_pattern_d_);
-    add_flag(&sound_ch_3_wave_pattern_e_);
-    add_flag(&sound_ch_3_wave_pattern_f_);
-    add_flag(&sound_ch_4_sound_length_);
-    add_flag(&sound_ch_4_volume_);
-    add_flag(&sound_ch_4_poly_counter_);
-    add_flag(&sound_ch_4_counter_);
-    add_flag(&sound_chan_ctrl_);     
-    add_flag(&sound_output_terminal_);
-    add_flag(&sound_on_off_);
     add_flag(&serial_data_transfer_);
     add_flag(&serial_control_);
   }

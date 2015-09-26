@@ -12,6 +12,7 @@
 #include "cc/backend/memory/timer/timer_module.h"
 #include "cc/backend/memory/unimplemented/unimplemented_module.h"
 #include "cc/backend/opcode_executor/opcode_executor.h"
+#include "cc/backend/sound/sound_controller.h"
 
 namespace backend {
 namespace memory {
@@ -20,6 +21,7 @@ using std::unique_ptr;
 using graphics::GraphicsController;
 using graphics::Screen;
 using timer::TimerModule;
+using sound::SoundController;
 
 Memory::Memory() = default;
 Memory::~Memory() = default;
@@ -58,11 +60,16 @@ void Memory::Init(uint8_t* rom, size_t length, Screen* screen) {
   graphics_controller_ = unique_ptr<GraphicsController>(new GraphicsController(screen, primary_flags_.get()));
   graphics_controller_->Init();
   memory_mapper_->RegisterModule(*graphics_controller_);
+
+  sound_controller_ = unique_ptr<SoundController>(new SoundController());
+  sound_controller_->Init();
+  memory_mapper_->RegisterModule(*sound_controller_);
 }
 
 void Memory::Tick(int ticks) {
   timer_module_->Tick(ticks);
   graphics_controller_->Tick(ticks);
+  sound_controller_->Tick(ticks);
 }
 
 } // namespace memory

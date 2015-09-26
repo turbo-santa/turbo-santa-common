@@ -23,6 +23,7 @@ class MemorySegment {
   }
 };
 
+// TODO: add a default Read() and Write()
 class ContiguousMemorySegment : public MemorySegment {
  public:
   virtual bool InRange(unsigned short address) {

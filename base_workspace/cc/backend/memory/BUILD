@@ -14,6 +14,7 @@ cc_library(
     "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory/unimplemented:unimplemented_module",
     "//cc/backend/opcode_executor",
+    "//cc/backend/sound:sound_controller",
   ],
   visibility = ["//visibility:public"],
 )

@@ -24,6 +24,10 @@ class TimerModule;
 } // namespace timer
 
 } // namespace memory
+
+namespace sound {
+class SoundController;
+} // namespace sound
 } // namespace backend
 
 namespace backend {
@@ -55,6 +59,7 @@ class Memory {
   std::unique_ptr<timer::TimerModule> timer_module_;
   std::unique_ptr<MBCModule> mbc_module_;
   std::unique_ptr<DMATransferModule> dma_transfer_module_;
+  std::unique_ptr<sound::SoundController> sound_controller_;
   std::unique_ptr<UnimplementedModule> unimplemented_module_;
 };
 
