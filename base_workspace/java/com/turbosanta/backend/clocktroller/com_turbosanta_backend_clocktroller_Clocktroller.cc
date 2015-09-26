@@ -3,13 +3,16 @@
 #include <vector>
 #include "cc/backend/clocktroller/clocktroller.h"
 #include "cc/backend/graphics/screen.h"
+#include "cc/backend/sound/sound_player.h"
 #include "java/com/turbosanta/backend/graphics/screen.h"
 #include "java/com/turbosanta/backend/handle.h"
+#include "java/com/turbosanta/backend/sound/sound_player.h"
 #include "glog/logging.h"
 
 using std::vector;
 using backend::clocktroller::Clocktroller;
 using java_com_turbosanta_backend::graphics::Screen;
+using java_com_turbosanta_backend::sound::SoundPlayer;
 using java_com_turbosanta_backend::setHandle;
 using java_com_turbosanta_backend::getHandle;
 
@@ -20,9 +23,16 @@ Screen* GetScreen(JNIEnv* env, jobject clocktroller_obj) {
   return getHandle<Screen>(env, screen_obj);
 }
 
+SoundPlayer* GetSoundPlayer(JNIEnv* env, jobject clocktroller_obj) {
+  jclass clocktroller_class = env->GetObjectClass(clocktroller_obj);
+  jfieldID audio_player_fid = env->GetFieldID(clocktroller_class, "audioPlayer", "Lcom/turbosanta/backend/sound/NativeAudio;");
+  jobject audio_player_obj = env->GetObjectField(clocktroller_obj, audio_player_fid);
+  return getHandle<SoundPlayer>(env, audio_player_obj);
+}
+
 void Java_com_turbosanta_backend_clocktroller_Clocktroller_init(JNIEnv* env, jobject obj, jbyteArray rom, jlong length) {
   // Create clocktroller.
-  Clocktroller* clocktroller = new Clocktroller(GetScreen(env, obj));
+  Clocktroller* clocktroller = new Clocktroller(GetScreen(env, obj), GetSoundPlayer(env, obj));
 
   // Init logging.
   FLAGS_logtostderr = 0;

@@ -12,7 +12,7 @@ using opcode_executor::OpcodeExecutor;
 
 
 void Clocktroller::Init(unsigned char* rom, long length) {
-  memory_.Init(rom, length, screen_);
+  memory_.Init(rom, length, screen_, sound_player_);
   opcode_executor_ = unique_ptr<OpcodeExecutor>(
       new OpcodeExecutor(memory_.memory_mapper(), 
                          memory_.primary_flags(), 

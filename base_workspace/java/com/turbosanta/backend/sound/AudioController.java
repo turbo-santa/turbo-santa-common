@@ -22,9 +22,6 @@ public class AudioController {
     buffer = new SoundBuffer(bufferSize);
   }
 
-  /**
-   * Called from JNI
-   */
   public void submitAudioChunk(byte[] audioChunk) {
     buffer.queue(audioChunk);
   }

@@ -11,6 +11,7 @@ cc_library(
     "//cc/backend/memory/joypad:joypad_module",
     "//cc/backend/memory:memory_mapper",
     "//cc/backend/opcode_executor",
+    "//cc/backend/sound:sound_player",
     "//external:glog",
   ],
   linkopts = ["-pthread"],

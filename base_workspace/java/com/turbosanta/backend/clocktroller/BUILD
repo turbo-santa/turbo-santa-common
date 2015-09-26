@@ -3,6 +3,7 @@ java_library(
   srcs = ["Clocktroller.java"],
   deps = [
     "//java/com/turbosanta/backend/graphics:screen_java",
+    "//java/com/turbosanta/backend/sound:sound_player_java"
   ],
   data = select({
     "//:darwin": ["libclocktrollerjni.dylib"],
@@ -27,8 +28,10 @@ cc_binary(
   deps = [
     "//cc/backend/clocktroller",
     "//cc/backend/graphics:screen",
-    "//java/com/turbosanta/backend/graphics:screen_cc",
+    "//cc/backend/sound:sound_player",
     "//external:glog",
+    "//java/com/turbosanta/backend/graphics:screen_cc",
+    "//java/com/turbosanta/backend/sound:sound_player_cc",
     "//java/com/turbosanta/backend:jni_headers",
   ],
   linkshared = 1,

@@ -3,7 +3,7 @@ java_binary(
   srcs = ["Main.java"],
   deps = [
     "//java/com/turbosanta/backend/graphics:drawable_area",
-    "//java/com/turbosanta/backend/sound",
+    "//java/com/turbosanta/backend/sound:audio_controller",
     ":backend",
   ],
   main_class = "com.turbosanta.backend.Main",
@@ -22,6 +22,8 @@ java_library(
     "//java/com/turbosanta/backend/graphics:screen_java",
     "//java/com/turbosanta/backend/clocktroller",
     "//java/com/turbosanta/backend/joypad",
+    "//java/com/turbosanta/backend/sound:audio_controller",
+    "//java/com/turbosanta/backend/sound:sound_player_java",
   ],
   visibility = ["//visibility:public"],
 )

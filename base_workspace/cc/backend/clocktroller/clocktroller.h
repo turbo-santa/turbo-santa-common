@@ -8,13 +8,15 @@
 #include "cc/backend/memory/memory.h"
 #include "cc/backend/memory/memory_mapper.h"
 #include "cc/backend/opcode_executor/opcode_executor.h"
+#include "cc/backend/sound/sound_player.h"
 
 namespace backend {
 namespace clocktroller {
 
 class Clocktroller {
  public:
-  Clocktroller(graphics::Screen* screen) : screen_(screen) {}
+  Clocktroller(graphics::Screen* screen, sound::SoundPlayer* sound_player) :
+    screen_(screen), sound_player_(sound_player) {}
   void Init(unsigned char* rom, long length);
   void Run();
   void Pause() { is_paused_ = true; }
@@ -25,6 +27,7 @@ class Clocktroller {
  private:
   memory::Memory memory_;
   graphics::Screen* screen_;
+  sound::SoundPlayer* sound_player_;
   std::unique_ptr<opcode_executor::OpcodeExecutor> opcode_executor_;
   bool is_running_ = false;
   std::atomic<bool> is_paused_;

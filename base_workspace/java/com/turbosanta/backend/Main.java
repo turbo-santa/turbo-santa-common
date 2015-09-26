@@ -11,7 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import com.turbosanta.backend.graphics.DrawableArea;
-import com.turbosanta.backend.sound.AudioRenderer;
+import com.turbosanta.backend.sound.AudioController;
 
 import static java.lang.System.out;
 
@@ -115,9 +115,6 @@ public class Main {
   }
 
   public static void main(String[] args) throws Exception {
-    AudioRenderer.testAudio();
-
-    System.exit(0);
     if (args.length < 2) {
       out.println("Must provide path to ROM file.");
       return;
@@ -130,6 +127,8 @@ public class Main {
     GameFrame frame = new GameFrame();
     frame.setVisible(true);
     factory.setDrawableArea(new FrameWrapper(frame));
+
+    factory.setAudioPlayer(new AudioController(3));
 
     Backend backend = factory.build();
     backend.run();

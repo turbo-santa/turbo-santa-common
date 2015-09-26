@@ -27,6 +27,7 @@ class TimerModule;
 
 namespace sound {
 class SoundController;
+class SoundPlayer;
 } // namespace sound
 } // namespace backend
 
@@ -38,7 +39,7 @@ class Memory {
   Memory();
   ~Memory();
 
-  void Init(uint8_t* rom, size_t length, graphics::Screen* screen);
+  void Init(uint8_t* rom, size_t length, graphics::Screen* screen, sound::SoundPlayer* sound_player);
 
   void Tick(int ticks);
 

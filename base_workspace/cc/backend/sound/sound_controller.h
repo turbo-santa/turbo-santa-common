@@ -4,6 +4,7 @@
 #include <vector>
 #include "cc/backend/memory/memory_segment.h"
 #include "cc/backend/memory/module.h"
+#include "cc/backend/sound/sound_player.h"
 
 namespace backend {
 namespace sound {
@@ -30,10 +31,12 @@ class WavePatternSegment : public memory::ContiguousMemorySegment {
 };
 
 class SoundController : public memory::Module {
-  public:
-    void Init();
+ public:
+  SoundController(SoundPlayer* sound_player) : sound_player_(sound_player) {}
 
-    void Tick(uint32_t ticks);
+  void Init();
+
+  void Tick(uint32_t ticks);
 
   private:
     memory::Flag sound_ch_1_sweep_ = memory::Flag(0xff10);
@@ -58,9 +61,10 @@ class SoundController : public memory::Module {
     memory::Flag sound_output_terminal_ = memory::Flag(0xff25);
     memory::Flag sound_on_off_ = memory::Flag(0xff26);
     WavePatternSegment wave_pattern_ram_;
+    SoundPlayer* sound_player_;
 };
 
 } // namespace sound
 } // namespace backend
 
-#endif // #ifndef TURBO_SANTA_COMMON_BACK_END_SOUND_SOUND_CONTROLLER_H_
+#endif // TURBO_SANTA_COMMON_BACK_END_SOUND_SOUND_CONTROLLER_H_

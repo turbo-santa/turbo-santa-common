@@ -4,6 +4,8 @@ import com.turbosanta.backend.clocktroller.Clocktroller;
 import com.turbosanta.backend.graphics.Screen;
 import com.turbosanta.backend.graphics.DrawableArea;
 import com.turbosanta.backend.joypad.Joypad;
+import com.turbosanta.backend.sound.AudioController;
+import com.turbosanta.backend.sound.NativeAudio;
 
 public class Backend {
   private Clocktroller clocktroller;
@@ -98,6 +100,7 @@ public class Backend {
 
   public static class BackendFactory {
     private DrawableArea drawableArea;
+    private AudioController audioController;
     private byte[] rom;
 
     public BackendFactory setDrawableArea(DrawableArea drawableArea) {
@@ -110,11 +113,19 @@ public class Backend {
       return this;
     }
 
+    public BackendFactory setAudioPlayer(AudioController audioController) {
+      this.audioController = audioController;
+      return this;
+    }
+
     public Backend build() {
       Screen screen = new Screen(drawableArea);
       screen.init();
 
-      Clocktroller clocktroller = new Clocktroller(screen);
+      NativeAudio nativeAudio = new NativeAudio(audioController);
+      nativeAudio.init();
+
+      Clocktroller clocktroller = new Clocktroller(screen, nativeAudio);
       clocktroller.init(rom, rom.length);
 
       Joypad joypad = new Joypad();

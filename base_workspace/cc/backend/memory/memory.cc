@@ -22,11 +22,12 @@ using graphics::GraphicsController;
 using graphics::Screen;
 using timer::TimerModule;
 using sound::SoundController;
+using sound::SoundPlayer;
 
 Memory::Memory() = default;
 Memory::~Memory() = default;
 
-void Memory::Init(uint8_t* rom, size_t length, Screen* screen) {
+void Memory::Init(uint8_t* rom, size_t length, Screen* screen, SoundPlayer* sound_player) {
   memory_mapper_ = unique_ptr<MemoryMapper>(new MemoryMapper());
 
   unimplemented_module_ = unique_ptr<UnimplementedModule>(new UnimplementedModule());
@@ -61,7 +62,7 @@ void Memory::Init(uint8_t* rom, size_t length, Screen* screen) {
   graphics_controller_->Init();
   memory_mapper_->RegisterModule(*graphics_controller_);
 
-  sound_controller_ = unique_ptr<SoundController>(new SoundController());
+  sound_controller_ = unique_ptr<SoundController>(new SoundController(sound_player));
   sound_controller_->Init();
   memory_mapper_->RegisterModule(*sound_controller_);
 }
