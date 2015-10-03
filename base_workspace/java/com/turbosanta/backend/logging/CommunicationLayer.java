@@ -8,6 +8,10 @@ import com.turbosanta.backend.logging.Messages.MessageOption;
 public class CommunicationLayer {
   private long nativeHandle;
 
+  static {
+    System.loadLibrary("communication_layerjni");
+  }
+
   public CommunicationLayer(long nativeHandle) {
     this.nativeHandle = nativeHandle;
   }

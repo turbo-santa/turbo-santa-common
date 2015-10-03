@@ -1,13 +1,11 @@
 #include "cc/backend/clocktroller/clocktroller.h"
 
-#include "cc/backend/debug/memory_profiler/memory_profiler.h"
 #include "glog/logging.h"
 
 namespace backend {
 namespace clocktroller {
 
 using std::unique_ptr;
-using debug::memory_profiler::MemoryProfiler;
 using graphics::GraphicsController;
 using memory::MemoryMapper;
 using opcode_executor::OpcodeExecutor;
@@ -15,8 +13,6 @@ using opcode_executor::OpcodeExecutor;
 
 void Clocktroller::Init(unsigned char* rom, long length) {
   memory_.Init(rom, length, screen_);
-  master_.Own(memory_.memory_mapper());
-  master_.Register(unique_ptr<MemoryProfiler>(new MemoryProfiler()));
   opcode_executor_ = unique_ptr<OpcodeExecutor>(
       new OpcodeExecutor(memory_.memory_mapper(), 
                          memory_.primary_flags(), 

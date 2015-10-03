@@ -5,6 +5,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Graphics;
 import javax.swing.JFrame;
+import com.turbosanta.backend.logging.ConsumerController;
 import com.turbosanta.backend.graphics.DrawableArea;
 
 import static java.lang.System.out;
@@ -116,6 +117,7 @@ public class Main {
     Backend backend = factory.build();
     backend.run();
     frame.addKeyListener(new InputAdapter(backend.getButtonEventListener()));
+    ConsumerController.instance().startConsumers();
   }
 
 }

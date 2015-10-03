@@ -4,15 +4,18 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
+import com.turbosanta.backend.logging.memory.MemoryProfilerConsumerFactory;
 import com.turbosanta.backend.logging.Messages.Message;
 import com.turbosanta.backend.logging.streams.InStream;
 
 public class ConsumerController {
   private static ConsumerController consumerController = new ConsumerController();
   private final MessageController messageController;
-  private List<AbstractConsumerFactory<?, ? extends Consumer>> consumerFactories = Lists.newArrayList();
+  private List<AbstractConsumerFactory<?, ? extends Consumer>> consumerFactories;
 
   private ConsumerController() {
+    consumerFactories = Lists.newArrayList();
+    consumerFactories.add(new MemoryProfilerConsumerFactory());
     messageController = new MessageController();
   }
 

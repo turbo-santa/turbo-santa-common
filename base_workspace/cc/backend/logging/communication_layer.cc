@@ -8,7 +8,7 @@ using std::vector;
 using utility::Option;
 
 void CommunicationLayer::PutMessage(unique_ptr<const Message> message) { 
-  in_stream_.Put(message);
+  in_stream_.Put(std::move(message));
 }
 
 vector<uint8_t> CommunicationLayer::TakeMessage() {

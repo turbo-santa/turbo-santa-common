@@ -40,7 +40,7 @@ bind(
 
 bind(
   name = "protobuf",
-  actual = "@remote_protobuf//:protobuf",
+  actual = "//third_party:protobuf",
 )
 
 maven_jar(

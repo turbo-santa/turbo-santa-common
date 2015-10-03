@@ -3,9 +3,10 @@
 
 #include <atomic>
 #include <condition_variable>
-#include <list>
+#include <memory>
 #include <mutex>
 #include "cc/utility/option.h"
+#include "cc/utility/queue.h"
 
 namespace utility {
 
@@ -19,7 +20,7 @@ class Stream {
   void Put(T t) {
     std::unique_lock<std::mutex> lock(mutex_);
     if (!is_closed_) {
-      data_.push_back(t);
+      data_.Push(std::forward<T>(t));
       condition_.notify_all();
     }
   }
@@ -29,12 +30,10 @@ class Stream {
   Option<T> Take() {
     std::unique_lock<std::mutex> lock(mutex_);
     if (!is_closed_) {
-      while (data_.empty()) {
+      while (data_.is_empty()) {
         condition_.wait(lock);
       }
-      Option<T> value = Some<T>(data_.front());
-      data_.pop_front();
-      return value;
+      return Some<T>(data_.Pop());
     } else {
       return None<T>();
     }
@@ -49,7 +48,7 @@ class Stream {
   std::atomic<bool> is_closed_;
   std::mutex mutex_;
   std::condition_variable condition_;
-  std::list<T> data_;
+  Queue<T> data_;
 };
 
 } // namespace utility

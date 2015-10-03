@@ -8,13 +8,13 @@ namespace utility {
 template<typename T>
 class Option {
  public:
-  Option(T value) : is_present_(true), value_(value) {}
+  Option(T value) : is_present_(true), value_(std::forward<T>(value)) {}
   Option() {}
 
   bool is_present() { return is_present_; }
   T get() {
     if (is_present_) {
-      return value_;
+      return std::move(value_);
     } else {
       LOG(FATAL) << "Value is not present.";
     }
@@ -26,7 +26,7 @@ class Option {
 };
 
 template<typename T>
-Option<T> Some(T t) { return Option<T>(t); }
+Option<T> Some(T t) { return Option<T>(std::forward<T>(t)); }
 
 template<typename T>
 Option<T> None() { return Option<T>(); }

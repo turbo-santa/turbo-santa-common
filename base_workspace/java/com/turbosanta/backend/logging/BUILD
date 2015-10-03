@@ -4,9 +4,12 @@ java_library(
   deps = [
     "//external:guava",
     "//java/com/turbosanta/backend/logging/streams",
+    "//java/com/turbosanta/backend/logging/memory:memory_profiler_consumer_factory",
     "//protobuf/backend/logging:message_java",
     ":abstract_consumer_factory",
+    ":communication_layer",
     ":consumer",
+    ":message_controller",
   ],
   visibility = ["//visibility:public"],
 )

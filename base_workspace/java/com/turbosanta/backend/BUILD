@@ -3,6 +3,7 @@ java_binary(
   srcs = ["Main.java"],
   deps = [
     "//java/com/turbosanta/backend/graphics:drawable_area",
+    "//java/com/turbosanta/backend/logging:consumer_controller",
     ":backend",
   ],
   main_class = "com.turbosanta.backend.Main",

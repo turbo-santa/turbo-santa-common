@@ -5,8 +5,6 @@ cc_library(
     ":clocktroller.cc",
   ],
   deps = [
-    "//cc/backend/debug:master",
-    "//cc/backend/debug/memory_profiler",
     "//cc/backend/graphics:screen",
     "//cc/backend/memory",
     "//cc/backend/memory/interrupt:primary_flags",

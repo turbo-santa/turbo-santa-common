@@ -6,6 +6,7 @@ cc_library(
     "//protobuf/backend/logging:message_cc",
     ":message_controller",
   ],
+  visibility = ["//visibility:public"],
 )
 
 cc_library(
@@ -16,6 +17,7 @@ cc_library(
     "//protobuf/backend/logging:message_cc",
     ":communication_layer",
   ],
+  defines = ["LOGGING_ENABLED"],
   visibility = ["//visibility:public"],
 )
 
