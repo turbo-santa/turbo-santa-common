@@ -7,6 +7,7 @@ import com.google.common.collect.Lists;
 import com.turbosanta.backend.logging.memory.MemoryProfilerConsumerFactory;
 import com.turbosanta.backend.logging.Messages.Message;
 import com.turbosanta.backend.logging.streams.InStream;
+import com.turbosanta.backend.logging.streams.MultiTraversalStream;
 
 public class ConsumerController {
   private static ConsumerController consumerController = new ConsumerController();
@@ -26,8 +27,7 @@ public class ConsumerController {
   // TODO: This should launch all consumers and should split the input from the
   // communication layer so that multiple consumers can coexist.
   public void startConsumers() {
-    AbstractConsumerFactory<?, ?> factory = consumerFactories.get(0);
-    factory.setMessageStream(new InStream<Message>() {
+    MultiTraversalStream<Message> parentStream = MultiTraversalStream.newMultiTraversalStream(new InStream<Message>() {
       private final CommunicationLayer communicationLayer = messageController.getCommunicationLayer();
 
       @Override
@@ -44,7 +44,9 @@ public class ConsumerController {
         return communicationLayer.isClosed();
       }
     });
-    Consumer consumer = factory.build();
-    new Thread(consumer).run();
+    for (AbstractConsumerFactory<?, ? extends Consumer> factory : consumerFactories) {
+      factory.setMessageStream(parentStream.newIndependentStream());
+      new Thread(factory.build()).run();
+    }
   }
 }
