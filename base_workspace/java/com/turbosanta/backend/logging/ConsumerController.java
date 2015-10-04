@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
-import com.turbosanta.backend.logging.memory.MemoryProfilerConsumerFactory;
+import com.turbosanta.backend.logging.memory.MemoryProfilerConsumerBuilder;
 import com.turbosanta.backend.logging.Messages.Message;
 import com.turbosanta.backend.logging.streams.InStream;
 import com.turbosanta.backend.logging.streams.MultiTraversalStream;
@@ -12,11 +12,11 @@ import com.turbosanta.backend.logging.streams.MultiTraversalStream;
 public class ConsumerController {
   private static ConsumerController consumerController = new ConsumerController();
   private final MessageController messageController;
-  private List<AbstractConsumerFactory<?, ? extends Consumer>> consumerFactories;
+  private List<ConsumerBuilder<?, ? extends Consumer>> consumerFactories;
 
   private ConsumerController() {
     consumerFactories = Lists.newArrayList();
-    consumerFactories.add(new MemoryProfilerConsumerFactory());
+    consumerFactories.add(new MemoryProfilerConsumerBuilder());
     messageController = new MessageController();
   }
 
@@ -44,7 +44,7 @@ public class ConsumerController {
         return communicationLayer.isClosed();
       }
     });
-    for (AbstractConsumerFactory<?, ? extends Consumer> factory : consumerFactories) {
+    for (ConsumerBuilder<?, ? extends Consumer> factory : consumerFactories) {
       factory.setMessageStream(parentStream.newIndependentStream());
       new Thread(factory.build()).run();
     }

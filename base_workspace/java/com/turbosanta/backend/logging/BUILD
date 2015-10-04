@@ -5,19 +5,19 @@ java_library(
     "//external:guava",
     "//java/com/turbosanta/backend/logging/streams",
     "//java/com/turbosanta/backend/logging/streams:multi_traversal_stream",
-    "//java/com/turbosanta/backend/logging/memory:memory_profiler_consumer_factory",
+    "//java/com/turbosanta/backend/logging/memory:memory_profiler_consumer_builder",
     "//protobuf/backend/logging:message_java",
-    ":abstract_consumer_factory",
     ":communication_layer",
     ":consumer",
+    ":consumer_builder",
     ":message_controller",
   ],
   visibility = ["//visibility:public"],
 )
 
 java_library(
-  name = "abstract_consumer_factory",
-  srcs = ["AbstractConsumerFactory.java"],
+  name = "consumer_builder",
+  srcs = ["ConsumerBuilder.java"],
   deps = [
     "//java/com/turbosanta/backend/logging/streams",
     "//protobuf/backend/logging:message_java",

@@ -11,10 +11,10 @@ java_library(
 )
 
 java_library(
-  name = "memory_profiler_consumer_factory",
-  srcs = ["MemoryProfilerConsumerFactory.java"],
+  name = "memory_profiler_consumer_builder",
+  srcs = ["MemoryProfilerConsumerBuilder.java"],
   deps = [
-    "//java/com/turbosanta/backend/logging:abstract_consumer_factory",
+    "//java/com/turbosanta/backend/logging:consumer_builder",
     "//java/com/turbosanta/backend/logging/streams",
     "//protobuf/backend/logging:message_java",
     ":memory_profiler_consumer",
