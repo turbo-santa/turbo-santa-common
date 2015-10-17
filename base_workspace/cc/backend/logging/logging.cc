@@ -32,6 +32,15 @@ unique_ptr<Message> WriteAccess(uint16_t address,
   return MakeMemoryAccess(MemoryAccess::WRITE, address, old_value, new_value);
 }
 
+std::unique_ptr<Message> ExecutionInfo(uint16_t program_counter) {
+  unique_ptr<Message> message(new Message());
+  OpcodeExecutionInfo* opcode_execution_info = message->
+      mutable_opcode_message()->mutable_opcode_execution_info();
+
+  opcode_execution_info->set_program_counter(program_counter);
+  return std::move(message);
+}
+
 } // namespace logging
 } // namespace backend
 

@@ -40,6 +40,7 @@ cc_library(
   deps = [
     "//cc/backend/decompiler:decompiler",
     "//cc/backend/decompiler:decompiler_factory",
+    "//cc/backend/logging",
     "//cc/backend/memory/interrupt:interrupt_flag",
     "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory:memory_mapper",

@@ -12,6 +12,7 @@ roms/
 
 .classpath
 .project
+.settings/
 
 *.pyc
 *.zip

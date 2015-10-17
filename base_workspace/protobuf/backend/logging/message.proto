@@ -15,6 +15,7 @@ message Message {
   oneof payload {
     UnstructuredMessage unstructured_message = 1;
     MemoryMessage memory_message = 2;
+    OpcodeMessage opcode_message = 3;
   }
 }
 
@@ -46,4 +47,14 @@ message MemoryAccess {
   required uint32 address = 2;
   required uint32 old_value = 3;
   required uint32 new_value = 4;
+}
+
+message OpcodeMessage {
+  oneof payload {
+    OpcodeExecutionInfo opcode_execution_info = 1;
+  }
+}
+
+message OpcodeExecutionInfo {
+  required uint32 program_counter = 1;
 }

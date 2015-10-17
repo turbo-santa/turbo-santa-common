@@ -4,6 +4,7 @@
 #include "cc/backend/decompiler/decompiler_factory.h"
 #include "cc/backend/decompiler/instruction.h"
 #include "cc/backend/decompiler/rom_reader.h"
+#include "cc/backend/logging/logging.h"
 #include "cc/backend/opcode_executor/opcode_handlers.h"
 #include "glog/logging.h"
 
@@ -56,6 +57,7 @@ int OpcodeExecutor::ReadInstruction() {
         << ", exiting with error.";
     return -1;
   }
+  PUBLISH_EXECUTION_INFO(cpu_.rPC);
   cpu_.rPC += instruction.instruction_width_bytes;
   OpcodeHandler handler = opcode_map_[instruction.instruction];
 

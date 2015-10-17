@@ -4,7 +4,7 @@ import com.google.common.base.Optional;
 
 import javax.annotation.Nullable;
 
-public class MultiTraversalStream<T> implements InStream<T> {
+public class MultiTraversalStream<T> extends InStream<T> {
   private InStream<T> baseStream;
   private StreamNode<T> streamNode;
 
