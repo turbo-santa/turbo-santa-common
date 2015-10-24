@@ -14,3 +14,4 @@ roms/
 *.zip
 .classpath
 .project
+.settings/
