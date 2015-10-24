@@ -1,5 +1,10 @@
 proto_filetype = FileType([".proto"])
 
+# PROTOC = "//external:protoc"
+PROTO_CLIB = "//external:protobuf_clib"
+PROTOC = "//third_party:protoc"
+# PROTO_CLIB = "//third_party:protobuf_clib"
+
 def gensrcjar_impl(ctx):
   out = ctx.outputs.srcjar
   proto_output = out.path + ".proto_output"
@@ -27,7 +32,7 @@ gensrcjar = rule(
       # TODO(bazel-team): this should be a hidden attribute with a default
       # value, but Skylark needs to support select first.
       "_proto_compiler": attr.label(
-          default=Label("//third_party:protoc"),
+          default=Label(PROTOC),
           allow_files=True,
           single_file=True),
       "_jar": attr.label(
@@ -45,12 +50,12 @@ def proto_library(name, src, deps = None,
                   generate_cc = True,
                   generate_java = True):
   proto_cc_deps = [
-      "//external:protoc",
+      PROTOC,
       ]
   cc_deps = [
-      "//external:protobuf_clib"
+      PROTO_CLIB,
       ]
-  command = "$(location //external:protoc) --cpp_out=$(GENDIR)"
+  command = "$(location " + PROTOC + ") --cpp_out=$(GENDIR)"
   command += " $(location %s)" % (src)
 
   basename = src[0:-5]

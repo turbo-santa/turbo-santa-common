@@ -3,6 +3,7 @@ package com.turbosanta.backend.logging.streams;
 import java.util.Queue;
 
 import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
 import com.turbosanta.backend.logging.streams.InStreamManipulators.MapFunction;
 import com.turbosanta.backend.logging.streams.InStreamManipulators.OptionalToCollectionApplicator;
 import com.turbosanta.backend.logging.streams.InStreamManipulators.Process;
@@ -43,7 +44,7 @@ public abstract class InStream<T> {
 
   public <S> InStream<S> flatMap(final FlatMapFunctionWithCollection<T, S> mapFunction) {
     return new InStream<S>() {
-      private Queue<Optional<S>> buffer;
+      private Queue<Optional<S>> buffer = Lists.newLinkedList();
 
       @Override
       public Optional<S> take() {
