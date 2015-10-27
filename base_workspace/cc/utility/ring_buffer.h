@@ -28,7 +28,7 @@ class RingBuffer {
   }
 
   bool RollbackStore(std::unique_ptr<T>* return_value) {
-    int64_t write_index = atomic_write_index_.fetch_add(1, std::memory_order_acquire);
+    int64_t write_index = atomic_write_index_.fetch_add(-1, std::memory_order_acquire);
     int64_t read_index = atomic_read_index_.load(std::memory_order_acquire);
     int64_t size = buffer_.size();
 
@@ -36,7 +36,7 @@ class RingBuffer {
       *return_value = std::move(buffer_[write_index % size]);
       return true;
     } else {
-      atomic_write_index_.store(write_index - 1, std::memory_order_relaxed);
+      atomic_write_index_.store(write_index + 1, std::memory_order_relaxed);
       return false;
     }
   }

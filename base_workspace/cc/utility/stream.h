@@ -5,8 +5,7 @@
 #include <condition_variable>
 #include <memory>
 #include <mutex>
-#include "cc/utility/option.h"
-#include "cc/utility/queue.h"
+#include "cc/utility/resizable_ring_buffer.h"
 
 namespace utility {
 
@@ -15,27 +14,23 @@ namespace utility {
 template <typename T>
 class Stream {
  public:
-  Stream() : is_closed_(false) {}
+  Stream() : is_closed_(false), data_(1000, -1) {}
 
-  void Put(T t) {
-    std::unique_lock<std::mutex> lock(mutex_);
+  bool Put(std::unique_ptr<T>* value) {
     if (!is_closed_) {
-      data_.Push(std::forward<T>(t));
-      condition_.notify_all();
+      return data_.Store(value);
     }
+    return false;
   }
 
   // Receives an element of type T from sender, blocks until element is received
   // or thread is closed. Returns None if stream is closed.
-  Option<T> Take() {
-    std::unique_lock<std::mutex> lock(mutex_);
+  bool Take(std::unique_ptr<T>* value) {
     if (!is_closed_) {
-      while (data_.is_empty()) {
-        condition_.wait(lock);
-      }
-      return Some<T>(data_.Pop());
+      while (!data_.Load(value)) {}
+      return true;
     } else {
-      return None<T>();
+      return false;
     }
   }
 
@@ -46,9 +41,7 @@ class Stream {
 
  private:
   std::atomic<bool> is_closed_;
-  std::mutex mutex_;
-  std::condition_variable condition_;
-  Queue<T> data_;
+  ResizableRingBuffer<T> data_;
 };
 
 } // namespace utility

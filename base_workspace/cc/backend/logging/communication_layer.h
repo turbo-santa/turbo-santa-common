@@ -21,7 +21,7 @@ class CommunicationLayer {
   void Close() { in_stream_.Close(); }
 
  private:
-  utility::Stream<std::unique_ptr<const Message>> in_stream_;
+  utility::Stream<const Message> in_stream_;
 };
 
 } // namespace logging

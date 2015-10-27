@@ -8,14 +8,14 @@ using std::vector;
 using utility::Option;
 
 void CommunicationLayer::PutMessage(unique_ptr<const Message> message) { 
-  in_stream_.Put(std::move(message));
+  in_stream_.Put(&message);
 }
 
 vector<uint8_t> CommunicationLayer::TakeMessage() {
-  Option<unique_ptr<const Message>> message = in_stream_.Take();
   MessageOption option;
-  if (message.is_present()) {
-    option.mutable_payload()->CopyFrom(*message.get());
+  unique_ptr<const Message> message;
+  if (in_stream_.Take(&message)) {
+    option.set_allocated_payload(const_cast<Message*>(message.release()));
   }
   vector<uint8_t> buffer(option.ByteSize());
   option.SerializeToArray(buffer.data(), buffer.size());
