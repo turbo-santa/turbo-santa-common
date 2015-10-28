@@ -1,3 +1,9 @@
+sh_binary(
+  name = "turbo",
+  srcs = ["turbo.sh"],
+  data = [":main"],
+)
+
 java_binary(
   name = "main",
   srcs = ["Main.java"],
@@ -7,7 +13,10 @@ java_binary(
     ":backend",
   ],
   main_class = "com.turbosanta.backend.Main",
-  jvm_flags = ["-Xss515m"],
+  jvm_flags = [
+    # "-Xcheck:jni",
+    "-Xms2g",
+  ],
 )
 
 java_library(
@@ -34,6 +43,13 @@ genrule(
 )
 
 genrule(
+  name = "copy_link_jni_libjsig",
+  srcs = ["//tools/jdk:jre"],
+  outs = ["libjsig.so"],
+  cmd = "cp -f external/local-jdk/jre/lib/amd64/libjsig.so $@",
+)
+
+genrule(
   name = "copy_link_jni_md_header",
   srcs = select({
     "//:darwin": ["//tools/jdk:jni_md_header-darwin"],
@@ -45,7 +61,7 @@ genrule(
 
 cc_library(
   name = "jni_headers",
-  srcs = [
+  hdrs = [
     "handle.h",
     ":jni.h",
     ":jni_md.h",
