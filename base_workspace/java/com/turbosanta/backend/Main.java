@@ -1,13 +1,19 @@
 package com.turbosanta.backend;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.Graphics;
+
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
 import com.turbosanta.backend.graphics.DrawableArea;
 
 import static java.lang.System.out;
+
 import static com.turbosanta.backend.Backend.BackendFactory;
 import static com.turbosanta.backend.Backend.ButtonEventListener;
 import static com.turbosanta.backend.BackendUtils.readROMFile;
@@ -15,20 +21,28 @@ import static com.turbosanta.backend.BackendUtils.readROMFile;
 public class Main {
   private static class GameFrame extends JFrame {
     private static final long serialVersionUID = 6041544462933292415L;
+    private JPanel content = new JPanel();
 
     public GameFrame() {
       super("Turbo Santa");
       setBackground(Color.WHITE);
-      setSize(160 * 3, 144 * 3);
+      setLayout(new BorderLayout());
+      content.setPreferredSize(new Dimension(160 * 3, 144 * 3));
+      add(content, BorderLayout.CENTER);
+      pack();
       setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
+
+    public JPanel getContent() {
+      return content;
     }
   }
 
   private static class FrameWrapper implements DrawableArea {
-    private GameFrame frame;
+    private JPanel frame;
 
     public FrameWrapper(GameFrame frame) {
-      this.frame = frame;
+      this.frame = frame.getContent();
     }
 
     @Override
