@@ -5,7 +5,6 @@
 #include <memory>
 #include <thread>
 
-#include "cc/backend/debug/master.h"
 #include "cc/backend/memory/memory.h"
 #include "cc/backend/memory/memory_mapper.h"
 #include "cc/backend/opcode_executor/opcode_executor.h"
@@ -24,7 +23,6 @@ class Clocktroller {
   memory::JoypadFlag* joypad_flag() { return memory_.joypad_flag(); }
 
  private:
-  debug::Master master_;
   memory::Memory memory_;
   graphics::Screen* screen_;
   std::unique_ptr<opcode_executor::OpcodeExecutor> opcode_executor_;
