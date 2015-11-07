@@ -93,6 +93,14 @@ class UpperTileData : public TileData {
  public:
   UpperTileData(std::vector<unsigned char>* data) : TileData(data, 0x8800) {}
 
+  unsigned char Read(unsigned short address) override {
+    return TileData::Read(address + 0x800);
+  }
+
+  void Write(unsigned short address, unsigned char value) override {
+    TileData::Write(address + 0x800, value);
+  }
+
   virtual Tile* tile(unsigned char value) {
     // Actually value is signed so we have to shift it.
     return TileData::tile(static_cast<char>(value) + 0x80);
