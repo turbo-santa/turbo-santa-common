@@ -62,6 +62,7 @@ class SoundController : public memory::Module {
     memory::Flag sound_on_off_ = memory::Flag(0xff26);
     WavePatternSegment wave_pattern_ram_;
     SoundPlayer* sound_player_;
+    int ticks_;
 };
 
 } // namespace sound

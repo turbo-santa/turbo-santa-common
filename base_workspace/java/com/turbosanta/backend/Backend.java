@@ -7,6 +7,8 @@ import com.turbosanta.backend.joypad.Joypad;
 import com.turbosanta.backend.sound.AudioController;
 import com.turbosanta.backend.sound.NativeAudio;
 
+import javax.sound.sampled.LineUnavailableException;
+
 public class Backend {
   private Clocktroller clocktroller;
   private Joypad joypad;
@@ -124,6 +126,11 @@ public class Backend {
 
       NativeAudio nativeAudio = new NativeAudio(audioController);
       nativeAudio.init();
+      try {
+        audioController.init();
+      } catch (LineUnavailableException e) {
+        e.printStackTrace();
+      }
 
       Clocktroller clocktroller = new Clocktroller(screen, nativeAudio);
       clocktroller.init(rom, rom.length);

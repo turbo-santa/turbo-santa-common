@@ -17,7 +17,7 @@ cc_library(
   ),
   includes = ["src"],
   linkopts = ["-pthread"],
-#  defines = ["GOOGLE_STRIP_LOG=1"],
+  defines = ["GOOGLE_STRIP_LOG=1"],
   visibility = ["//visibility:public"],
 )
 

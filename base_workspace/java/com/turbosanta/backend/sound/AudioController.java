@@ -5,6 +5,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 public class AudioController {
 
@@ -23,7 +24,18 @@ public class AudioController {
   }
 
   public void submitAudioChunk(byte[] audioChunk) {
-    buffer.queue(audioChunk);
+    int offset = 0;
+    int bufferSize = sourceLine.getBufferSize();
+    // We can't send chunks to the audio player that are larger than the buffer size, so we
+    // chop them into bufferSize chunks.
+    while (offset + bufferSize < audioChunk.length) {
+      buffer.queue(Arrays.copyOfRange(audioChunk, offset, offset + bufferSize));
+      offset += bufferSize;
+    }
+    // If there is any leftover data we add it as its own chunk.
+    if (offset < audioChunk.length) {
+      buffer.queue(Arrays.copyOfRange(audioChunk, offset, audioChunk.length));
+    }
   }
 
   public void init() throws LineUnavailableException {
