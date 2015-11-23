@@ -13,6 +13,7 @@ cc_library(
     "//cc/backend/memory:memory_mapper",
     "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory/unimplemented:unimplemented_module",
+    "//cc/backend/opcode_executor",
   ],
   visibility = ["//visibility:public"],
 )

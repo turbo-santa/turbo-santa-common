@@ -8,7 +8,10 @@ cc_library(
   name = "raw_instruction",
   hdrs = ["raw_instruction.h"],
   srcs = ["raw_instruction.cc"],
-  deps = ["//external:glog"],
+  deps = [
+    "//external:glog",
+    ":rom_bridge",
+  ],
 )
 
 cc_library(
