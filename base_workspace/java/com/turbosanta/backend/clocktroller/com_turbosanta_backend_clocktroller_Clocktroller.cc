@@ -23,6 +23,12 @@ Screen* GetScreen(JNIEnv* env, jobject clocktroller_obj) {
 void Java_com_turbosanta_backend_clocktroller_Clocktroller_init(JNIEnv* env, jobject obj, jbyteArray rom, jlong length) {
   // Create clocktroller.
   Clocktroller* clocktroller = new Clocktroller(GetScreen(env, obj));
+
+  // Init logging.
+  FLAGS_logtostderr = 0;
+  FLAGS_log_dir = "log";
+  const char* turbo = "turbo";
+  google::InitGoogleLogging(turbo);
   google::InstallFailureSignalHandler();
 
   // Init with ROM data.
