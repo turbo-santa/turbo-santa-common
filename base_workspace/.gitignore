@@ -9,6 +9,7 @@ bazel-out
 bazel-testlogs
 
 roms/
+log/
 
 *.pyc
 *.zip
