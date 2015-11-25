@@ -81,12 +81,12 @@ attempt to parse it as if it had the usual Nintendo ROM layout.
 A stand-alone static decompiler is implemented in "main.cc", it compiles to a
 program named "decompile" which may be built:
 
-```bash
-bazel build //backend/decompiler:all
+```
+$ bazel build //cc/backend/decompiler:all
 ```
 
 And executed as:
 
-```bash
-decompile path/to/bin.gb path/to/out.asm
+```
+$ decompile path/to/bin.gb path/to/out.s
 ```
