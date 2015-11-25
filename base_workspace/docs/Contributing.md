@@ -61,7 +61,8 @@ We use the [Google Java Style Guide](https://google.github.io/styleguide/javagui
 
 Listed below are some links that will probably come in handy:
 
- - [Google's Style Guide](https://google.github.io/styleguide/cppguide.html)
+ - [Google's C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
+ - [Google's Java Style Guide](https://google.github.io/styleguide/javaguide.html)
  - C/C++ standard libs - http://en.cppreference.com/w/
  - bazel - http://bazel.io/
  - Gameboy reference material:
