@@ -51,7 +51,7 @@ A lot of the code is very rough around the edges, if you see something that does
 not obey what was said above, please file an issue on Github, or fix it if you
 like. There are two caveats here, we are aware that
 `backend/opcode_executor/opcode_handler.cc` is a mess and `test_harness/*` is a
-total cluster fuck.
+total clusterfuck.
 
 ## Java Style Guide
 
