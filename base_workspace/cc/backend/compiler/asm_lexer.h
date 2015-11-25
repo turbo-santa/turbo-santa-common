@@ -1,5 +1,5 @@
-#ifndef TURBO_SANTA_COMMON_BACKEND_COMPILER_H_
-#define TURBO_SANTA_COMMON_BACKEND_COMPILER_H_
+#ifndef TURBO_SANTA_COMMON_BACKEND_COMPILER_ASM_LEXER_H_
+#define TURBO_SANTA_COMMON_BACKEND_COMPILER_ASM_LEXER_H_
 
 #ifndef __FLEX_LEXER_H
 #define yyFlexLexer AsmFlexLexer
@@ -34,4 +34,4 @@ class AsmLexer : public AsmFlexLexer {
 } // namespace compiler
 } // backend
 
-#endif // TURBO_SANTA_COMMON_BACKEND_COMPILER_H_
+#endif // TURBO_SANTA_COMMON_BACKEND_COMPILER_ASM_LEXER_H_

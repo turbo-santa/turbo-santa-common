@@ -1,5 +1,5 @@
-#ifndef TURBO_SANTA_COMMON_BACKEND_TOKENS_H_
-#define TURBO_SANTA_COMMON_BACKEND_TOKENS_H_
+#ifndef TURBO_SANTA_COMMON_BACKEND_COMPILER_TOKENS_H_
+#define TURBO_SANTA_COMMON_BACKEND_COMPILER_TOKENS_H_
 
 #include "cc/backend/decompiler/instruction.h"
 
@@ -26,4 +26,4 @@ union TokenValue {
 } // namespace compiler
 } // backend
 
-#endif // TURBO_SANTA_COMMON_BACKEND_TOKENS_H_
+#endif // TURBO_SANTA_COMMON_BACKEND_COMPILER_TOKENS_H_
