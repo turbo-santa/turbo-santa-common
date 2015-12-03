@@ -5,6 +5,8 @@
 #include "cc/backend/memory/memory_segment.h"
 #include "cc/backend/memory/module.h"
 #include "cc/backend/sound/sound_player.h"
+#include "cc/backend/sound/sound_flags.h"
+#include "cc/backend/sound/tone_and_sweep_channel.h"
 
 namespace backend {
 namespace sound {
@@ -39,11 +41,11 @@ class SoundController : public memory::Module {
   void Tick(uint32_t ticks);
 
   private:
-    memory::Flag sound_ch_1_sweep_ = memory::Flag(0xff10);
-    memory::Flag sound_ch_1_sound_length_ = memory::Flag(0xff11);
-    memory::Flag sound_ch_1_volume_ = memory::Flag(0xff12);
+    flags::Sweep sound_ch_1_sweep_ = flags::Sweep(0xff10);
+    flags::SoundLength sound_ch_1_sound_length_ = flags::SoundLength(0xff11);
+    flags::VolumeEnvelope sound_ch_1_volume_ = flags::VolumeEnvelope(0xff12);
     memory::Flag sound_ch_1_freq_lo_ = memory::Flag(0xff13);
-    memory::Flag sound_ch_1_freq_hi_ = memory::Flag(0xff14);
+    flags::FrequencyHigh sound_ch_1_freq_hi_ = flags::FrequencyHigh(0xff14);
     memory::Flag sound_ch_2_sound_length_ = memory::Flag(0xff16);
     memory::Flag sound_ch_2_volume_ = memory::Flag(0xff17);
     memory::Flag sound_ch_2_freq_lo_ = memory::Flag(0xff18);
@@ -57,12 +59,17 @@ class SoundController : public memory::Module {
     memory::Flag sound_ch_4_volume_ = memory::Flag(0xff21);
     memory::Flag sound_ch_4_poly_counter_ = memory::Flag(0xff22);
     memory::Flag sound_ch_4_counter_ = memory::Flag(0xff23);
-    memory::Flag sound_chan_ctrl_ = memory::Flag(0xff24);
-    memory::Flag sound_output_terminal_ = memory::Flag(0xff25);
-    memory::Flag sound_on_off_ = memory::Flag(0xff26);
+    flags::ChannelControl sound_chan_ctrl_ = flags::ChannelControl(0xff24);
+    flags::OutputTerminal sound_output_terminal_ = flags::OutputTerminal(0xff25);
+    flags::Enable sound_on_off_ = flags::Enable(0xff26);
     WavePatternSegment wave_pattern_ram_;
     SoundPlayer* sound_player_;
-    int ticks_;
+
+    ToneAndSweep tone_and_sweep_ = ToneAndSweep(&sound_ch_1_sweep_, &sound_ch_1_sound_length_, &sound_ch_1_volume_,
+        &sound_ch_1_freq_lo_, &sound_ch_1_freq_hi_);
+    uint32_t ticks_ = 0;
+    uint8_t sound_enabled_;
+    uint8_t sound_channel_;
 };
 
 } // namespace sound

@@ -12,6 +12,7 @@ public class AudioController {
   private static final float SAMPLE_RATE = 44100.0f; // Hz
   private static final int SAMPLE_SIZE = 8; // bits
   private static final int CHANNELS = 2;
+  private static final int DEFAULT_BUFFER_SIZE = 1024;
 
   private SourceDataLine sourceLine;
   private SoundBuffer buffer;
@@ -19,8 +20,8 @@ public class AudioController {
 
   private boolean shouldPlayAudio = true;
 
-  public AudioController(int bufferSize) {
-    buffer = new SoundBuffer(bufferSize);
+  public AudioController() {
+    buffer = new SoundBuffer(DEFAULT_BUFFER_SIZE);
   }
 
   public void submitAudioChunk(byte[] audioChunk) {
@@ -76,7 +77,9 @@ public class AudioController {
       while (shouldPlayAudio) {
         byte[] sample = new byte[sourceLine.getBufferSize()];
         buffer.fill(sample, 0, sample.length);
-        sourceLine.write(sample, 0, sample.length);
+//        for (int offset = 0; offset < sample.length; offset += 2) {
+          sourceLine.write(sample, 0, sample.length);
+//        }
       }
     }
   }

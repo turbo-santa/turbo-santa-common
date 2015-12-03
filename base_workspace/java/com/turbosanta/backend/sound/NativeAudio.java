@@ -19,7 +19,7 @@ public class NativeAudio {
 
   // Called from JNI.
   public void submitAudioChunk(byte[] data) {
-    System.err.println("NativeAudio: submitting audio chunk: " + data.length);
+    //System.err.println("NativeAudio: submitting audio chunk: " + data.length + "\n" + Arrays.toString(data));
     audioController.submitAudioChunk(Arrays.copyOfRange(data, 0, data.length));
   }
 

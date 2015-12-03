@@ -128,7 +128,7 @@ public class Main {
     frame.setVisible(true);
     factory.setDrawableArea(new FrameWrapper(frame));
 
-    factory.setAudioPlayer(new AudioController(3));
+    factory.setAudioPlayer(new AudioController());
 
     Backend backend = factory.build();
     backend.run();
