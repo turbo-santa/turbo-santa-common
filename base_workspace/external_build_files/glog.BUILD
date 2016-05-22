@@ -30,7 +30,11 @@ genrule(
     "src/glog/stl_logging.h",
     "src/glog/vlog_is_on.h",
   ],
-  cmd = """STARTING_DIR=`pwd`; ROOT_DIR=external/remote_glog; DEST_DIR=$(@D)/external/remote_glog/src;
+  cmd = """STARTING_DIR=`pwd`; ROOT_DIR=$$STARTING_DIR/external/remote_glog; DEST_DIR=$(@D)/src;
+    echo $(@D);
+    echo $$STARTING_DIR;
+    echo $$ROOT_DIR;
+    echo $$DEST_DIR;
     cd $$ROOT_DIR; ./configure; cd $$STARTING_DIR;
     mv $$ROOT_DIR/src/config.h $$DEST_DIR;
     mv $$ROOT_DIR/src/glog/logging.h $$DEST_DIR/glog;
