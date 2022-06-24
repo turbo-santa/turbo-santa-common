@@ -13,27 +13,19 @@ In order to build this you must have:
   - git
   - g++/clang (with support for C++11)
   - ncurses development headers
+  - nix
   - [bazel](https://github.com/google/bazel)
 
 Clone the repo:
 
     $ git clone https://github.com/turbo-santa/turbo-santa-common.git
 
-Go into the project:
+Go into the project bazel build directory:
 
-    $ cd turbo-santa-common
-
-Get the submodules:
-
-Go to your bazel base\_workspace and copy the symlinks that bazel needs to
-function:
-
-    $ cd base_workspace
-    $ cp -R PATH/TO/BAZEL/base_workspace/* .
+    $ cd turbo-santa-common/base_workspace
 
 Now all you have to do is build Turbo Santa:
 
-    $ cd .. # After typing this you should be in base_workspace
     $ bazel build //cc/backend:turbo
 
 If everything works correctly you just build the Turbo Santa backend! The
