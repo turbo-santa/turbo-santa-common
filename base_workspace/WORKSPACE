@@ -1,23 +1,67 @@
-new_git_repository(
-  name = "remote_gtest",
-  remote = "https://github.com/bjh83/googletest.git",
-  commit = "7c508e6611f14cbc0da048c0e726870b93b1cc00",
-  build_file = "external_build_files/gtest.BUILD",
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+  name = "com_google_googletest",
+  urls = ["https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip"],
+  strip_prefix = "googletest-609281088cfefc76f9d0ce82e1ff6c30cc3591e5",
+  sha256 = "5cf189eb6847b4f8fc603a3ffff3b0771c08eec7dd4bd961bfd45477dd13eb73"
 )
 
-bind(
-  name = "gtest",
-  actual = "@remote_gtest//:main",
+http_archive(
+    name = "com_github_gflags_gflags",
+    sha256 = "34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf",
+    strip_prefix = "gflags-2.2.2",
+    urls = ["https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"],
 )
 
-new_git_repository(
-  name = "remote_glog",
-  remote = "https://github.com/google/glog.git",
-  commit = "47ab571f38e8c6266c260010ac631f888e302e6d",
-  build_file = "external_build_files/glog.BUILD",
+http_archive(
+    name = "com_github_google_glog",
+    sha256 = "122fb6b712808ef43fbf80f75c52a21c9760683dae470154f02bddfc61135022",
+    strip_prefix = "glog-0.6.0",
+    urls = ["https://github.com/google/glog/archive/v0.6.0.zip"],
 )
 
-bind(
-  name = "glog",
-  actual = "@remote_glog//:main",
+
+
+http_archive(
+    name = "io_tweag_rules_nixpkgs",
+    strip_prefix = "rules_nixpkgs-e3176e362c8869bb0728e42b090f4c9f7f090e99",
+    urls = ["https://github.com/tweag/rules_nixpkgs/archive/e3176e362c8869bb0728e42b090f4c9f7f090e99.tar.gz"],
+    sha256 = "819e5aff9da932571fc12cbf6a3824f2b984aae0de1b0a29c7121dca38a18b17",
+)
+load("@io_tweag_rules_nixpkgs//nixpkgs:repositories.bzl", "rules_nixpkgs_dependencies")
+rules_nixpkgs_dependencies()
+load("@io_tweag_rules_nixpkgs//nixpkgs:nixpkgs.bzl", "nixpkgs_git_repository", "nixpkgs_package", "nixpkgs_cc_configure")
+
+nixpkgs_git_repository(
+    name = "nixpkgs",
+    revision = "master",
+)
+nixpkgs_package(
+    name = "ncurses",
+    repository = "@nixpkgs",
+)
+nixpkgs_cc_configure(
+    name = "nixpkgs_config_cc",
+    repository = "@nixpkgs",
+)
+
+nixpkgs_package(
+    name = "ncurses.dev",
+    build_file_content = """\
+load("@rules_cc//cc:defs.bzl", "cc_library")
+filegroup(
+    name = "include",
+    srcs = glob(["include/*.h"]),
+    visibility = ["//visibility:public"],
+)
+cc_library(
+    name = "ncurses",
+    srcs = ["@ncurses//:lib"],
+    hdrs = [":include"],
+    strip_include_prefix = "include",
+    visibility = ["//visibility:public"],
+)
+""",
+    repository = "@nixpkgs",
 )

@@ -3,7 +3,7 @@ cc_library(
   hdrs = ["interrupt_flag.h"],
   deps = [
     "//cc/backend/memory:memory_segment",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
   ],
   visibility = ["//visibility:public"],
 )
@@ -13,7 +13,7 @@ cc_library(
   hdrs = ["primary_flags.h"],
   deps = [
     "//cc/backend/memory:module",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":interrupt_flag",
   ],
   visibility = ["//visibility:public"],

@@ -1,7 +1,7 @@
 cc_library(
   name = "utility",
   hdrs = ["option.h"],
-  deps = ["//external:glog"],
+  deps = ["@com_github_google_glog//:glog"],
   visibility = ["//visibility:public"],
 )
 

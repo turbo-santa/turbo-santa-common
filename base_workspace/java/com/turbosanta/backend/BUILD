@@ -27,7 +27,7 @@ java_library(
 
 genrule(
   name = "copy_link_jni_header",
-  srcs = ["//tools/jdk:jni_header"],
+  srcs = ["@bazel_tools//tools/jdk:jni_header"],
   outs = ["jni.h"],
   cmd = "cp -f $< $@",
 )
@@ -35,8 +35,8 @@ genrule(
 genrule(
   name = "copy_link_jni_md_header",
   srcs = select({
-    "//:darwin": ["//tools/jdk:jni_md_header-darwin"],
-    "//conditions:default": ["//tools/jdk:jni_md_header-linux"],
+    "//:darwin": ["@bazel_tools//tools/jdk:jni_md_header-darwin"],
+    "//conditions:default": ["@bazel_tools//tools/jdk:jni_md_header-linux"],
   }),
   outs = ["jni_md.h"],
   cmd = "cp -f $< $@",

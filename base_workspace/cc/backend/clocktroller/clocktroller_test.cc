@@ -1,10 +1,8 @@
-#include "cc/backend/config.h"
-
 #include "cc/backend/clocktroller/clocktroller_test.h"
 #include "cc/backend/clocktroller/clocktroller.h"
 #include "cc/backend/opcode_executor/registers.h"
-#include "submodules/googletest/include/gtest/gtest.h"
-#include "submodules/glog/src/glog/logging.h"
+#include "gtest/gtest.h"
+#include "glog/logging.h"
 #include <vector>
 
 namespace backend {
