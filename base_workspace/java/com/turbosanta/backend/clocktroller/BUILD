@@ -28,7 +28,7 @@ cc_binary(
     "//cc/backend/clocktroller",
     "//cc/backend/graphics:screen",
     "//java/com/turbosanta/backend/graphics:screen_cc",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     "//java/com/turbosanta/backend:jni_headers",
   ],
   linkshared = 1,

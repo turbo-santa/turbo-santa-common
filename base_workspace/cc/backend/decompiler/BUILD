@@ -9,7 +9,7 @@ cc_library(
   hdrs = ["raw_instruction.h"],
   srcs = ["raw_instruction.cc"],
   deps = [
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":rom_bridge",
   ],
 )
@@ -39,7 +39,7 @@ cc_library(
   hdrs = ["instruction_map.h"],
   srcs = ["instruction_map.cc"],
   deps = [
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":instruction",
     ":instruction_factory",
     ":instruction_factory_helpers",
@@ -58,7 +58,7 @@ cc_library(
   hdrs = ["rom_reader.h"],
   srcs = ["rom_reader.cc"],
   deps = [
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":instruction",
     ":instruction_factory",
     ":instruction_map",
@@ -73,7 +73,7 @@ cc_library(
   hdrs = ["decompiler.h"],
   srcs = ["decompiler.cc"],
   deps = [
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":instruction",
     ":instruction_map",
     ":rom_bridge",
@@ -96,7 +96,7 @@ cc_binary(
   name = "decompile",
   srcs = ["main.cc"],
   deps = [
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":decompiler",
     ":decompiler_factory",
     ":rom_bridge",

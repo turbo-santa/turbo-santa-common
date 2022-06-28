@@ -4,7 +4,7 @@ cc_library(
   deps = [
     "//cc/backend/memory:flags",
     "//cc/backend/memory:module",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
   ],
   visibility = ["//visibility:public"],
 )

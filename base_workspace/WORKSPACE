@@ -1,23 +1,41 @@
-new_git_repository(
-  name = "remote_gtest",
-  remote = "https://github.com/bjh83/googletest.git",
-  commit = "7c508e6611f14cbc0da048c0e726870b93b1cc00",
-  build_file = "external_build_files/gtest.BUILD",
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+http_archive(
+  name = "rules_cc",
+  urls = ["https://github.com/bazelbuild/rules_cc/archive/2f8c04c04462ab83c545ab14c0da68c3b4c96191.zip"],
+  strip_prefix = "rules_cc-2f8c04c04462ab83c545ab14c0da68c3b4c96191",
+  sha256 = "691a29db9c336349e48e04c5c2f4873f2890af5cbfa6e51f4de87fefe6169294"
 )
 
-bind(
-  name = "gtest",
-  actual = "@remote_gtest//:main",
+http_archive(
+  name = "com_google_googletest",
+  urls = ["https://github.com/google/googletest/archive/609281088cfefc76f9d0ce82e1ff6c30cc3591e5.zip"],
+  strip_prefix = "googletest-609281088cfefc76f9d0ce82e1ff6c30cc3591e5",
+  sha256 = "5cf189eb6847b4f8fc603a3ffff3b0771c08eec7dd4bd961bfd45477dd13eb73"
 )
 
-new_git_repository(
-  name = "remote_glog",
-  remote = "https://github.com/google/glog.git",
-  commit = "47ab571f38e8c6266c260010ac631f888e302e6d",
-  build_file = "external_build_files/glog.BUILD",
+http_archive(
+    name = "com_github_gflags_gflags",
+    sha256 = "34af2f15cf7367513b352bdcd2493ab14ce43692d2dcd9dfc499492966c64dcf",
+    strip_prefix = "gflags-2.2.2",
+    urls = ["https://github.com/gflags/gflags/archive/v2.2.2.tar.gz"],
 )
 
-bind(
-  name = "glog",
-  actual = "@remote_glog//:main",
+http_archive(
+    name = "com_github_google_glog",
+    sha256 = "122fb6b712808ef43fbf80f75c52a21c9760683dae470154f02bddfc61135022",
+    strip_prefix = "glog-0.6.0",
+    urls = ["https://github.com/google/glog/archive/v0.6.0.zip"],
+)
+
+load("@rules_cc//cc:defs.bzl", "cc_library")
+load("@rules_cc//cc:repositories.bzl", "rules_cc_dependencies", "rules_cc_toolchains")
+
+rules_cc_dependencies()
+rules_cc_toolchains()
+
+new_local_repository(
+  name = "usr",
+  path = "/usr/",
+  build_file = "system/BUILD",
 )

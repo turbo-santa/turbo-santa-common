@@ -11,7 +11,7 @@ cc_library(
     "//cc/backend/memory/joypad:joypad_module",
     "//cc/backend/memory:memory_mapper",
     "//cc/backend/opcode_executor",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
   ],
   linkopts = ["-pthread"],
   visibility = ["//visibility:public"],

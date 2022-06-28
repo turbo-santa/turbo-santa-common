@@ -5,7 +5,7 @@ cc_library(
     "//cc/backend/memory/interrupt:interrupt_flag",
     "//cc/backend/memory:flags",
     "//cc/backend/memory:module",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
   ],
   visibility = ["//visibility:public"],
 )

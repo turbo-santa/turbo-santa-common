@@ -6,10 +6,11 @@ cc_library(
     "//cc/backend/memory/interrupt:interrupt_flag",
     "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory:module",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":graphics_flags",
     ":screen",
     ":vram_segment",
+    "@usr//:ncurses"
   ],
   visibility = ["//visibility:public"],
 )
@@ -17,14 +18,14 @@ cc_library(
 cc_library(
   name = "screen",
   hdrs = ["screen.h"],
-  deps = ["//external:glog"],
+  deps = ["@com_github_google_glog//:glog"],
   visibility = ["//visibility:public"],
 )
 
 cc_library(
   name = "graphics_flags",
   hdrs = ["graphics_flags.h"],
-  deps = ["//external:glog"],
+  deps = ["@com_github_google_glog//:glog"],
   visibility = ["//visibility:public"],
 )
 
@@ -33,7 +34,7 @@ cc_library(
   hdrs = ["vram_segment.h"],
   deps = [
     "//cc/backend/memory:memory_segment",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
   ],
 )
 

@@ -29,7 +29,7 @@ cc_library(
     "//cc/backend/decompiler:decompiler_factory",
     "//cc/backend/memory:memory_layout",
     "//cc/backend/memory:memory_mapper_rom_bridge",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
   ],
 )
 
@@ -44,7 +44,7 @@ cc_library(
     "//cc/backend/memory/interrupt:primary_flags",
     "//cc/backend/memory:memory_mapper",
     "//cc/backend/memory:memory_mapper_rom_bridge",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":executor_context",
     ":opcode_map",
     ":opcode_parser",
@@ -67,7 +67,7 @@ cc_library(
   deps = [
     "//cc/backend/decompiler:instruction",
     "//cc/backend/memory:memory_mapper",
-    "//external:glog",
+    "@com_github_google_glog//:glog",
     ":executor_context",
     ":opcodes",
     ":registers",
